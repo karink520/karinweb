@@ -1,0 +1,114 @@
+html {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: #3b3b3b;
+}
+
+#profile-pic {
+  border-radius: 50%;
+  margin: 8% auto;
+  display: block;
+}
+
+#intro {
+  font-size: 24px;
+  text-align: center;
+  margin: 5% auto;
+  width: 75%
+}
+
+header div{
+  display:block;
+  background-color: #3037ff;
+  height: 50px;
+  margin: 0 0 2% 0;
+  padding: 0;
+}
+
+footer div{
+  display:block;
+  background-color: #3037ff;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover{
+  text-decoration: underline;
+}
+
+a:visited{
+  color: inherit;
+}
+
+ nav a{
+   font-size: 1.3rem;
+   font-variant: small-caps;
+   margin: 3%;
+   color: #6b6b6b;
+ }
+
+
+ nav li{
+   display: block;
+   width: 100%;
+   margin: 3% auto;
+   text-align: center;
+ }
+
+ nav ul{
+   margin: auto 0;
+   padding: 0
+ }
+
+ h3 {
+   text-align:center;
+   margin-top: 2rem;
+   font-weight: normal;
+ }
+
+ul.projects {
+   list-style: none;
+   margin: 5% auto;
+   padding-top: 10%;
+   width: 70%;
+   box-shadow: 0.5px 1px #eeeeee;
+   border: solid 0.5px #eeeeee;
+   border-radius:5px;
+}
+
+li {
+  margin:0 0 10% 0;
+  font-size: 1rem;
+}
+
+li p:first-child{
+  display:inline;
+  font-weight: normal;
+  color:#74a830;
+}
+
+@media screen and (min-width: 650px) {
+   nav li{
+     display: inline;
+   }
+   li {
+     margin:0 0 40px 0;
+     font-size: 1rem;
+   }
+   ul.projects{
+     padding-top: 40px;
+     margin-top: 0px;
+   }
+   #profile-pic {
+      margin: 50px auto;
+   }
+
+   h3 {
+     margin-top: 60px;
+   }
+}

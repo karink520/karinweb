@@ -1,0 +1,112 @@
+table {
+  font-size: .7rem;
+  font-family: sans-serif;
+  width: 100%;
+  margin: 0 auto;
+  border: 0px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-radius: 0;
+}
+
+.weeklytotal {
+  padding: 4px;
+  text-align: center;
+  background-color: #bde9ba;
+  background: #fffbea;
+}
+
+.name {
+    font-weight:bold;
+    display: inline;
+}
+
+th {
+  background: linear-gradient(#D0FF93, #95C35A);
+  border-top: solid 1px #95C35A;
+  border: solid 1px #95C35A;
+  height: 30px;
+  text-shadow: 1px 1px #BBBBBB;
+  padding: 0% 1%;
+  text-align: center;
+  width: 12%;
+}
+
+td {
+  height: 150px;
+  border: solid 1px #95C35A;
+  vertical-align: top;
+  border-collapse:collapse;
+  margin:0;
+}
+
+
+td p:first-child {
+  text-align: right;
+}
+
+td:first-child{
+  border-left: solid 2px #95C35A;
+}
+
+td:last-child{
+  border-right:solid 2px #95C35A;
+}
+
+tbody:last-child td{
+  border-bottom:solid 2px #95C35A;
+}
+
+td p:nth-child(2) {
+  margin-left: 3%;
+}
+
+tbody:nth-child(even) tr{
+  background-color: #ffffff;
+}
+
+th:first-child {
+  border-left: solid 2px #95C35A;
+}
+
+tr:nth-child(odd){
+  background-color: #e8ffdb;
+}
+
+th:last-child {
+  background: #ffff55;
+}
+
+.weekday{
+  visibility: hidden;
+}
+
+@media screen and (min-width: 700px){
+    table {
+        border-collapse: separate;
+        border-radius: 10px 10px 10px 10px;
+        width: 80%;
+        margin: 40px auto;
+    }
+
+    th:first-child {
+      border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 30px;
+    }
+
+    tbody:last-child td:last-child {
+      border-bottom-right-radius:10px;
+    }
+
+    tbody:last-child td:first-child{
+      border-bottom-left-radius:10px;
+    }
+
+    .weekday{
+      visibility:visible;
+    }
+
+}

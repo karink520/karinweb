@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Karin Knudson </title>
+  <meta charset="UTF-8">
+  <script src = "js/kck.js"></script>
+  <script src = "js/traininglog.js"></script>
+  <script src = "js/conversions.js"></script>
+  <script src = "js/getdata.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+  </script>
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+  <link rel="stylesheet" href="css/kck.css">
+  <link rel="stylesheet" href="css/traininglog.css">
+</head>
+<body onload="loadTable(); makeCall()">
+  <header>
+    <div></div>
+    <nav>
+      <ul>
+        <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+        <li> <a href="blog.html">Blog</a> </li>
+        <li> <a href="projects.html">Projects</a></li>
+        <li> <a href="https://www.dropbox.com/s/l35virsvp4f1bil/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        <li> <a href="traininglog.html">Training Log </a></li>
+      </ul>
+    </nav>
+  </header>
+<main>
+  <table id='calendar'>
+    <tr>
+      <th>M<span class=weekday>onday</span></th>
+      <th>T<span class=weekday>uesday</span></th>
+      <th>W<span class=weekday>ednesday</span></th>
+      <th>T<span class=weekday>hursday</span></th>
+      <th>F<span class=weekday>riday</span></th>
+      <th>S<span class=weekday>aturday</span></th>
+      <th>S<span class=weekday>unday</span></th>
+      <th class =".weeklytotal">Totals</th>
+    </tr>
+  </table>
+</main>
+<footer>
+  <div></div>
+</footer>
+</body>
+</html>

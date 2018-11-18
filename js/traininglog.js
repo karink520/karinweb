@@ -3,10 +3,13 @@ var detailsOnHover= {"2018-08-01": "Lovely run!"};
 var activityIds={"2018-08-01": "Lovely run!"};;
 /*activities?before=&after=&page=&per_page="*/
 
+function loadData(){
+  processData(myData);
+}
+
 function processData(data){
   for(i = 0; i< data.length; i++){
     var dateString = data[i].start_date.substring(0,10);
-    /*acvitityIds[dateString] = data[i].id;*/
     if (data[i].type == "Run"){
       var miles = metersToMiles(data[i].distance);
       var min = processMovingTime(data[i].moving_time);
@@ -18,7 +21,6 @@ function processData(data){
       var nameString = "<span class='name'>" + data[i].type.toUpperCase() + ": </span></br>";
       var detailsString = "<sp>" + processMovingTime(data[i].elapsed_time) + " min </p>";
     }
-      /*details[dateString] = detailsString;*/
       detailsOnHover[dateString] = "<p>" + data[i].description + "</p>";
       if (typeof activitiesByDate[dateString] == 'undefined') {
         activitiesByDate[dateString] = [];

@@ -6,6 +6,9 @@ function metersPerSecondtoMinutesPerMile(metersPerSecond){
     var minutesPerMile = (1 / metersPerSecond) / 60 * 1609;
     var minutes = Math.floor(minutesPerMile);
     var seconds = Math.round(60 * (minutesPerMile - minutes) );
+    if (seconds < 10){
+      seconds = "0" + seconds;
+    }
     return minutes + ":" + seconds;
 }
 

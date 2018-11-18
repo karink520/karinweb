@@ -6,6 +6,7 @@ html {
 
 #profile-pic {
   border-radius: 50%;
+  border: solid 4px #3037ff;
   margin: 8% auto;
   display: block;
 }
@@ -35,6 +36,7 @@ footer div{
 
 a {
   text-decoration: none;
+  color: inherit;
 }
 
 a:hover{

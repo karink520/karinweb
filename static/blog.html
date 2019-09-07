@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src = "js/kck.js"></script>
   <link rel="stylesheet" href="css/kck.css">
+  <link rel="stylesheet" href="css/jqcloud.css">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
@@ -24,11 +25,88 @@
   </header>
   <main>
     <section>
+      <div class="blogpost">
+          <h3 class="blogdate">November 18, 2018 </h3>
+          <span class="blogtopic" class="include-in-wordcloud"> Learning resources for app development with iOS</span>
+          <p class="include-in-wordcloud">Last year I created and taught a class on mobile app development for iOS to high schoolers.  The prerequisite was one term of
+          computer science, so all students had done some coding before, although in some cases they were still quite new to coding.  It was a joy to teach coding via app development in part because it was such a motivating experience for students as they
+          learned programming to be able to see the results of their creative and problem-solving efforts so quickly and concretely
+          on their own phone.<p>
 
+          <p class="include-in-wordcloud">Here are some resources for getting started creating iOS apps with Xcode and Swift.</p>
+          <ul>
+            <li class="include-in-wordcloud"><a class="green" href="https://itunes.apple.com/us/course/developing-ios-11-apps-with-swift/id1309275316">
+              Developing iOS 11 Apps with Swift by Stanford (iTunes U)
+            </a>  - So much for saving the best for last.  Stanford very generously has made its lectures and notes available for free through iTunes U.
+            This is a GREAT course, and going through it in detail helped my learn what I needed to know in order
+            to teach my own course.  It assumes a background in object oriented programming, so might feel a bit fast paced
+            if you are still pretty new to programming.  This was not a resource I pointed my students to directly,
+            but one I used for my own learning.  Enjoy.
+            </li>
+            <li class="include-in-wordcloud"> <a class="green" href="https://nostarch.com/iphoneappsforkids">Coding iPhone Apps for Kids: A Playful Introduction to Swift by Gloria Winquist and Matt McCarthy (No Starch Press, 2017)</a> - Don't let the title throw you off!
+              This is a beautifully produced book with wonderfully clear and helpful exposition.  Who - kid or adult - wouldn't appreciate that? The book gives a tour of core ideas of coding in Swift, and then walks through
+              the creation of several apps that would give a nice jumping off point for building your own.  It assumes no programming background, but I think it's a great
+              resource even if you've done some coding but are just new to Swift.
+            </li>
+            <li class="include-in-wordcloud"><a class="green" href="https://itunes.apple.com/us/book/app-development-with-swift/id1219117996?mt=11">
+            App Development with Swift by Apple Education (iBooks)
+            </a>
+            - This eBook is freely available and assumes no background in coding.  It was a useful resource for my students
+            to get a solid grounding in the basics of coding, Swift, and Xcode, and its section on HTTP and URL Sessions
+            was particularly helpful in breaking down a complex topic to make it accessible to my students as they built
+            their own apps.  Its interactive quiz questions at the end of each chapter were a good way for students to give themselves
+            a quick check for understanding.  The book is meant to lend itself well to an academic course structure,
+            so if you are a teacher new to the subject (like I was!) it could give helpful ideas for structuring a syllabus.  I found myself wishing that it got to more exciting
+            example applications more quickly with its labs and guided projects, especially as I was using it for a ten week course, but with a little
+            adaptation it worked out well for us.
+            </li>
+            <li class="include-in-wordcloud"><a class="green" href="https://www.raywenderlich.com/">
+            raywenderlich.com
+            </a>
+            - I haven't spent much time on this site yet - and some of the content seems to have been restructured since I have, but I have this
+            on my list of resources to explore more deeply before the next time I teach the course, as it seems to offer
+            a number of helpful and practically-orienteed tutorials on different aspects of iOS development and Swift.
+            </li>
+            <li class="include-in-wordcloud"><a class="green" href="https://docs.swift.org/swift-book/index.html">
+              The Swift Programming Language (Apple)
+            </a>
+            - I found Apple's language guide very clear and helpful for getting to know Swift.  It's concise enough
+            that you can reasonably read the whole guide.  If you're on the newer side, you'll learn more about programming
+            along the way, and if you've been programming for a long time, I think it will get you pretty quickly into what
+            you need to know about Swift in particular.  On its own, it won't teach you how to make apps, but it's a great
+            resource to have on hand.
+          </li>
+          <li class="include-in-wordcloud"><a class="green" href="https://developer.apple.com/design/human-interface-guidelines/ios/overview/themes/">
+            Human Interface Guidlines (Apple)
+          </a>
+            - Since I'm coming from a math background, design principles for apps that are enjoyable to use feels pretty out of my
+            field.  So, the idea that there are concrete guidelines out there seems magical and reassuring!  I can't say I have delved into all
+            of what is here, but each piece I have looked at has given me useful ideas to think about as I look to make and help
+            my students make an app that someone would actually want to use!
+          </li>
+          </ul>
+
+      </div>
+<!--
+      <div class="blogpost">
+          <h3 class="blogdate">November 10, 2018 </h3>
+          <span class="blogtopic"> Learning resources for HTML, CSS and JavaScript</span>
+          <p>Last year I taught a class on mobile app development for iOS to high schoolers, with a prerequiste of one term of
+          computer science.  Here are some of my favorite resources for getting started with making iOS apps with Xcode and Swift.
+        </p>
+      </div>
+    -->
     </section>
+    <div id="cloud" width="100vw" height="400">
+
+    </div>
   </main>
   <footer>
     <div></div>
   </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/jQCloud.js"></script>
+  <script src="js/wordcloud.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Karin Knudson </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+  <script src = "js/kck.js"></script>
+  <link rel="stylesheet" href="css/kck.css">
+  <link rel="stylesheet" href="css/neuronsimulation.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+</head>
+<body>
+  <header>
+    <div></div>
+    <nav>
+      <ul>
+        <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+        <li> <a href="blog.html">Blog</a> </li>
+        <li> <a href="projects.html">Projects</a></li>
+        <li> <a href="https://www.dropbox.com/s/l35virsvp4f1bil/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div id="modelselectionpane">
+        <button class="highlight" id="lif">Leaky Integrate-and-Fire </button>
+        <button id="elif">Exponential Leaky Integrate-and-Fire</button>
+        <button id="hodgkinhuxley"> Hodgkin-Huxley Model </button>
+    </div>
+    <div id="plotpane">
+
+    </div>
+    <div id="modeladjustmentpane">
+        <div class="slidecontainer">
+          <label for="appliedcurrent">Applied Current:  <span id=I_app></span><span> = 0 nA </span></label>
+          <input name="appliedcurrent" type="range" min="0" max="50" value="0" class="slider" id="appliedcurrentRange">
+        </div>
+        <div class="slidecontainer">
+          <label for="membranecapacitance ">Membrane Capacitance:  <span id=C_m></span><span> = 100 pF </span></label>
+          <input name="membranecapacitance" type="range" min="50" max="200" value="100" class="slider" id="membraneCapacitanceRange">
+        </div>
+        <div class="slidecontainer">
+          <label for="leakconductance">Leak Conductance:  <span id=G_L></span><span> = 10 nS </span></label>
+          <input name="Leak Conductance" type="range" min="3" max="20" value="10" class="slider" id="leakConductanceRange">
+        </div>
+        <div class="slidecontainer">
+          <label for="leakequilibriumpotential">Equilibrium Potential:  <span id=E_L></span><span> = -70 mV</span></label>
+          <input name="leakequilibriumpotential" type="range" min="-80" max="-30" value="-70" class="slider" id="leakequilibriumpotentialRange">
+        </div>
+    </div>
+    <div id="modelpane">
+      <p id=modelEquation></p>
+      <p id=modelEquationLine2></p>
+      <p id=modelEquationLine3></p>
+      <p id=modelEquationLine4></p>
+      <p></p>
+    </div>
+  </main>
+  <footer>
+    <div></div>
+  </footer>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src = "js/calculatevoltagetrace.js"></script>
+  <script src = "js/plotvoltagetrace.js"></script>
+  <script src = "js/neuronSim.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+
+#modelselectionpane, #plotpane{
+  margin-top: 30px;
+  height:220px;
+}
+
+#modelselectionpane {
+  float: left;
+  width: 30%;
+  background-color: #fff9bc;
+  display: inline-block;
+  padding-right: 5%;
+}
+
+#modeladjustmentpane {
+    width: 30%;
+    display: inline-block;
+}
+
+#modelpane {
+  width: 60%;
+  display: inline-block;
+}
+
+ #modelselectionpane button.highlight, #modelselectionpane button:hover.highlight {
+  background-color: #90ca44;
+  border: 2px solid #4CAF50;
+}
+
+#modelselectionpane button {
+  display: block;
+  font-size: .8em;
+  padding: 2%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  margin-left:1.5em;
+  border-radius: 5px;
+}
+
+#modelselectionpane button:hover {
+  background-color: #b1d97c;
+}
+
+
+#plotpane {
+  float:right;
+  background-color:#90ca44;
+  width: 60%;
+  display: inline-block;
+}
+
+#modeladjustmentpane {
+  clear: left;
+  float:left;
+}
+
+#modelpane{
+  clear:right;
+  float:right;
+}
+
+footer {
+  clear: both;
+}
+
+/*Slider CSS from w3schools*/
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+/*For plot*/
+.line {
+    fill: none;
+    stroke: #444444;
+    stroke-width: 2;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+  .focus circle {
+  fill: none;
+  stroke: steelblue;
+}

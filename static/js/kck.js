@@ -1,5 +1,5 @@
-var startDate = new Date(2018, 08, 17);
-var endDate = new Date(2018, 11, 02);
+var startDate = new Date(2019, 02, 04);
+var endDate = new Date(2019, 04, 27);
 var trainingDays = Math.round((endDate - startDate)/(1000*60*60*24) + 1);
 var numWeeks = trainingDays / 7 + 1;
 var weeklyMiles = [];

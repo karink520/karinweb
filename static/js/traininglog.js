@@ -10,12 +10,15 @@ function loadData(){
 function processData(data){
   for(i = 0; i< data.length; i++){
     var dateString = data[i].start_date.substring(0,10);
+    console.log(dateString);
     if (data[i].type == "Run"){
       var miles = metersToMiles(data[i].distance);
       var min = processMovingTime(data[i].moving_time);
       var pace = metersPerSecondtoMinutesPerMile(data[i].average_speed);
       var nameString = "<span class='name'> RUN: </span></br>"
       var detailsString = miles + " miles <br> " + pace + " pace <br>" + min + " min </p>";
+      console.log(nameString);
+      console.log(detailsString);
       addMileageToTotal(dateString, miles);
     } else {
       var nameString = "<span class='name'>" + data[i].type.toUpperCase() + ": </span></br>";

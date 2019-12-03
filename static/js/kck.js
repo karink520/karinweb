@@ -1,8 +1,9 @@
-var startDate = new Date(2019, 02, 04);
-var endDate = new Date(2019, 04, 27);
+var startDate = new Date(2019, 07, 19); //start on a Monday; for month, use number -1 (i.e. August is 07)
+var endDate = new Date(2019, 09, 27); //Sunday
 var trainingDays = Math.round((endDate - startDate)/(1000*60*60*24) + 1);
 var numWeeks = trainingDays / 7 + 1;
 var weeklyMiles = [];
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', "Nov", 'Dec'];
 for (i = 0; i < parseInt(numWeeks); i++){
   weeklyMiles.push("0");
 }
@@ -20,7 +21,11 @@ function loadTable(){
   for(var cellIndex = 0; cellIndex < tableDatas.length; cellIndex++) {
     if(tableDatas[cellIndex].className != "weeklytotal") {
       tableDatas[cellIndex].setAttribute("id",getTextDate(cellDate));
-      tableDatas[cellIndex].innerHTML="<p>" + cellDate.getDate() + "</p>";
+      if (cellDate.getDate() == 1) {
+        tableDatas[cellIndex].innerHTML="<p>" + months[cellDate.getMonth()] + " " + cellDate.getDate() + "</p>";
+      } else {
+        tableDatas[cellIndex].innerHTML="<p>" + cellDate.getDate() + "</p>";
+      }
       cellDate.setDate(cellDate.getDate() + 1);
     }
   }

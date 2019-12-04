@@ -13,11 +13,6 @@ button {
   padding-right: 5%;
 }
 
-.dot {
-    fill: #ffab00;
-    stroke: #fff;
-}
-
 .accordion {
   background-color: #eee;
   color: #444;

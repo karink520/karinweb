@@ -1,13 +1,16 @@
 var betaPDFeq = "p(x | a, b) = \\frac{\\Gamma(a+b)}{\\Gamma(a)\\Gamma(b)} x^{a - 1}(1-x)^{b - 1}, \\, x \\in[0,1]";
 var binomialPdfEq = "p(k | x ) = {n \\choose x}x^k(1-x)^{n-k}";
+var multinomialPdfEq = "p( \\mathbf{k} | \\mathbf{x}) = \\frac{n!}{k_1! \\cdots k_M!} x_1^{k_1} \\cdots x_M^{k_M}";
 var posteriorBetaPdfEq = "p(x | k) \\propto x^{(a + k) - 1}(1-x)^{(b +n-k) - 1}, \\, x \\in[0,1]";
+var posteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) \\propto p(\\mathbf{k} | \\mathbf{x}) p(\\mathbf{x}) \\propto x_1^{a_1 + k_1 - 1} \\cdots x_M^{a_M + k_M - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
 var betaMean = "\\frac{a}{a+b}";
 var aDisplay = "a";
 var bDisplay = "b";
 var bayesRuleExample = "p(x | k) \\propto p(k | x) p(x)";
 var normalizedBetaPdfEq = "p(x | k) =  \\frac{\\Gamma(a+b+n)}{\\Gamma(a+k)\\Gamma(b+n-k)}x^{(a + k) - 1}(1-x)^{(b +n-k) - 1},\\, x \\in[0,1]";
-var dirichletPdfEq = "p(\\mathbf{x} | \\mathbf{a}) = \\frac{\\prod_{i=1}^{K}\\Gamma(a_i)}{\\Gamma(\\sum_{i=1}^K a_i }\\prod_{i=1}^{K}x_i^{a_i}, \\,  \\text{where }  \\, \\sum_{i=1}^K x_i = 1";
-var a_eq_b_eq_one = 'a=b=1'
+var dirichletPdfEq = "p(\\mathbf{x} | \\mathbf{a}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i)}{\\Gamma(\\sum_{i=1}^M a_i )}\\prod_{i=1}^{M}x_i^{a_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
+var normalizedPosteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i+k_i)}{\\Gamma(\\sum_{i=1}^M a_i + k_i )}\\prod_{i=1}^{M}x_i^{a_i +k_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
+var dirichletParameterEq = "\\mathbf{a} = (a_1,...,a_M)";
 katex.render(betaPDFeq, betaPDFequation, {  throwOnError: false  })
 katex.render(betaMean, betaMeanequation, {  throwOnError: false  })
 katex.render(dirichletPdfEq, dirichletPdfEquation, {  throwOnError: false  })
@@ -15,6 +18,11 @@ katex.render(binomialPdfEq, binomialPdfEquation, {  throwOnError: false  })
 katex.render(posteriorBetaPdfEq, posteriorBetaPdfEquation, {  throwOnError: false  })
 katex.render(bayesRuleExample, bayesRuleExampleEquation, {  throwOnError: false  })
 katex.render(normalizedBetaPdfEq, normalizedBetaPdfEquation, {  throwOnError: false  })
+katex.render(dirichletParameterEq, dirichletParameterEquation, {  throwOnError: false  })
+katex.render(multinomialPdfEq, multinomialPdfEquation, {  throwOnError: false  })
+katex.render(posteriorDirichletPdfEq, posteriorDirichletPdfEquation, {  throwOnError: false  })
+katex.render(normalizedPosteriorDirichletPdfEq, normalizedPosteriorDirichletPdfEquation, {  throwOnError: false  })
+
 
 var tables=[]; //x, y, color, count, phi
 var binary_samples = [0, 0];
@@ -26,6 +34,7 @@ var total_draws = 0;
 var alpha_0 = 1.2;
 var betaSample;
 var dirichletSample;
+var numDecimals = 3;
 
 var histWidth = {};
 var histHeight = {};
@@ -143,6 +152,7 @@ function addToHistogram(tableIndex, histogramIdString){
    var Y;
    if (histogramIdString == 'DPhistogram'){
      Y = histHeight[histogramIdString] - tables[tableIndex].numPeople * 10;
+     X = tables[tableIndex].x;
    } else if (histogramIdString == 'BetaHistogram') {
      Y = histHeight[histogramIdString] - binary_samples[tableIndex] * 10;
    } else {
@@ -287,7 +297,7 @@ function sampleFromBeta(){
   a = 4;
   b = 2;
   betaSample = jStat.beta.sample( a, b );
-  $('#betaSample').text(betaSample);
+  $('#betaSample').text(betaSample.toFixed(numDecimals));
   binary_samples = [0, 0];
   clearHistogram('BetaHistogram');
   drawHistogram('BetaHistogram');
@@ -320,6 +330,7 @@ function simulateFromBetaDraw() {
 
 
 function sampleFromDirichlet(parameters){
+    categorical_samples = [0, 0, 0, 0];
     var K = parameters.length;
     dirichletSample =[]
     var y = [];
@@ -333,12 +344,12 @@ function sampleFromDirichlet(parameters){
     }
   clearHistogram('DirichletHistogram');
   drawHistogram('DirichletHistogram');
-      document.getElementById("sampleFromDirichletSample").style.visibility = "visible";
+    document.getElementById("sampleFromDirichletSample").style.visibility = "visible";
 
   //sample
   var dirichletSampleText = '(';
   for(var i=0; i< dirichletSample.length; i++) {
-    dirichletSampleText += (dirichletSample[i] + ', ');
+    dirichletSampleText += (dirichletSample[i].toFixed(numDecimals) + ', ');
   }
   dirichletSampleText =  dirichletSampleText.substring(0, dirichletSampleText.length - 2) + ")";
   //display sample

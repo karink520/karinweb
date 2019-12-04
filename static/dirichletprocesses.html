@@ -163,20 +163,20 @@
       <div><p id="priorPosteriorBetaPlot2"></p></div>
 
       </div>
-      <button class="accordion">I'm ready for Dirichlet distributions</button>
+      <button class="accordion">I'm ready for Dirichlet distributions.</button>
       <div class="panel">
         <p>
         A draw from beta distribution is great for describing the probability of outcomes when
-        there are only two possible outcomes (success/failure or heads/tails).  If we'd like to
+        there are only two possible outcomes (e.g. success/failure or heads/tails).  If we'd like to
         have a distribution whose draws specify probability distributions over more than two outcomes,
         we can use the Dirichlet distribution, which is a generalization of the beta distribution.
       </p>
       <p>
-         Each draw from a Dirichlet distribution is a vector of prespecified length <i>K</i> that sums to one.
-         For example, (0.2, 0.3, 0.4, 0.1) could be a draw from a Dirichlet distribution with <i>K = 4</i>.
-         We can view such a vector a probability distribution over a discrete random variale with four possible
+         Each draw from a Dirichlet distribution is a vector of prespecified length <i>M</i> that sums to one.
+         For example, (0.2, 0.3, 0.4, 0.1) could be a draw from a Dirichlet distribution with <i>M = 4</i>.
+         We can view this vector a probability distribution over a discrete random variable with <i>M = 4</i> possible
          outcomes, the first occurring with probability 0.2, the second with probability 0.3, and so on.
-         In place of the two parameters <i>a</i> and <i>b</i>, we have a vector of <i>K</i> parameters <i>(a_1,...,a_K) </i>that control
+         In place of the two parameters <i>a</i> and <i>b</i>, we have a vector of <i>M</i> parameters <span id='dirichletParameterEquation'> </span> that control
          the shape of a Dirchlet distribution, and thus what kinds of vectors of probabilities
          are likely or unlikeley to be drawn from it.
 
@@ -185,23 +185,41 @@
       </p>
       <p id='dirichletPdfEquation'> </p>
       <p>
-        Here are some illustrations of Dirichlet probability distributions for <i>K = 3</i>.  (Higher values of K get difficult to visualize on a screen!)
+        Here are some illustrations of Dirichlet probability distributions for <i>M = 3</i>.  (Higher values of M get difficult to visualize on a screen!)
       </p>
         <figure>
             <img src='https://upload.wikimedia.org/wikipedia/commons/2/2b/Dirichlet-3d-panel.png' alt="plot of Dirichlet probability distributions">
                 <br>
         <caption>Image from https://upload.wikimedia.org/wikipedia/commons/2/2b/Dirichlet-3d-panel.png</caption>
         </figure>
+        <p> We can play the same game as before, sampling from a Dirichlet distribution and then using that sample to draw new samples from a discrete distribution, this time with more than two possible outcomes.</p>
         <button id="sampleFromDirichlet"> Draw a sample from a Dirichlet distribution with parameters (3, 4, 5, 1 ) </button>
         <p id="dirichletSample"> . </p>
         <canvas id="dirichletStickBreakingChart" width="1000px" height="50"> </canvas>
         <button id="sampleFromDirichletSample"> Draw samples from the distribution that is specified by the
             sample from the Dirichlet distribution </button>
           <div class='canvas-container'><canvas id="DirichletHistogram" width="400px" height="200"></canvas></div>
-
+        <p>
         Once again we have conjugacy, and a helpful interpretation of hyperparameters as pseudocounts.
         Just as the beta distribution is the conjugate prior for the Bernoulli and binomial distributions,
         the Dirichlet distribution is the conjugate prior for the categorical and multinomial distributions.
+        
+        </p>
+        <p>
+        Suppose we have <i>n</i> independent trials, where the probability of each of the <i>M</i> possible outcomes occuring in each trial is given by the corresponding element of the <b><em>x</em></b>, where <b><em>x</em></b> is still <i>M</i>-dimensional and its elements sum to one.  We use a Dirichlet distribution to represent our prior knowledge about <b><em>x</em></b>. We will then observe data and update our idea of  <b><em>x</em></b>.  We represent a specific set of outcomes
+        by the <i>M</i>-dimensional vector <b><em>k</em></b>, where each element of
+        <b><em>k</em></b> is a whole number that gives the number of appearances of the corresponding outcomes in the <i>n</i> trials (so that the sum of all elements in <b><em>k</em></b> is <i>n</i>).  The probability of observing <b><em>k</em></b>
+        follows a multinomial distribution (which generalizes the binomial distribution):
+        <p id="multinomialPdfEquation"> </p>
+        If we set a Dirichlet prior over the vector of probabilities <b><em>x</em></b>, and then combine it with some vector <b><em>k</em></b> representing data about the outcomes of <i>n</i> trials, we can multiply the two to get the following posterior distribution:
+        </p>
+        
+        <p id='posteriorDirichletPdfEquation'></p>
+        <p> Including the constant of normalization, we have: </p>
+        <p id='normalizedPosteriorDirichletPdfEquation'></p>
+        <p>
+        So the posterior distribution is a Dirichlet distribution, just like the prior - we have conjugacy. Moreover, if we look at how the hyperparameters of  <b><em>a</em></b> add with counterparts in the vector of counts <b><em>k</em></b> from the data, we see the elements of <b><em>a</em></b> playing the same role of pseudocounts as the hyperparameters <i>a</i> and <i>b</i> did in the beta distribution.  Delightful!
+        </p>
       </div>
       <button class="accordion">On to Dirichlet processes!</button>
       <div class="panel">

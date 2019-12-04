@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/jqcloud.css">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 </head>
 <body>
   <header>
@@ -25,6 +24,32 @@
   </header>
   <main>
     <section>
+      <div class="blogpost">
+          <h3 class="blogdate">September 28, 2019 </h3>
+          <span class="blogtopic" class="include-in-wordcloud"> <a href="dirichletprocesses.html">Beta distributions, Dirichlet distributions and Dirichlet processes </a></span>
+          <p class="include-in-wordcloud">Today I am writing about some of my <em> favorite </em> distributions: the beta distribution,
+          the Dirchlet distribution, and the Dirichlet process. All three are handy options
+          to have at your disposal in specifying priors in certain Bayesian models, and they're also rather lovely
+          in their own right.
+          </p>
+          <p class="include-in-wordcloud">
+          One thing that makes these distributions really neat is that they can be thought of as a <em> distributions of
+              distributions</em>.  That is, if we take a draw from one of these distributions, we
+          get a result that itself fully describes a probability distribution.
+          If we take another draw, we get another probability distribution.
+          If we take a lot of draws, we get a whole bunch of distributions, with
+          our beta distribution/Dirichlet distribution/Dirichlet process
+          governing what kinds of distributions we might expect to see more or less commonly
+          represented in the bunch.
+          </p>
+          <p class="include-in-wordcloud">
+          My goal today is to give some visual intuition for how these distributions of distributions work.
+          Along the way, we'll also see examples of simple conjugate Bayesian analysis and hyperparameter interpretation for these distributions.
+          We will begin with beta
+          and Dirichlet distributions and build our way up to Dirichlet processes and beyond.
+          </p>
+          <p> <a href="dirichletprocesses.html"><b>(Read post)</b></a></p>
+      </div>
       <div class="blogpost">
           <h3 class="blogdate">November 18, 2018 </h3>
           <span class="blogtopic" class="include-in-wordcloud"> Learning resources for app development with iOS</span>

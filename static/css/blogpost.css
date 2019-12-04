@@ -1,0 +1,63 @@
+button {
+  background-color:#eee;
+  margin: 5px 5px;
+  padding: 5px 5px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.plotpane {
+  background-color: #fff9bc;
+  display: inline-block;
+  padding-right: 5%;
+}
+
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  margin: 5px 0;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18px;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover, button:hover {
+  background-color: #ddd;
+}
+
+.panel {
+  display: none;
+  background-color: white;
+  overflow: hidden;
+}
+
+#betaSample, #dirichletSample {
+  margin-left:30px;
+}
+
+.canvas-container {
+  text-align:center;
+  margin: auto;
+}
+
+#betaPdf {
+  width: 50%;
+  height: 30px;
+  visibility: visible;
+}
+
+#sampleFromBetaSample, #sampleFromDirichletSample {
+  visibility: hidden;
+}
+

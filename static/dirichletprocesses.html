@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/dirichletprocessesd3.css">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/l35virsvp4f1bil/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class=blogpost>
+      <h3 class="blogdate">September 28, 2019 </h3>
+      <span class="blogtopic" class="include-in-wordcloud"> Beta distributions, Dirichlet distributions and Dirichlet processes </span>
+      <p>
+        Today I am writing about some of my <em> favorite </em> distributions: the beta distribution,
+        the Dirchlet distribution, and the Dirichlet process. All three are handy options
+        to have at your disposal in specifying priors in certain Bayesian models, and they're also rather lovely
+        in their own right.
+      </p>
+      <p>
+        One thing that makes these distributions really neat is that they can be thought of as a <em> distributions of
+        distributions</em>.  That is, if we take a draw from one of these distributions, we
+        get a result that itself fully describes a probability distribution.
+        If we take another draw, we get another probability distribution.
+        If we take a lot of draws, we get a whole bunch of distributions, with
+        our beta distribution/Dirichlet distribution/Dirichlet process
+        governing what kinds of distributions we might expect to see more or less commonly
+        represented in the bunch.
+      </p>
+      <p>
+       My goal today is to give some visual intuition for how these distributions of distributions work.
+       Along the way, we'll also see examples of simple conjugate Bayesian analysis and hyperparameter interpretation for these distributions.
+       We will begin with beta
+       and Dirichlet distributions and build our way up to Dirichlet processes and beyond.
+     </p>
+       <button class="accordion">The beta distribution as a distribution of distributions?  Show me! </button>
+       <div class="panel">
+      <p>
+        The probability distribution of a beta distribution is as follows:
+      </p>
+          <p id="betaPDFequation"> </p>
+
+          <p> The beta distribution has support on the interval from 0 to 1, meaning a draw from a beta distribution will be a real number between 0 and 1.  The parameters
+            <i>a</i> and <i>b</i> control the shape of the distribution.  The mean of a beta distribution
+            is <span id="betaMeanequation"></span>.  For high values of <i>a</i> and <i>b</i>, the probability distribution will have a bump shape.
+            If <i>a</i> and <i>b</i> are below 1, it will have a U shape.  If <i> a = b = 1</i>, the beta distribution reduces to a uniform distribution.
+          </p>
+          <p>
+            Because a sample drawn from the beta distribution will be between 0 and 1, we can think
+            of each draw as the probability of success in a trial or sequence of trials with two possible outcomes: success and failure.
+            For example, it could represent the probability of heads (success) on each independent toss of biased coin.  So, once we have a draw
+            from a beta distribution, we can draw from the new distribution that our beta draw specifies.
+            As we generate a number of draws, we'll have success or failure, with the probability of success on each independent draw equal to the sample from the beta distribution that we began with.
+          </p>
+          <p>
+            Let's get a feel for that visually and interactively. Here is a graph of the probability distribution function of a beta distribution (with a few different options
+            for hyperparameter values.  Try sampling from the beta distribution, then using that sample to
+            draw from the distribution it represents.  Here, the green draws on the left represent success, the blue failure.
+          </p>
+        <div><p id="betaPDF"> </p>
+        </div>
+          <button id="sampleFromBeta"> Draw a sample from a beta distribution </button>
+          <p id="betaSample"> . </p>
+          <canvas id="betaStickBreakingChart" width="1000px" height="50"> </canvas>
+          <button id="sampleFromBetaSample"> Draw samples from the distribution over blue and green that is specified by the
+            sample from the beta distribution.
+          </button>
+          <div class='canvas-container'><canvas id="BetaHistogram" width="200px" height="200"></canvas></div>
+
+      </div>
+      <button class="accordion">Let's get Bayesian: how can I use a beta distribution as a prior?</button>
+      <div class="panel">
+        <p>
+          The beta distribution is useful as a prior over the probability of for each trial in
+          a bernoulli or binomial experiment. In this case the parameters <i>a</i> and <i>b</i>
+          have a very elegant interpretation.
+        </p>
+        <p>
+          Note that we can also refer to <i>a</i> and <i>b</i> in this
+          context as <em>hyperparameters</em>, because they are parameters of the prior distribution.
+        </p>
+        <p>
+          Let's say we are going to flip a coin that might be biased.  We'll count a 'success' as flipping heads.   We'd like to represent
+          our prior knowledge about the probability of heads (success), a probability we'll denote <i>x</i>.
+          For example, if we think that most coins are fair and so have some idea that ours will be too,
+          we might select a prior that puts more weight on values near 0.5, for example by choosing the following
+          beta distribution with <i>a = b = 5</i>.  If we have reason to believe that the coin will be biased
+          towards heads, we could choose a beta distribution that reflects that; for example we could let
+          <i>a = 2 </i> and <i>b = 5</i>.  So different values of <i>a</i> and <i>b</i> help us encode our prior beliefs.
+        </p>
+          Our plan is to flip this coin a few times, to observe some data.  Then, we'll use
+          Bayes rule to compute the distribution that gives new idea of what <i>x</i>.  That is,
+          we'll combine our <em> prior distribution</em> with the <em>likelihood</em> of some observed data,
+          to get a <em>posterior distribution</em> for <i>x</i>, the parameter of interest.
+
+          We flip the coin <i>n</i> times and see <i>k</i> heads, remembering that the probability for success on
+          any given flip is our unknown <i>x</i>.  The probability of seeing <i>k</i> heads comes from the binomial distribution and is:
+        </p>
+        <p id="binomialPdfEquation"> </p>
+        This probability of seeing certain data (here, the data is that we saw <i>k</i> successes in <i>n</i> trials) given the assumptions of our model is the <em>likelihood</em>.
+        Bayes' rule tells us that the posterior distribution for <i>x</i> should be proportional to the product of the likelihood and the prior.
+        That is:
+        <p id="bayesRuleExampleEquation"> </p>
+
+        Multiplying the binomial expression for likelihood with the beta prior for <i>x</i>, we obtain:
+
+        <p id="posteriorBetaPdfEquation"> </p>
+
+        If we include the normalization constant, we have as the posterior distribution for <i>x</i>:
+        <p id="normalizedBetaPdfEquation"> </p>
+      </div>
+
+      <button class="accordion">Is that conjugacy?  And how do I interpret the hyperparameters (a,b)?</button>
+      <div class="panel">
+        <p>
+        "Wow, that's another beta distribution!" you say, looking at the posterior distribution we just derived.  And you're right!
+        </p>
+        <p>
+          We say that the beta distribution is the <em>conjugate</em> prior for the binomial distribution, because when we combine the
+          likelihood and prior, we get a posterior that has the form of the prior again: another beta distribition.
+        </p>
+
+        <p>
+        Not only that, we see that
+        playing the role of the first parameter of the beta distribution in the posterior is <i>a + k</i>, that is <i>a</i> plus the number of successes we saw in the data.
+        Playing the role of the second parameter is <i>b + n - k</i>, hyperparameter <i>b</i> plus the number of failures in the data.
+        If we increased <i>a</i> by one in setting the prior, that would affect the posterior in the same way as seeing one more success in the data would have.
+        If we increased <i>n</i> by one in setting the prior, that would affect the posterior in the same way as seeing one more failure in the data would have.
+      </p>
+
+      <p>
+        Thus we can think of <i>a</i> and <i>b</i> as <em> pseudocounts </em> of successes and failures, respectively.
+        We can think of our prior idea about the fairness of the coin is the same as the idea we would have had if our prior came from observing a binomial trial where we saw <i>a</i> successes and <i>b</i> failures.
+        In light of this interpretation, those hyperparameters <i>a</i> and <i>b</i> are not so mysterious after all.
+        Pretty neat!
+      </p>
+
+      <p>
+        To tie these ideas back to a concrete example, let's say we put a beta prior over the likelihood of our coin toss with <i>a = b = 5</i>.
+        Our prior idea of the fairness of the coin is as if all we knew about it was that on 10 independent flips, we had seen
+        5 heads and 5 tails - the pseudocounts. Then, suppose we toss the coin <i>n = 10</i> times and see <i>k = 9</i> heads.  Now we might have a little more
+          suspicion that the <i>x</i>, the probability of heads is more than 0.5.  In fact our uncertainty about <i>x</i>
+          after seeing the data is captured by a beta distribution with parameters <i>a + k = 14 </i> and <i>b+ n - k = 6</i>.
+          We plot these example prior (green) and posterior (blue) distributions below.
+      </p>
+      <div><p id="priorPosteriorBetaPlot"></p></div>
+      <div><p id="priorPosteriorBetaPlot2"></p></div>
+
+      </div>
+      <button class="accordion">I'm ready for Dirichlet distributions</button>
+      <div class="panel">
+        <p>
+        A draw from beta distribution is great for describing the probability of outcomes when
+        there are only two possible outcomes (success/failure or heads/tails).  If we'd like to
+        have a distribution whose draws specify probability distributions over more than two outcomes,
+        we can use the Dirichlet distribution, which is a generalization of the beta distribution.
+      </p>
+      <p>
+         Each draw from a Dirichlet distribution is a vector of prespecified length <i>K</i> that sums to one.
+         For example, (0.2, 0.3, 0.4, 0.1) could be a draw from a Dirichlet distribution with <i>K = 4</i>.
+         We can view such a vector a probability distribution over a discrete random variale with four possible
+         outcomes, the first occurring with probability 0.2, the second with probability 0.3, and so on.
+         In place of the two parameters <i>a</i> and <i>b</i>, we have a vector of <i>K</i> parameters <i>(a_1,...,a_K) </i>that control
+         the shape of a Dirchlet distribution, and thus what kinds of vectors of probabilities
+         are likely or unlikeley to be drawn from it.
+
+      </p>
+      <p> The probability density function for a Dirichlet distribution is a follows:
+      </p>
+      <p id='dirichletPdfEquation'> </p>
+      <p>
+        Here are some illustrations of Dirichlet probability distributions for <i>K = 3</i>.  (Higher values of K get difficult to visualize on a screen!)
+      </p>
+        <figure>
+            <img src='https://upload.wikimedia.org/wikipedia/commons/2/2b/Dirichlet-3d-panel.png' alt="plot of Dirichlet probability distributions">
+                <br>
+        <caption>Image from https://upload.wikimedia.org/wikipedia/commons/2/2b/Dirichlet-3d-panel.png</caption>
+        </figure>
+        <button id="sampleFromDirichlet"> Draw a sample from a Dirichlet distribution with parameters (3, 4, 5, 1 ) </button>
+        <p id="dirichletSample"> . </p>
+        <canvas id="dirichletStickBreakingChart" width="1000px" height="50"> </canvas>
+        <button id="sampleFromDirichletSample"> Draw samples from the distribution that is specified by the
+            sample from the Dirichlet distribution </button>
+          <div class='canvas-container'><canvas id="DirichletHistogram" width="400px" height="200"></canvas></div>
+
+        Once again we have conjugacy, and a helpful interpretation of hyperparameters as pseudocounts.
+        Just as the beta distribution is the conjugate prior for the Bernoulli and binomial distributions,
+        the Dirichlet distribution is the conjugate prior for the categorical and multinomial distributions.
+      </div>
+      <button class="accordion">On to Dirichlet processes!</button>
+      <div class="panel">
+      Coming soon!  For now, you can play with drawing samples from a distribution specified by
+      a sample from a Dirichlet process:
+      </p>
+      <button id="sampleFromDPSample"> Draw </button>
+
+      <div>
+      <canvas id="circle" width="600px" height="150"></canvas>
+      </div>
+      <div>
+      <canvas id="DPhistogram" width="600px" height="300"></canvas>
+      </div>
+    </div>
+    <button class="accordion">In conclusion...</button>
+    <div class="panel">
+      <p>
+      These distributions are cool in their own right, and I've often
+      found them useful in applied Bayesian modeling.  The interpretation of the
+      hyperparameters in terms of pseudocounts has a lovely logic to it. I know I found this interpretation soothingly concrete
+      when I was getting started with Bayesian models, and choosing hyperparameters seemed quite mysterious (sometimes it still does, TBH!).  I hope you
+      find some elegant and useful applications of these distributions too.
+      </p>
+      <p>
+      Lastly, stay tuned.  An additional motivation for writing this post was
+      to lay the groundwork for a discussion of a related but more complex topic: hierarchical
+      Dirichlet processes. HDPs have some interesting applications in topic modeling and natural language
+      processing, as well as time series modeling with hidden Markov model variants.
+      If you like beta distributions, Dirichlet distributions, and Dirichlet processes,
+      you'll love hierarchical Dirichlet processes, so get psyched!
+    </p>
+  </div>
+    </div>
+    </main>
+    <footer>
+      <div></div>
+    </footer>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/dirichletprocesses.js"></script>
+    <script src="js/blogpost.js"></script>
+  </body>
+</html>

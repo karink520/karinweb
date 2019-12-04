@@ -1,0 +1,11 @@
+.line {
+    fill: none;
+    stroke: #74a830;
+    stroke-width: 3;
+}
+
+.line_blue {
+  fill: none;
+  stroke: #0000ff;
+  stroke-width: 3;
+}

@@ -1,5 +1,5 @@
 var betaPDFeq = "p(x | a, b) = \\frac{\\Gamma(a+b)}{\\Gamma(a)\\Gamma(b)} x^{a - 1}(1-x)^{b - 1}, \\, x \\in[0,1]";
-var binomialPdfEq = "p(k | x ) = {n \\choose x}x^k(1-x)^{n-k}";
+var binomialPdfEq = "p(k | x ) = {n \\choose k}x^k(1-x)^{n-k}";
 var multinomialPdfEq = "p( \\mathbf{k} | \\mathbf{x}) = \\frac{n!}{k_1! \\cdots k_M!} x_1^{k_1} \\cdots x_M^{k_M}";
 var posteriorBetaPdfEq = "p(x | k) \\propto x^{(a + k) - 1}(1-x)^{(b +n-k) - 1}, \\, x \\in[0,1]";
 var posteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) \\propto p(\\mathbf{k} | \\mathbf{x}) p(\\mathbf{x}) \\propto x_1^{a_1 + k_1 - 1} \\cdots x_M^{a_M + k_M - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
@@ -70,11 +70,6 @@ function sampleFromDPDraw(){
   tables[tables.length-1].phi = clt_normal();
   drawPersonAtTable(tables.length-1)
   return;
-  //Get value from base distribution for table label
-  //Draw random variable
-  //With prob __ draw person at existing tables
-  //Otherwise draw new table and put a person at
-
 }
 
 function drawPersonAtTable(tableIndex){
@@ -197,17 +192,15 @@ function plotBetaPdf(a_arr, b_arr, elementId){
   // The number of datapoints
   var n = 100;
 
-  // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
       .domain([0, 1]) // input
-      .range([0, width]); // output
+      .range([0, width]); //outpu
 
-  // 6. Y scale will use the randomly generate number
   var yScale = d3.scaleLinear()
       .domain([0, 3]) // input
       .range([height, 0]); // output
 
-  // 7. d3's line generator
+  //d3's line generator
   var line = d3.line()
       .x(function(d, i) { return xScale(i/n); }) // set the x values for the line generator
       .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
@@ -246,7 +239,6 @@ function plotBetaPdf(a_arr, b_arr, elementId){
          .attr("d", line); // 11. Calls the line generator
    }
 
-
     return {'plot': svg, 'xScale': xScale, 'yScale': yScale};
 }
 
@@ -255,6 +247,7 @@ function plotStickBreakingImage(prob_array, element_id){
   var margin = {top: 5, right: 30, bottom: 5, left: 30}
   var width = betaPdfWidth - margin.left - margin.right;
   var canvas = document.getElementById(element_id);
+  canvas.width = betaPdfWidth; //resize the canvas to make sure the stick fits
   var stickLength = width;
   var stickHeight = 10;
   var leftOffset = margin.left;
@@ -277,14 +270,6 @@ function plotStickBreakingImage(prob_array, element_id){
       ctx.fill();
   }
   }
-  //   for (var i = 0; i < prob_array.length; i++)
-  //     ctx.beginPath();
-  //     ctx.rect(20, 20, stickLength*prob_array[i], stickHeight);
-  //     ctx.strokeStyle = tableColors[i];
-  //     ctx.fillStyle = tableColors[i];
-  //     ctx.stroke()
-  //     ctx.fill();
-  // }
 }
 
 
@@ -321,16 +306,13 @@ function sampleFromBeta(){
           .attr("r",5);
 }
 
-function simulateFromBetaDraw() {
-  sample = Number(Math.random() > betaSample);
-  binary_samples[sample]++;
-  addToHistogram(sample, 'BetaHistogram');
-}
-
-
-
 function sampleFromDirichlet(parameters){
+    //reset histogram and samples
     categorical_samples = [0, 0, 0, 0];
+    clearHistogram('DirichletHistogram');
+    drawHistogram('DirichletHistogram');
+    
+    //generate sample
     var K = parameters.length;
     dirichletSample =[]
     var y = [];
@@ -342,19 +324,17 @@ function sampleFromDirichlet(parameters){
     for (var i = 0; i < K; i++){
         dirichletSample[i] = y[i]/ sum;
     }
-  clearHistogram('DirichletHistogram');
-  drawHistogram('DirichletHistogram');
-    document.getElementById("sampleFromDirichletSample").style.visibility = "visible";
 
-  //sample
+  //display sample
   var dirichletSampleText = '(';
   for(var i=0; i< dirichletSample.length; i++) {
     dirichletSampleText += (dirichletSample[i].toFixed(numDecimals) + ', ');
   }
   dirichletSampleText =  dirichletSampleText.substring(0, dirichletSampleText.length - 2) + ")";
-  //display sample
   $('#dirichletSample').text(dirichletSampleText);
 
+  //update stick-breaking diagram and make it possible to sample based on the most recent dirichlet draw (by making this section visible)
+  document.getElementById("sampleFromDirichletSample").style.visibility = "visible";
   plotStickBreakingImage(dirichletSample, 'dirichletStickBreakingChart')
 
 }
@@ -364,8 +344,15 @@ function sampleFromSampleDirichlet(){
     categorical_samples[sample]++;
     console.log(sample);
     addToHistogram(sample, 'DirichletHistogram')
-
 }
+
+function simulateFromBetaDraw() {
+    sample = Number(Math.random() > betaSample);
+    binary_samples[sample]++;
+    addToHistogram(sample, 'BetaHistogram');
+}
+
+
 
 function sampleFromDP(){
 

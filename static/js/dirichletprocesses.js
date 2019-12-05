@@ -39,9 +39,9 @@ var numDecimals = 3;
 var histWidth = {};
 var histHeight = {};
 var betaPdfWidth = document.getElementById('betaPDF').offsetWidth;
+
 var betaPdf = plotBetaPdf([4],[2],'#betaPDF');
 plotBetaPdf([5,9],[5,4],'#priorPosteriorBetaPlot');
-//plotBetaPdf(9,4,'#priorPosteriorBetaPlot2');
 
 drawHistogram('DPhistogram');
 drawHistogram('BetaHistogram');
@@ -61,14 +61,14 @@ function sampleFromDPDraw(){
     console.log("probSum is" + probSum);
     if (rand < probSum) {
       drawPersonAtTable(i);
-      console.log("Person added at table" + i)
+        console.log("Person added at table" + i);
       return;
     }
     probSum += (tables[i].numPeople / (total_draws + alpha_0));
   }
-  drawTable()
+  drawTable();
   tables[tables.length-1].phi = clt_normal();
-  drawPersonAtTable(tables.length-1)
+    drawPersonAtTable(tables.length-1);
   return;
 }
 
@@ -87,7 +87,7 @@ function drawPersonAtTable(tableIndex){
     ctx.lineWidth = 2;
     ctx.strokeStyle = tableColors[tableIndex];
     ctx.fillStyle = tableColors[tableIndex];
-    ctx.stroke()
+    ctx.stroke();
     ctx.fill();
   }
   tables[tableIndex].numPeople += 1;
@@ -142,7 +142,6 @@ function drawHistogram(histogramIdString){
 }
 
 function addToHistogram(tableIndex, histogramIdString){
-   //var X = tables[tableIndex].phi * histWidth[histogramIdString];
    var X = tableIndex * 75 + 70;
    var Y;
    if (histogramIdString == 'DPhistogram'){
@@ -185,7 +184,6 @@ function plotBetaPdf(a_arr, b_arr, elementId){
   console.log(betaPdfWidth)
   var margin = {top: 20, right: 30, bottom: 20, left: 30};
   var width = betaPdfWidth - margin.left - margin.right;
-  //var width = window.innerWidth - margin.left - margin.right // Use the window's width
   var height = 200;
   var dataset = d3.range(n+1).map(function(d) { return {"y": jStat.beta.pdf(d/n, a, b ) } });
 
@@ -312,7 +310,7 @@ function sampleFromDirichlet(parameters){
     clearHistogram('DirichletHistogram');
     drawHistogram('DirichletHistogram');
     
-    //generate sample
+    //generate sample (using a sequence of gamma random variables)
     var K = parameters.length;
     dirichletSample =[]
     var y = [];
@@ -342,7 +340,6 @@ function sampleFromDirichlet(parameters){
 function sampleFromSampleDirichlet(){
     var sample =  getRandomIndexByProbability(dirichletSample);
     categorical_samples[sample]++;
-    console.log(sample);
     addToHistogram(sample, 'DirichletHistogram')
 }
 

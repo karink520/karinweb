@@ -153,10 +153,10 @@
       </p>
 
       <p>
-        To tie these ideas back to a concrete example, let's say we put a beta prior over the likelihood of our coin toss with <i>a = b = 5</i>.
+        To tie these ideas back to a concrete example, let's say we put a beta prior over the probability of heads in our coin toss with <i>a = b = 5</i>.
         Our prior idea of the fairness of the coin is as if all we knew about it was that on 10 independent flips, we had seen
         5 heads and 5 tails - the pseudocounts. Then, suppose we toss the coin <i>n = 10</i> times and see <i>k = 9</i> heads.  Now we might have a little more
-          suspicion that the <i>x</i>, the probability of heads is more than 0.5.  In fact our uncertainty about <i>x</i>
+          suspicion that <i>x</i>, the probability of heads is more than 0.5.  In fact our uncertainty about <i>x</i>
           after seeing the data is captured by a beta distribution with parameters <i>a + k = 14 </i> and <i>b+ n - k = 6</i>.
           We plot these example prior (green) and posterior (blue) distributions below.
       </p>
@@ -242,7 +242,7 @@
       These distributions are cool in their own right, and I've often
       found them useful in applied Bayesian modeling.  The interpretation of the
       hyperparameters in terms of pseudocounts has a lovely logic to it. I know I found this interpretation soothingly concrete
-      when I was getting started with Bayesian models, and choosing hyperparameters seemed quite mysterious (sometimes it still does, TBH!).  I hope you
+      when I was getting started with Bayesian modeling, back when choosing hyperparameters seemed quite mysterious (sometimes it still does, TBH!).  I hope you
       find some elegant and useful applications of these distributions too.
       </p>
       <p>

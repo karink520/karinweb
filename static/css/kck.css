@@ -108,10 +108,14 @@ li {
   margin-right: 10px;
 }
 
-li p:first-child, .blogtopic{
+.project-head, .blogtopic{
   display:inline;
   font-weight: normal;
   color:#74a830;
+}
+
+.project-head {
+  font-size: 1.2em;
 }
 
 .green {

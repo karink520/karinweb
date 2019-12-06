@@ -84,12 +84,10 @@ function sampleFromDPDraw(){
         console.log("Person added at table" + i);
       return;
     }
-    probSum += (tables[i].numPeople / (total_draws + alpha_0));
+    probSum += (tables[i].numPeople / (total_draws + Number(alpha_0)));
   }
   //in case person picks new table:
-  //tables[tables.length-1].phi = clt_normal();
   tables.push({"x":0, "y":0, "numPeople":0, "phi":jStat.normal.sample(0,1)});
-  //tables[tables.length-1].phi = jStat.normal.sample(0,1);
   drawTable();
   drawPersonAtTable(tables.length-1);
 
@@ -101,7 +99,7 @@ function sampleFromDPDraw(){
   normalPdf.plot.selectAll(".dot").data(tables)
   .enter().append("circle")
     .attr("class", "dot") // Assign a class for styling
-    .attr("cx", function(d, i) { return normalPdf.xScale(d.phi)})
+    .attr("cx", function(d) { return normalPdf.xScale(d.phi)})
     .attr("cy", function(d) { return normalPdf.yScale(0) })
     .attr("r", 5)
     .style("fill", fillcolor);
@@ -473,6 +471,8 @@ function plotNormalPdf(){
 
 function startOverDP(){
   console.log('starting over');
+  console.log(alpha_0);
+  total_draws = 0;
   var canvas = document.getElementById('circle');
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   tables = [];

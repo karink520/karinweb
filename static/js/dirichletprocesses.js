@@ -32,7 +32,9 @@ katex.render("n_t", nT, {  throwOnError: false  })
 katex.render("\\theta_n", thetaN, {throwOnError: false})
 katex.render("\\beta_n", betaN, {throwOnError: false})
 katex.render(stickBreakingEq, stickBreakingEquation, {  throwOnError: false  })
-
+katex.render( "(A_1,...,A_k)",setlist, {  throwOnError: false  });
+katex.render("(G(A_1),...,G(A_k))", setlist2, {  throwOnError: false  });
+katex.render("(\\alpha H(A_1),...,\\alpha H(A_k))", setlist3, {  throwOnError: false  });
 
 var tables=[]; //x, y, color, count, phi
 var binary_samples = [0, 0];

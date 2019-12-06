@@ -243,7 +243,6 @@
       yielded distributions over <i>M</i> outcomes, a Dirichlet process (DP) can yield distributions over infinitely many outcomes.
       As we did with beta distributions and Dirichlet distributions, we want to break down how we get to this sample
       that itself specifies a distribution, and then how we generate samples from that distribution. 
-      <!--(Note: A Dirichlet process is a stochastic process, so we should be a little bit careful about our language. I might be on the less careful side here to promote readability, but would refer you to the references below if you want to get into the measure theoretic underpinnings)-->
       </p>
       <p>
       A Dirchlet process is specified using two parameters, a positive real number &alpha;, and a probability distribution <i>H</i>.
@@ -339,49 +338,65 @@
       </p>
       <div><button id="sampleFromDPSample"> Draw from the distribution specified by a realization of a Dirichlet process</button></div>
       
-      <!--Add ability to start over-->
       <button id="startOverDP">Start over</button>
       <p id="normalPDF"> </p>
       <div>
-      <canvas id="circle" width="600px" height="150"></canvas>
+      <canvas id="circle" width="600px" height="100"></canvas>
       </div>
       <div>
-      <canvas id="DPhistogram" width="600px" height="300"></canvas>
+      <canvas id="DPhistogram" width="600px" height="200"></canvas>
       </div>
       <p>
-        It comes up surprisingly often that you might a source of randomly generated discrete probability distributsions over a countably infinte number of components!
+        When might you use a DP?
         To touch on the practical utility of Dirichlet processes in modeling, it can be helpful to note the limitations of a Dirichlet distribution.
         We noted that Dirichlet distributions are useful in specifying priors for, e.g. the weights of different components in a 
         mixture model, when we know in advance the number of components (<i>M</i>, in the notation above).
         However, it is very often the case that we do not know in advance how many mixture components we have, and that in fact
         as we observe more data, we expect to continue to accumulate more components. 
         For example, suppose we are modeling mixtures of topics in some natural language corpus; we do not know how many topics to expect,
-        and as we see more data, we might need to add more topics to adequately descibe it.  In such a case, a Dirichlet process
+        and as we see more data, we might need to add more topics to adequately descibe it.  Or, perhaps we are looking for subtypes of a disease
+        based on clusters in the disease characteristics, but we do not know how many subtypes there might be.  In such cases, a Dirichlet process
         fits nicely with our intuition that as we observe more data, we may also accumulate more mixture components (tables, in the restaurant metaphor),
-        and the draws from base distribution may be used in parameterizing the components themselves.  So nice!
+        and the draws from base distribution may be used in parameterizing the components themselves.  It's a handy tool to have at your disposal!
       </p>
       <p>
         What about conjugacy? Like the beta and Dirichlet distributions, Dirichlet processes also have some nice conjugacy properties. 
-        See, e.g. Yee Whye Teh's excellent <a href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf'>tutorial slides</a> for this and much more.
+        See, e.g. Yee Whye Teh's excellent <b><a href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf'>tutorial slides</a></b> for this and much more.
       </p>
       <p>
         Phew!  That's it on DPs for now.  But in thinking about DPs as priors, we just dipped our toe into Bayesian nonparemetrics - there is a whole world out 
         there to explore if you want!
       </p>
     </div>
-    <!--
-    <button class="accordion">But what is a Dirichlet process, really?</button>
+    <button class="accordion">But what is a Dirichlet process, really?  Also, references? </button>
     <div class="panel">
       <p>
-      Look, it took a real battle against my instincts as a mathematician not to start with the definition. But I'm so glad you asked.
-`
+      Look, it took a real battle against my instincts as a mathematician not to just start with the formal definition and assume everything was clear from there. But I'm so glad you asked.</p>
+      <p>
+      Let <i>(X, B)</i> be a measurable space, with <i>H</i> a probability measure on that space.  Then the stochastic process G indexed by the
+      sets in <i>B</i> is a Dirichlet process distributed as <i>DP(&alpha;, H)</i> if for any finite measurable partition <span id="setlist"></span> of <i>X</i>, the random vector
+      <span id="setlist2"></span> has a Dirichlet distribution with parameter vector <span id="setlist3"></span>.
+      </p>
+      <p>
+        "Just writing down a definition like that doesn't guarantee that <i>G</i> exists," you might say.  Fantastic point!  The existence
+        of the Dirichlet process was proven in <b><a href="https://projecteuclid.org/euclid.aos/1176342360">[Ferguson, 1973]</a></b>.
+      </p>
+      <p>
+        Another foundational paper in the realm of DPs is <b><a href="https://projecteuclid.org/euclid.aos/1176342360">[Antoniak, 1974]</a></b>, which explored theory 
+        and applications of mixtures of Dirichlet processes.
+      </p>
+      <p>
+        For a somewhat more recent exposition about Dirichlet processes, see, for example <b><a href="https://www.stat.berkeley.edu/~aldous/206-Exch/Papers/hierarchical_dirichlet.pdf">[Teh et al., 2006]</a></b>  This article introduces
+        hierarchical Dirichlet process, which will be the topic of an upcoming blogpost, but even if you only want to know about DPs without 
+        hierarchical structure, the clear exposition here is great resource.
       </p>
       <ol>
-        <li><a href="https://projecteuclid.org/euclid.aos/1176342360">A Bayesian Analysis of Some Nonparametric Problems</a></li>
-        <li><a href="https://projecteuclid.org/euclid.aos/1176342871">Mixtures of Dirichlet Processes with Applications to Bayesian Nonparametric Problems</a></li>
+        <li class="reflist"><a href="https://projecteuclid.org/euclid.aos/1176342871">Antoniak, Charles E. "Mixtures of Dirichlet processes with applications to Bayesian nonparametric problems." The annals of statistics (1974): 1152-1174.</a></li>
+        <li class="reflist"><a href="https://projecteuclid.org/euclid.aos/1176342360">Ferguson, Thomas S. "A Bayesian analysis of some nonparametric problems." The annals of statistics (1973): 209-230.</a></li>  
+        <li class="reflist"><a href="https://www.stat.berkeley.edu/~aldous/206-Exch/Papers/hierarchical_dirichlet.pdf">Teh, Yee W., et al. "Hierarchical Dirichlet processes."  Journal of the American Statistical Association (2006): 1566-1581</a></li>
+        <li class="reflist"><a href="href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf">Teh, Yee W., Dirichlet Processes: Tutorial and Practical Course (2007)</a></li>
       </ol>
     </div>
-  -->
     <button class="accordion">In conclusion...</button>
     <div class="panel">
       <p>

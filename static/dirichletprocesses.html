@@ -170,7 +170,10 @@
         A draw from beta distribution is great for describing the probability of outcomes when
         there are only two possible outcomes (e.g. success/failure or heads/tails).  If we'd like to
         have a distribution whose draws specify probability distributions over more than two outcomes,
-        we can use the Dirichlet distribution, which is a generalization of the beta distribution.
+        we can use the Dirichlet distribution, which is a generalization of the beta distribution.  In
+        Bayesian modeling, Dirichlet distributions are handy for priors over multinomial or categorical variables, 
+        for instance, you might use them to describe some prior idea above the relative weights of different
+        mixing components in a mixture model.
       </p>
       <p>
          Each draw from a Dirichlet distribution is a vector of prespecified length <i>M</i> that sums to one.
@@ -222,20 +225,163 @@
         So the posterior distribution is a Dirichlet distribution, just like the prior - we have conjugacy. Moreover, if we look at how the hyperparameters of  <b><em>a</em></b> add with counterparts in the vector of counts <b><em>k</em></b> from the data, we see the elements of <b><em>a</em></b> playing the same role of pseudocounts as the hyperparameters <i>a</i> and <i>b</i> did in the beta distribution.  Delightful!
         </p>
       </div>
+
+
+
+
+
+
+
+
+
+
       <button class="accordion">On to Dirichlet processes!</button>
       <div class="panel">
-      Coming soon!  For now, you can play with drawing samples from a distribution specified by
-      a sample from a Dirichlet process:
+      <p>
+      The theme of this post is distributions of distributions.  A sample from a Dirichlet process itself <em>almost surely</em>
+      (in the technical sense of that expression) specifies a discrete probability distribution.  However, while a Dirichlet distribution
+      yielded distributions over <i>M</i> outcomes, a Dirichlet process (DP) can yield distributions over infinitely many outcomes.
+      As we did with beta distributions and Dirichlet distributions, we want to break down how we get to this sample
+      that itself specifies a distribution, and then how we generate samples from that distribution. 
+      <!--(Note: A Dirichlet process is a stochastic process, so we should be a little bit careful about our language. I might be on the less careful side here to promote readability, but would refer you to the references below if you want to get into the measure theoretic underpinnings)-->
       </p>
-      <button id="sampleFromDPSample"> Draw </button>
+      <p>
+      A Dirchlet process is specified using two parameters, a positive real number &alpha;, and a probability distribution <i>H</i>.
+      "Whoa," you say, "one of the 'parameters' is a whole probability distribution?"  That's right.  It's called the base distribution.
+      </p>
+      <p>
+      <i>H</i> can be continuous or discrete.  To generate the visualization below, we've used a standard normal distribution for <i>H</i>, but you could just as easily use something else.
+      You get to choose &alpha;, though:</p>
+      
+      <p> &alpha; = 
+      <select id="choose-alpha" height=18px>
+          <option value="0.5">0.5</option>
+          <option value="1.3" selected="selected">1.3</option>
+          <option value="3">3</option>
+      </select>
+    </p>
+      <p id="choose-alpha"></p>
+      </p>
+      <p>One way to conceptualize a draw from a Dirichlet process is as a <em>stick-breaking process</em>. We start with 
+      a stick of length one:
+      </p>
+      <canvas id="empty-stick" height=50px></canvas>
+      </p>
+      <p>Next, we draw a value from <i>H</i>.  We're going to pair that value with some probability mass.  The probability
+        mass comes from a portion of the stick.  What portion of the stick?  A random portion, determined by a draw from
+        a Beta(1, &alpha;) distribution.
+      </p>
+      <button id="break-the-stick">Break the stick</button>
+      <p>Draw from Beta(1, &alpha;): <span class="stick-breaking-draw-1"></span></p>
 
+      <canvas id="stick-after-one-step" height=50px></canvas>
+      <p>
+        Now we draw another value from <i>H</i>.  We pair it with a portion of the probability that is not yet allocated (the portion
+        of the stick that is not yet colored in, above).  What portion of what's left?  A random portion, determined by a draw from
+        a Beta(1, &alpha;) distribution.
+      </p>
+      <button id="break-the-stick-again" >Break the stick again</button>
+      <p>Draw from Beta(1, &alpha;): <span class="stick-breaking-draw-2"></span>. <br> The probability mass that gets associated with the second draw from <i>H</i>
+      is  (1-<span class="stick-breaking-draw-1">(first beta draw)</span>)&times; <span class="stick-breaking-draw-2">(second beta draw)</span> <span id="second-break"></span>.
+    </p>
+      <canvas id="stick-after-two-steps" height=50px></canvas>
+      <p>
+        We continue in this way for infinitely many discrete steps, drawing a value from <i>H</i> and associating it with a certain probability mass.
+        The result is a discrete distribution over our (countably infinite) draws from <i>H</i>.  The support is given by set of draws we made from <i>H</i>,
+        which we'll denote by {<span id="thetaN"></span>}, and the
+        and the probability for each element in the support comes from the corresponding portion of the broken stick, which we will denote {<span id="betaN"></span>}
+        (noting that they sum to one).
+        We can thus represent the result of this procedure, which represents one draw from the Dirichlet process <i>DP(&alpha;,H)</i> with the
+        following mathematical expression:
+      </p>
+
+      <p id="stickBreakingEquation"></p>
+    
+      <p>Here &delta; is the dirac delta.  Because each of the portions of the stick were sampled from Beta(1, &alpha;), we can see
+        that decreasing &alpha; will cause us to allocated chunks of the stick to be larger to begin with.  Thus, we can get a sense for how
+        &alpha; controls the concentration of a draw from the Dirichlet process: smaller values of &alpha; lead to higher concentrations of probability mass on a few elements.
+      </i></p>
+      <p>
+        Incidentally, the distribution over sequences of &beta; generated by this stick breaking procedure, which took parameter &alpha; is called the GEM distribution.
+        The name GEM comes from the initials of the authors Griffiths, Engen, and McCloskey.
+         <!--cite GEM distribution-->
+        </p>
+      <p>
+        During our discussions of the the beta and Dirichlet distributions, we used a sample from the beta or Dirichlet distribution to draw from the 
+        distribution it specified.  We could imagine doing that with the stick breaking process - using the stick breaking 
+        process to tell us the probability given to each of the infinitely many dicrete draws from <i>H</i>, and generating samples 
+        from there.  But, we can actually generate samples the distribution given by a draw from a Dirichlet process
+        <em>without ever specifying</em> what that draw was.  Bypassing an explicit representation of the initial 
+        draw can help us deepen our understandong, and it is also a useful view for a number of computations (e.g. using Gibbs sampling for inference).
+      </p>
+      <p>
+        To begin a metaphor, imagine an empty restaurant.  A person walks in, and sits at a table.  They find out that everyone
+        at that table is to be served a random "dish".  It's not a real dish, but actually just a random draw from the distribution 
+        <i>H</i>.  Yum.
+      </p>
+      <p>
+         More people walk in, one at a time, and settle in at more tables, each of which is associated with its own
+         independently drawn sample from <i>H</i>.  The key is in how each person decides where to sit.  With probability proportional
+         to &alpha;, a person will boldly strike out on their own and choose a new table.  Alternatively, they will choose to 
+         sit at an occupied table with probability proportional to the number of people who are already there
+         (we imagine them reasoning that if other people chose a table, it must be good, so joining an already popular table seems appealing).
+         Normalizing these probabilities properly, the <i>n</i>th person choose a new table (associated with a new draw from <i>H</i>)
+         with a probability of <span id="newTableProbability"></span> and choose an existing table with probability <span id="existingTableProbability"></span>,
+         where <span id=nT></span> is the number of people already at table <i>t</i>.  You'll see this process described as the "Chinese Restaurant Process" in some of the literature.
+      </p><p>
+         Below, we visualize this generation of samples based on a single draw from a DP. The top graph shows <i>H</i>.  We'll mark up the graph of <i>H</i> as we
+         make independent draws from it to associate with each new table.  Below, we see the simulation 
+         of people choosing a table, where each table is associated with an independent draw 
+         from <i>H</i>.  The number of tables will continue to grow, and we can't show all of them, so here we're only picturing the first few. 
+         (Any samples from the base distribution that are marked in gray are from tables that are not shown.)
+        
+        </p>
+      </p>
+      <div><button id="sampleFromDPSample"> Draw from the distribution specified by a realization of a Dirichlet process</button></div>
+      
+      <!--Add ability to start over-->
+      <button id="startOverDP">Start over</button>
+      <p id="normalPDF"> </p>
       <div>
       <canvas id="circle" width="600px" height="150"></canvas>
       </div>
       <div>
       <canvas id="DPhistogram" width="600px" height="300"></canvas>
       </div>
+      <p>
+        It comes up surprisingly often that you might a source of randomly generated discrete probability distributsions over a countably infinte number of components!
+        To touch on the practical utility of Dirichlet processes in modeling, it can be helpful to note the limitations of a Dirichlet distribution.
+        We noted that Dirichlet distributions are useful in specifying priors for, e.g. the weights of different components in a 
+        mixture model, when we know in advance the number of components (<i>M</i>, in the notation above).
+        However, it is very often the case that we do not know in advance how many mixture components we have, and that in fact
+        as we observe more data, we expect to continue to accumulate more components. 
+        For example, suppose we are modeling mixtures of topics in some natural language corpus; we do not know how many topics to expect,
+        and as we see more data, we might need to add more topics to adequately descibe it.  In such a case, a Dirichlet process
+        fits nicely with our intuition that as we observe more data, we may also accumulate more mixture components (tables, in the restaurant metaphor),
+        and the draws from base distribution may be used in parameterizing the components themselves.  So nice!
+      </p>
+      <p>
+        What about conjugacy? Like the beta and Dirichlet distributions, Dirichlet processes also have some nice conjugacy properties. 
+        See, e.g. Yee Whye Teh's excellent <a href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf'>tutorial slides</a> for this and much more.
+      </p>
+      <p>
+        Phew!  That's it on DPs for now.  But in thinking about DPs as priors, we just dipped our toe into Bayesian nonparemetrics - there is a whole world out 
+        there to explore if you want!
+      </p>
     </div>
+    <!--
+    <button class="accordion">But what is a Dirichlet process, really?</button>
+    <div class="panel">
+      <p>
+      Look, it took a real battle against my instincts as a mathematician not to start with the definition. But I'm so glad you asked.
+`
+      </p>
+      <ol>
+        <li><a href="https://projecteuclid.org/euclid.aos/1176342360">A Bayesian Analysis of Some Nonparametric Problems</a></li>
+        <li><a href="https://projecteuclid.org/euclid.aos/1176342871">Mixtures of Dirichlet Processes with Applications to Bayesian Nonparametric Problems</a></li>
+      </ol>
+    </div>
+  -->
     <button class="accordion">In conclusion...</button>
     <div class="panel">
       <p>

@@ -11,6 +11,10 @@ var normalizedBetaPdfEq = "p(x | k) =  \\frac{\\Gamma(a+b+n)}{\\Gamma(a+k)\\Gamm
 var dirichletPdfEq = "p(\\mathbf{x} | \\mathbf{a}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i)}{\\Gamma(\\sum_{i=1}^M a_i )}\\prod_{i=1}^{M}x_i^{a_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
 var normalizedPosteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i+k_i)}{\\Gamma(\\sum_{i=1}^M a_i + k_i )}\\prod_{i=1}^{M}x_i^{a_i +k_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
 var dirichletParameterEq = "\\mathbf{a} = (a_1,...,a_M)";
+var newTableProbabilityEq = "\\frac{\\alpha}{n + \\alpha - 1}";
+var existingTableProbabilityEq = "\\frac{n_t}{n + \\alpha - 1}";
+var stickBreakingEq = "\\sum_{n=1}^\\infty \\beta_n \\delta_{\\theta_n}";
+
 katex.render(betaPDFeq, betaPDFequation, {  throwOnError: false  })
 katex.render(betaMean, betaMeanequation, {  throwOnError: false  })
 katex.render(dirichletPdfEq, dirichletPdfEquation, {  throwOnError: false  })
@@ -22,12 +26,18 @@ katex.render(dirichletParameterEq, dirichletParameterEquation, {  throwOnError: 
 katex.render(multinomialPdfEq, multinomialPdfEquation, {  throwOnError: false  })
 katex.render(posteriorDirichletPdfEq, posteriorDirichletPdfEquation, {  throwOnError: false  })
 katex.render(normalizedPosteriorDirichletPdfEq, normalizedPosteriorDirichletPdfEquation, {  throwOnError: false  })
+katex.render(existingTableProbabilityEq, existingTableProbability, {  throwOnError: false  })
+katex.render(newTableProbabilityEq, newTableProbability, {  throwOnError: false  })
+katex.render("n_t", nT, {  throwOnError: false  })
+katex.render("\\theta_n", thetaN, {throwOnError: false})
+katex.render("\\beta_n", betaN, {throwOnError: false})
+katex.render(stickBreakingEq, stickBreakingEquation, {  throwOnError: false  })
 
 
 var tables=[]; //x, y, color, count, phi
 var binary_samples = [0, 0];
 var categorical_samples = [0, 0, 0, 0];
-var tableColors = ['mediumseagreen','blue','red', 'cornflowerblue','DeepPink','cyan','green','violet'];
+var tableColors = ['mediumseagreen','blue','red', 'cornflowerblue','DeepPink','cyan','green','violet','coral','mediumslateblue','orange','darkslategray'];
 var maxTables = 8;
 var total_draws = 0;
 
@@ -36,22 +46,30 @@ var betaSample;
 var dirichletSample;
 var numDecimals = 3;
 
+var stickparam1;
+var stickparam2;
+
 var histWidth = {};
 var histHeight = {};
 var betaPdfWidth = document.getElementById('betaPDF').offsetWidth;
 
 var betaPdf = plotBetaPdf([4],[2],'#betaPDF');
 plotBetaPdf([5,9],[5,4],'#priorPosteriorBetaPlot');
-
+var normalPdf = plotNormalPdf();
 drawHistogram('DPhistogram');
 drawHistogram('BetaHistogram');
 drawHistogram('DirichletHistogram');
+plotStickBreakingImage([], 'empty-stick');
 
 $('#sampleFromBeta').click( function(){ sampleFromBeta();});
 $('#sampleFromDirichlet').click( function(){ sampleFromDirichlet([3,4,5,1]);});
 $("#sampleFromDPSample").click( function(){ sampleFromDPDraw()});
 $('#sampleFromBetaSample').click( function() {simulateFromBetaDraw()})
 $('#sampleFromDirichletSample').click( function() {sampleFromSampleDirichlet()})
+$('#break-the-stick').click( function() {breakTheStick(alpha_0)});
+$('#break-the-stick-again').click( function() {breakTheStickAgain(alpha_0)});
+$('#choose-alpha').change(function(){ alpha_0 = $(this).val(); console.log(alpha_0);})
+$('#startOverDP').click(function() {startOverDP()} )
 
 function sampleFromDPDraw(){
   var rand = Math.random();
@@ -66,9 +84,25 @@ function sampleFromDPDraw(){
     }
     probSum += (tables[i].numPeople / (total_draws + alpha_0));
   }
+  //in case person picks new table:
+  //tables[tables.length-1].phi = clt_normal();
+  tables.push({"x":0, "y":0, "numPeople":0, "phi":jStat.normal.sample(0,1)});
+  //tables[tables.length-1].phi = jStat.normal.sample(0,1);
   drawTable();
-  tables[tables.length-1].phi = clt_normal();
-    drawPersonAtTable(tables.length-1);
+  drawPersonAtTable(tables.length-1);
+
+  if (tables.length > maxTables){
+    var fillcolor = d3.color('gray');
+  } else {
+    var fillcolor = d3.color(tableColors[tables.length-1]);
+  }
+  normalPdf.plot.selectAll(".dot").data(tables)
+  .enter().append("circle")
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", function(d, i) { return normalPdf.xScale(d.phi)})
+    .attr("cy", function(d) { return normalPdf.yScale(0) })
+    .attr("r", 5)
+    .style("fill", fillcolor);
   return;
 }
 
@@ -99,32 +133,35 @@ function drawPersonAtTable(tableIndex){
 
 function drawTable(){
   var canvas = document.getElementById('circle');
+  if (tables.length == 1){
+    canvas.width = (document.getElementsByClassName('blogdate')[0]).offsetWidth;
+  }
   var padding = 10;
   if (canvas.getContext) {
     var ctx = canvas.getContext('2d');
-    var X = (canvas.width / maxTables + padding) * (tables.length + 0.5);
+    var X = (canvas.width / (maxTables+1) + padding) * (tables.length - 0.5);
     var Y = canvas.height / 2;
-    tables.push({"x":X, "y":Y,"numPeople":0});
     var R = 30;
+    tables[tables.length -1 ].x = X;
+    tables[tables.length -1 ].y = Y;
     ctx.beginPath();
     ctx.arc(X, Y, R, 0, 2 * Math.PI, false);
     ctx.lineWidth = 3;
     ctx.strokeStyle = '#000000';
     ctx.stroke();
+    ctx.lineWidth=1;
+    ctx.strokeStyle = tableColors[tables.length-1];
+    ctx.fillStyle = tableColors[tables.length-1];
+    ctx.strokeText((tables[tables.length-1].phi).toFixed(numDecimals), X-15, Y+2);
   }
 }
 
-function clt_normal(){
-  var sum = 0;
-  var i_max = 10000;
-  for (var i = 0; i < i_max; i++){
-    sum += Math.random();
-  }
-  return sum / Math.sqrt(i_max) - 49.5;
-}
 
 function drawHistogram(histogramIdString){
   var canvas = document.getElementById(histogramIdString);
+  canvas.width = (document.getElementsByClassName('blogdate')[0]).offsetWidth;
+  maxTables = Math.min(Math.floor(canvas.width / 90 )-1, 12);
+  console.log(maxTables);
   var padding = 10;
   if (canvas.getContext)
   {
@@ -181,7 +218,7 @@ function plotBetaPdf(a_arr, b_arr, elementId){
   var a = a_arr[0];
   var b = b_arr[0];
   betaPdfWidth = (document.getElementsByClassName('blogdate')[0]).offsetWidth;
-  console.log(betaPdfWidth)
+
   var margin = {top: 20, right: 30, bottom: 20, left: 30};
   var width = betaPdfWidth - margin.left - margin.right;
   var height = 200;
@@ -246,6 +283,7 @@ function plotStickBreakingImage(prob_array, element_id){
   var width = betaPdfWidth - margin.left - margin.right;
   var canvas = document.getElementById(element_id);
   canvas.width = betaPdfWidth; //resize the canvas to make sure the stick fits
+  canvas.height = 50;
   var stickLength = width;
   var stickHeight = 10;
   var leftOffset = margin.left;
@@ -349,15 +387,19 @@ function simulateFromBetaDraw() {
     addToHistogram(sample, 'BetaHistogram');
 }
 
-
-
-function sampleFromDP(){
-
+function breakTheStick(alpha){
+    stickparam1 = jStat.beta.sample(1,alpha);
+    $('.stick-breaking-draw-1').text(stickparam1.toFixed(numDecimals));
+    plotStickBreakingImage([stickparam1],"stick-after-one-step");
 }
 
-function simulateFromSampleDP(){
-
+function breakTheStickAgain(alpha){
+  stickparam2 = jStat.beta.sample(1,alpha);
+  $('.stick-breaking-draw-2').text(stickparam2.toFixed(numDecimals))
+  $('#second-break').text(' = ' + ((1-stickparam1)*stickparam2).toFixed(numDecimals))
+  plotStickBreakingImage([stickparam1, (1-stickparam1)*stickparam2],"stick-after-two-steps");
 }
+
 
 //https://stackoverflow.com/questions/8877249/generate-random-integers-with-probabilities
 function getRandomIndexByProbability(probabilities) {
@@ -372,4 +414,68 @@ function getRandomIndexByProbability(probabilities) {
                        r -= probability;
                        });
     return index;
+}
+
+
+function plotNormalPdf(){
+  betaPdfWidth = (document.getElementsByClassName('blogdate')[0]).offsetWidth;
+
+  var margin = {top: 20, right: 30, bottom: 20, left: 30};
+  var width = betaPdfWidth - margin.left - margin.right;
+  var height = 100;
+  var n = 100;
+  // The number of datapoints
+
+  var xScale = d3.scaleLinear()
+      .domain([-3, 3]) // input
+      .range([0, width]); //output
+
+  var yScale = d3.scaleLinear()
+      .domain([0, .4]) // input
+      .range([height, 0]); // output
+
+  //d3's line generator
+  var line = d3.line()
+      .x(function(d) { return xScale(d.x); }) // set the x values for the line generator
+      .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
+      .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+  var dataset = d3.range(-3,3,0.1).map(function(d) { return {"x":d ,"y": jStat.normal.pdf(d, 0, 1 ) } });
+ 
+  // Add the SVG to the page and employ
+  var svg = d3.select('#normalPDF').append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // Call the x axis in a group tag
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+  //  Call the y axis in a group tag
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+  // Append the path, bind the data, and call the line generator
+    svg.append("path")
+        .datum(dataset) // 10. Binds data to the line
+       .attr("class", "line") // Assign a class for styling
+        .attr("d", line); // 11. Calls the line generator
+
+    return {'plot': svg, 'xScale': xScale, 'yScale': yScale};
+}
+
+function startOverDP(){
+  console.log('starting over');
+  var canvas = document.getElementById('circle');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  tables = [];
+  var svg = d3.select('#normalPDF');
+  svg.selectAll("*").remove();
+  normalPdf = plotNormalPdf();
+  drawHistogram('DPhistogram');
 }

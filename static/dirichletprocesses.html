@@ -26,7 +26,7 @@
     </header>
     <main>
       <div class=blogpost>
-      <h3 class="blogdate">September 28, 2019 </h3>
+      <h3 class="blogdate">December 4, 2019 </h3>
       <span class="blogtopic" class="include-in-wordcloud"> Beta distributions, Dirichlet distributions and Dirichlet processes </span>
       <p>
         Today I am writing about some of my <em> favorite </em> distributions: the beta distribution,
@@ -55,7 +55,7 @@
       <p>
         The probability distribution of a beta distribution is as follows:
       </p>
-          <p id="betaPDFequation"> </p>
+          <p id="betaPDFequation" class="centered-equation"> </p>
 
           <p> The beta distribution has support on the interval from 0 to 1, meaning a draw from a beta distribution will be a real number between 0 and 1.  The parameters
             <i>a</i> and <i>b</i> control the shape of the distribution.  The mean of a beta distribution
@@ -113,18 +113,18 @@
           We flip the coin <i>n</i> times and see <i>k</i> heads, remembering that the probability for success on
           any given flip is our unknown <i>x</i>.  The probability of seeing <i>k</i> heads comes from the binomial distribution and is:
         </p>
-        <p id="binomialPdfEquation"> </p>
+        <p id="binomialPdfEquation" class="centered-equation"> </p>
         This probability of seeing certain data (here, the data is that we saw <i>k</i> successes in <i>n</i> trials) given the assumptions of our model is the <em>likelihood</em>.
         Bayes' rule tells us that the posterior distribution for <i>x</i> should be proportional to the product of the likelihood and the prior.
         That is:
-        <p id="bayesRuleExampleEquation"> </p>
+        <p id="bayesRuleExampleEquation" class="centered-equation"> </p>
 
         Multiplying the binomial expression for likelihood with the beta prior for <i>x</i>, we obtain:
 
-        <p id="posteriorBetaPdfEquation"> </p>
+        <p id="posteriorBetaPdfEquation" class="centered-equation"> </p>
 
         If we include the normalization constant, we have as the posterior distribution for <i>x</i>:
-        <p id="normalizedBetaPdfEquation"> </p>
+        <p id="normalizedBetaPdfEquation" class="centered-equation"> </p>
       </div>
 
       <button class="accordion">Is that conjugacy?  And how do I interpret the hyperparameters (a,b)?</button>
@@ -187,7 +187,7 @@
       </p>
       <p> The probability density function for a Dirichlet distribution is a follows:
       </p>
-      <p id='dirichletPdfEquation'> </p>
+      <p id='dirichletPdfEquation' class="centered-equation"> </p>
       <p>
         Here are some illustrations of Dirichlet probability distributions for <i>M = 3</i>.  (Higher values of M get difficult to visualize on a screen!)
       </p>
@@ -214,13 +214,13 @@
         by the <i>M</i>-dimensional vector <b><em>k</em></b>, where each element of
         <b><em>k</em></b> is a whole number that gives the number of appearances of the corresponding outcomes in the <i>n</i> trials (so that the sum of all elements in <b><em>k</em></b> is <i>n</i>).  The probability of observing <b><em>k</em></b>
         follows a multinomial distribution (which generalizes the binomial distribution):
-        <p id="multinomialPdfEquation"> </p>
+        <p id="multinomialPdfEquation" class="centered-equation"> </p>
         If we set a Dirichlet prior over the vector of probabilities <b><em>x</em></b>, and then combine it with some vector <b><em>k</em></b> representing data about the outcomes of <i>n</i> trials, we can multiply the two to get the following posterior distribution:
         </p>
         
-        <p id='posteriorDirichletPdfEquation'></p>
+        <p id='posteriorDirichletPdfEquation' class="centered-equation"></p>
         <p> Including the constant of normalization, we have: </p>
-        <p id='normalizedPosteriorDirichletPdfEquation'></p>
+        <p id='normalizedPosteriorDirichletPdfEquation' class="centered-equation"></p>
         <p>
         So the posterior distribution is a Dirichlet distribution, just like the prior - we have conjugacy. Moreover, if we look at how the hyperparameters of  <b><em>a</em></b> add with counterparts in the vector of counts <b><em>k</em></b> from the data, we see the elements of <b><em>a</em></b> playing the same role of pseudocounts as the hyperparameters <i>a</i> and <i>b</i> did in the beta distribution.  Delightful!
         </p>
@@ -294,10 +294,10 @@
         following mathematical expression:
       </p>
 
-      <p id="stickBreakingEquation"></p>
+      <p id="stickBreakingEquation" class="centered-equation"></p>
     
       <p>Here &delta; is the dirac delta.  Because each of the portions of the stick were sampled from Beta(1, &alpha;), we can see
-        that decreasing &alpha; will cause us to allocated chunks of the stick to be larger to begin with.  Thus, we can get a sense for how
+        that decreasing &alpha; will cause us to allocate larger chunks of the stick to begin with.  Thus, we can get a sense for how
         &alpha; controls the concentration of a draw from the Dirichlet process: smaller values of &alpha; lead to higher concentrations of probability mass on a few elements.
       </i></p>
       <p>
@@ -311,7 +311,7 @@
         process to tell us the probability given to each of the infinitely many dicrete draws from <i>H</i>, and generating samples 
         from there.  But, we can actually generate samples the distribution given by a draw from a Dirichlet process
         <em>without ever specifying</em> what that draw was.  Bypassing an explicit representation of the initial 
-        draw can help us deepen our understandong, and it is also a useful view for a number of computations (e.g. using Gibbs sampling for inference).
+        draw can help us deepen our understanding, and it is also a useful view for a number of computations (e.g. using Gibbs sampling for inference).
       </p>
       <p>
         To begin a metaphor, imagine an empty restaurant.  A person walks in, and sits at a table.  They find out that everyone
@@ -347,24 +347,30 @@
       <canvas id="DPhistogram" width="600px" height="200"></canvas>
       </div>
       <p>
-        When might you use a DP?
-        To touch on the practical utility of Dirichlet processes in modeling, it can be helpful to note the limitations of a Dirichlet distribution.
-        We noted that Dirichlet distributions are useful in specifying priors for, e.g. the weights of different components in a 
-        mixture model, when we know in advance the number of components (<i>M</i>, in the notation above).
-        However, it is very often the case that we do not know in advance how many mixture components we have, and that in fact
-        as we observe more data, we expect to continue to accumulate more components. 
-        For example, suppose we are modeling mixtures of topics in some natural language corpus; we do not know how many topics to expect,
-        and as we see more data, we might need to add more topics to adequately descibe it.  Or, perhaps we are looking for subtypes of a disease
-        based on clusters in the disease characteristics, but we do not know how many subtypes there might be.  In such cases, a Dirichlet process
-        fits nicely with our intuition that as we observe more data, we may also accumulate more mixture components (tables, in the restaurant metaphor),
-        and the draws from base distribution may be used in parameterizing the components themselves.  It's a handy tool to have at your disposal!
-      </p>
-      <p>
         What about conjugacy? Like the beta and Dirichlet distributions, Dirichlet processes also have some nice conjugacy properties. 
-        See, e.g. Yee Whye Teh's excellent <b><a href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf'>tutorial slides</a></b> for this and much more.
+        In particular, if <i>G ~ DP(&alpha;, H)</i>, and we have a set of observations <span id="xN"></span></span><i> ~ G</i> (i.i.d.), then 
+        the postierior distribution for <i>G</i> is also a Dirichlet process:
+        <p id="DPConjugacyDirect"></p>
+        We can see that each observation updates the base distribution with additional probability mass according to the observation, in the same way
+        that we updated the psuedocount parameters of beta and Dirichlet distributions by adding in counts of observations.
+        <p> One can futher derive the predictive distribution, which should remind us of the table selection process above:</p>
+        <p id="DPConjugacy"></p>
       </p>
       <p>
-        Phew!  That's it on DPs for now.  But in thinking about DPs as priors, we just dipped our toe into Bayesian nonparemetrics - there is a whole world out 
+          When might you use a DP?
+          To touch on the practical utility of Dirichlet processes in modeling, it can be helpful to note the limitations of a Dirichlet distribution.
+          We noted that Dirichlet distributions are useful in specifying priors for, e.g. the weights of different components in a 
+          mixture model, when we know in advance the number of components (<i>M</i>, in the notation above).
+          However, it is very often the case that we do not know in advance how many mixture components we have, and that in fact
+          as we observe more data, we expect to continue to accumulate more components. 
+          For example, suppose we are modeling mixtures of topics in some natural language corpus; we do not know how many topics to expect,
+          and as we see more data, we might need to add more topics to adequately descibe it.  Or, perhaps we are looking for subtypes of a disease
+          based on clusters in the disease characteristics, but we do not know how many subtypes there might be.  In such cases, a Dirichlet process may
+          fit nicely with our intuition that as we observe more data, we may also accumulate more mixture components (tables, in the restaurant metaphor),
+          and the draws from base distribution may be used in parameterizing the components themselves.  It's a handy tool to have at your disposal!
+        </p>
+      <p>
+        Phew!  That's it on DPs for now.  But in thinking about DPs as priors, we just dipped our toe into Bayesian nonparametrics - there is a whole world out 
         there to explore if you want!
       </p>
     </div>
@@ -382,17 +388,29 @@
         of the Dirichlet process was proven in <b><a href="https://projecteuclid.org/euclid.aos/1176342360">[Ferguson, 1973]</a></b>.
       </p>
       <p>
-        Another foundational paper in the realm of DPs is <b><a href="https://projecteuclid.org/euclid.aos/1176342360">[Antoniak, 1974]</a></b>, which explored theory 
-        and applications of mixtures of Dirichlet processes.
-      </p>
+          The explicit connection to the Dirichlet distribution given by the definition can help us better understand how both the stick-breaking 
+          process and the Chinese restaurant process represent a Dirichlet process.  A full proof is beyond the scope of this post, but to point
+          to some rough intuition, we note that the relationship to the Dirichlet distribution can be used to derive the conjugacy relations and predictive distribution
+          in the previous section, which gives rise to the table-choosing proportions of the restaurant process.
+          For the stick-breaking construction, note that since a Dirichlet process corresponds to a Dirichlet distribution over any finite partition of <i>X</i>,
+          then if we partition <i>X</i> into, say, the set containing our first draw from <i>H</i> and its complement, that should follow a Dirichlet
+          distribution with <i>M=2</i>, i.e. a beta distribution.  For rigor and a deeper understanding, we refer the reader to  <b><a href="http://www3.stat.sinica.edu.tw/statistica/oldpdf/A4n216.pdf">[Sethuraman 1994]</a></b>,
+          which establishes the stick-breaking construction of a beta process, <b><a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1176342372">[Blackwell and MacQueen, 1973]</a></b>,
+          which presents a Polya urn scheme closely related to the Chinese Restaurant process, and the exposition in Yee Why Teh's excellent <b><a href="href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf">[Tutorial]</a></b>.
+        </p>
+        <p>
+            Another foundational paper in the realm of DPs is <b><a href="https://projecteuclid.org/euclid.aos/1176342360">[Antoniak, 1974]</a></b>, which explored theory 
+            and applications of mixtures of Dirichlet processes.
+          </p>
       <p>
-        For a somewhat more recent exposition about Dirichlet processes, see, for example <b><a href="https://www.stat.berkeley.edu/~aldous/206-Exch/Papers/hierarchical_dirichlet.pdf">[Teh et al., 2006]</a></b>  This article introduces
-        hierarchical Dirichlet process, which will be the topic of an upcoming blogpost, but even if you only want to know about DPs without 
-        hierarchical structure, the clear exposition here is great resource.
+        For a somewhat more recent exposition about Dirichlet processes, see, for example <b><a href="https://www.stat.berkeley.edu/~aldous/206-Exch/Papers/hierarchical_dirichlet.pdf">[Teh et al., 2006]</a></b>.  This paper introduces
+        hierarchical Dirichlet process, which will be the topic of an upcoming blogpost.
       </p>
       <ol>
         <li class="reflist"><a href="https://projecteuclid.org/euclid.aos/1176342871">Antoniak, Charles E. "Mixtures of Dirichlet processes with applications to Bayesian nonparametric problems." The annals of statistics (1974): 1152-1174.</a></li>
+        <li class="reflist"><a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1176342372">Blackwell, David, and James B. MacQueen. "Ferguson distributions via Pólya urn schemes." The annals of statistics 1.2 (1973): 353-355.</a></li>
         <li class="reflist"><a href="https://projecteuclid.org/euclid.aos/1176342360">Ferguson, Thomas S. "A Bayesian analysis of some nonparametric problems." The annals of statistics (1973): 209-230.</a></li>  
+        <li class="reflist"><a href="http://www3.stat.sinica.edu.tw/statistica/oldpdf/A4n216.pdf">Sethuraman, Jayaram. "A constructive definition of Dirichlet priors." Statistica sinica (1994): 639-650.</a> </li>
         <li class="reflist"><a href="https://www.stat.berkeley.edu/~aldous/206-Exch/Papers/hierarchical_dirichlet.pdf">Teh, Yee W., et al. "Hierarchical Dirichlet processes."  Journal of the American Statistical Association (2006): 1566-1581</a></li>
         <li class="reflist"><a href="href='https://www.stats.ox.ac.uk/~teh/teaching/npbayes/mlss2007.pdf">Teh, Yee W., Dirichlet Processes: Tutorial and Practical Course (2007)</a></li>
       </ol>
@@ -400,10 +418,10 @@
     <button class="accordion">In conclusion...</button>
     <div class="panel">
       <p>
-      These distributions are cool in their own right, and I've often
+      These distributions are cool in their own right, and I've
       found them useful in applied Bayesian modeling.  The interpretation of the
       hyperparameters in terms of pseudocounts has a lovely logic to it. I know I found this interpretation soothingly concrete
-      when I was getting started with Bayesian modeling, back when choosing hyperparameters seemed quite mysterious (sometimes it still does, TBH!).  I hope you
+      when I was getting started with Bayesian modeling, back when choosing hyperparameters seemed quite mysterious.  I hope you
       find some elegant and useful applications of these distributions too.
       </p>
       <p>

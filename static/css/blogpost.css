@@ -62,3 +62,7 @@ button {
   visibility: hidden;
 }
 
+.centered-equation {
+  text-align: left;
+  margin: 10px auto;
+}

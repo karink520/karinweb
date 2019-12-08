@@ -33,8 +33,11 @@ katex.render("\\theta_n", thetaN, {throwOnError: false})
 katex.render("\\beta_n", betaN, {throwOnError: false})
 katex.render(stickBreakingEq, stickBreakingEquation, {  throwOnError: false  })
 katex.render( "(A_1,...,A_k)",setlist, {  throwOnError: false  });
+katex.render( "(x_1,...,x_n)",xN, {  throwOnError: false  });
 katex.render("(G(A_1),...,G(A_k))", setlist2, {  throwOnError: false  });
 katex.render("(\\alpha H(A_1),...,\\alpha H(A_k))", setlist3, {  throwOnError: false  });
+katex.render("G | x_1,...x_n \\sim DP(\\alpha, \\frac{1}{\\alpha}\\sum_{i=1}^n \\delta_{x_i} + H).", DPConjugacyDirect, {throwOnError: false});
+katex.render("x_{n} | x_1,...x_{n-1} \\sim \\frac{\\sum_{i=1}^n \\delta_{x_i}}{\\alpha + n - 1} + \\frac{\\alpha}{\\alpha+n - 1} H.", DPConjugacy, {throwOnError: false});
 
 var tables=[]; //x, y, color, count, phi
 var binary_samples = [0, 0];

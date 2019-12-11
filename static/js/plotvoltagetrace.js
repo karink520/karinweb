@@ -27,9 +27,11 @@ function plotVoltageTrace(dataset) {
 
   // 1. Add the SVG to the page and employ #2
   d3.select("svg").remove();
-  var svg = d3.select("#plotpane").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+  var svg = d3.select("#plotpane")
+    .append("svg")
+        // Class to make it responsive.
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

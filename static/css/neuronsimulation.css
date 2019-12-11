@@ -41,12 +41,12 @@
   background-color: #b1d97c;
 }
 
-
 #plotpane {
-  float:right;
+  float: right;
   background-color:#90ca44;
   width: 60%;
   display: inline-block;
+  overflow: hidden;
 }
 
 #modeladjustmentpane {
@@ -62,6 +62,7 @@
 footer {
   clear: both;
 }
+
 
 /*Slider CSS from w3schools*/
 

@@ -8,12 +8,13 @@ var aDisplay = "a";
 var bDisplay = "b";
 var bayesRuleExample = "p(x | k) \\propto p(k | x) p(x)";
 var normalizedBetaPdfEq = "p(x | k) =  \\frac{\\Gamma(a+b+n)}{\\Gamma(a+k)\\Gamma(b+n-k)}x^{(a + k) - 1}(1-x)^{(b +n-k) - 1},\\, x \\in[0,1]";
-var dirichletPdfEq = "p(\\mathbf{x} | \\mathbf{a}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i)}{\\Gamma(\\sum_{i=1}^M a_i )}\\prod_{i=1}^{M}x_i^{a_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
-var normalizedPosteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) = \\frac{\\prod_{i=1}^{M}\\Gamma(a_i+k_i)}{\\Gamma(\\sum_{i=1}^M a_i + k_i )}\\prod_{i=1}^{M}x_i^{a_i +k_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
+var dirichletPdfEq = "p(\\mathbf{x} | \\mathbf{a}) = \\frac{\\Gamma(\\sum_{i=1}^M a_i )}{\\prod_{i=1}^{M}\\Gamma(a_i) }\\prod_{i=1}^{M}x_i^{a_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
+var normalizedPosteriorDirichletPdfEq = "p(\\mathbf{x} | \\mathbf{k}) = \\frac{\\Gamma(\\sum_{i=1}^M a_i + k_i )}{ \\prod_{i=1}^{M}\\Gamma(a_i+k_i) }\\prod_{i=1}^{M}x_i^{a_i +k_i - 1}, \\,  \\text{where }  \\, \\sum_{i=1}^M x_i = 1";
 var dirichletParameterEq = "\\mathbf{a} = (a_1,...,a_M)";
 var newTableProbabilityEq = "\\frac{\\alpha}{n + \\alpha - 1}";
 var existingTableProbabilityEq = "\\frac{n_t}{n + \\alpha - 1}";
 var stickBreakingEq = "\\sum_{n=1}^\\infty \\beta_n \\delta_{\\theta_n}";
+
 
 katex.render(betaPDFeq, betaPDFequation, {  throwOnError: false  })
 katex.render(betaMean, betaMeanequation, {  throwOnError: false  })

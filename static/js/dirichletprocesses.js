@@ -104,7 +104,7 @@ function sampleFromDPDraw(){
   .enter().append("circle")
     .attr("class", "dot") // Assign a class for styling
     .attr("cx", function(d) { return normalPdf.xScale(d.phi)})
-    .attr("cy", function(d) { return normalPdf.yScale(0) })
+    .attr("cy", function() { return normalPdf.yScale(0) })
     .attr("r", 5)
     .style("fill", fillcolor);
   return;
@@ -444,7 +444,7 @@ function plotNormalPdf(){
       .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
       .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-  var dataset = d3.range(-3,3,0.1).map(function(d) { return {"x":d ,"y": jStat.normal.pdf(d, 0, 1 ) } });
+  var dataset = d3.range(-3,3.1,0.1).map(function(d) { return {"x":d ,"y": jStat.normal.pdf(d, 0, 1 ) } });
  
   // Add the SVG to the page and employ
   var svg = d3.select('#normalPDF').append("svg")

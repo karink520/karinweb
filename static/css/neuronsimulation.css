@@ -4,21 +4,28 @@
   height:220px;
 }
 
+#modelselectionpane, #modeladjustmentpane {
+  margin-left: 2%;
+}
+
+#plotpane, #modelpane {
+  margin-right: 2%;
+}
+
 #modelselectionpane {
-  float: left;
-  width: 30%;
+  width: 95%;
   background-color: #fff9bc;
   display: inline-block;
   padding-right: 5%;
 }
 
 #modeladjustmentpane {
-    width: 30%;
+    width: 95%;
     display: inline-block;
 }
 
 #modelpane {
-  width: 60%;
+  width: 95%;
   display: inline-block;
 }
 
@@ -31,10 +38,8 @@
   display: block;
   font-size: .8em;
   padding: 2%;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-  margin-left:1.5em;
-  border-radius: 5px;
+  margin: 1.5em auto;
+  width: 80%;
 }
 
 #modelselectionpane button:hover {
@@ -42,9 +47,8 @@
 }
 
 #plotpane {
-  float: right;
   background-color:#90ca44;
-  width: 60%;
+  width: 95%;
   display: inline-block;
   overflow: hidden;
 }
@@ -127,4 +131,33 @@ footer {
   .focus circle {
   fill: none;
   stroke: steelblue;
+}
+
+@media screen and (min-width: 650px) {
+   #modelpane {
+     width: 60%;
+   }
+
+   #plotpane {
+    float: right;
+     width: 60%;
+   }
+
+   #modeladjustmentpane {
+     width:30%;
+   }
+
+   #modelselectionpane{
+     width: 30%;
+     float: left;
+   }
+
+   #modelselectionpane button {
+     width: 90%;
+     margin-top: 1.5em;
+     margin-bottom: 1.5em;
+     margin-left:1.5em;
+     border-radius: 5px;
+   }
+   
 }

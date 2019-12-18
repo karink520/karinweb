@@ -1,7 +1,9 @@
 function plotVoltageTrace(dataset) {
+    var widthOfContainer = document.getElementById('plotpane').offsetWidth;
+    console.log(widthOfContainer);
 // 2. Use the margin convention practice
   var margin = {top: 20, right: 30, bottom: 40, left: 50}
-    , width = window.innerWidth * 0.5 - margin.left - margin.right// Use the window's width
+    , width = widthOfContainer - margin.left - margin.right// Use the window's width
     , height = 150; // Use the window's height
 
   // The number of datapoints

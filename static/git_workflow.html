@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/code-annotation.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+   </head>
+  <body>
+    <header>
+        <div></div>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate"></h3>
+            <span class="blogtopic"> A git workflow </span>
+            <p> Hover over different portions of the code for more information.</p>
+            <ol>
+                <li>
+                    <h4>Make sure your local respository is up to date with the remote repository.</h4>
+                    <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                    <p></p>
+                </li>
+                <li>
+                    <h4>Create a branch for your changes.</h4>
+                    <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover bflag'>-b</span>  <span class='highlight-on-hover mybranchname'>mybranchname</span> </code></div>
+                </li>
+                <li>
+                    <h4>Edit and make changes to the code in your repository.</h4>
+                </li>
+                <li>
+                    <h4> Commit changes.</h4>
+                    <div><code><span class='highlight-on-hover git-status'>git status</span></code></div>
+                    <div><code><span class='highlight-on-hover git-add'>git add</span> &lt;filename&gt; </code></div>
+                    <div><code><span class='highlight-on-hover git-commit'>git commit</span> <span class='highlight-on-hover mflag'>-m</span> <span class='highlight-on-hover commit-message'>"a short note about the changes you made"</span></code></div>
+                </li>
+                <li>
+                    <h4>Make and commit more changes, repeating step 4 and 5, as desired.</h4>
+                </li>
+                <li>
+                    <h4>Get any changes from the master branch in the remote repository that were made while you were working.</h4>
+                    <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                </li>
+                <li>
+                    <h4>Resolve any conflicts that occurred during the merge.</h4>
+                </li>
+                <li>
+                    <h4>Push your changes back to the remote repository.</h4>
+                    <div><code><span class='highlight-on-hover git-push'>git push</span> <span class='highlight-on-hover origin'>origin</span> <span class='highlight-on-hover mybranchname'>mybranchname</span></code></div>
+                </li>
+                <li>
+                    <h4>Make a pull request on GitHub.</h4>
+                    <img width="80%" src="img/github_pull_request.png">
+                </li>
+                <li>
+                    <h4>Make sure your code passes all quality control checks that you've included on github.</h4>
+                </li>
+                <li>
+                    <h4>Wait for another member of your team goes to GitHub and approves merging your changes back into the master branch.</h4>
+                </li>
+            </ol>
+            <p>More information:</p>
+            <p>Atlassian's <b><a href="https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet">Git cheat sheet</a></b> and <b><a href="https://www.atlassian.com/git/tutorials">Tutorials</a></b>, including their <b><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow">Feature Branch Workflow tutorial</a></b> are excellent.</p>
+        </p>
+        </div>         
+
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   <script src="js/blogpost.js"></script>
+   <script src='js/git-workflow.js'></script>
+   </body>
+</html>

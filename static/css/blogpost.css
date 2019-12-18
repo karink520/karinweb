@@ -66,3 +66,71 @@ button {
   text-align: left;
   margin: 10px auto;
 }
+
+table {
+  font-size: .9rem;
+  width: 100%;
+  margin: 0 auto;
+  border: 0px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-radius: 0;
+}
+
+
+.name {
+    font-weight:bold;
+    display: inline;
+}
+
+th {
+  background: linear-gradient(#D0FF93, #95C35A);
+  border-top: solid 1px #95C35A;
+  border: solid 1px #95C35A;
+  height: 30px;
+  text-shadow: 1px 1px #BBBBBB;
+  padding: 0% 1%;
+  text-align: center;
+}
+
+td {
+  border-left: solid 1px #95C35A;
+  border-right: solid 1px #95C35A;
+  border-top: 0;
+  border-bottom: 0;
+  vertical-align: top;
+  text-align: center;
+  /*border-collapse:collapse;*/
+  margin: 0;
+  height: 1.5em;
+}
+
+
+td:first-child{
+  border-right: solid 2px #95C35A;
+}
+
+td:last-child{
+  border-left:solid 2px #95C35A;
+}
+
+table:last-child td{
+  /*border-bottom:solid 2px #95C35A;*/
+}
+
+td p:nth-child(2) {
+  margin-left: 3%;
+}
+
+table:nth-child(even) tr{
+  background-color: #ffffff;
+}
+
+th:first-child {
+  border-left: solid 2px #95C35A;
+}
+
+tr {
+  background-color: #ffffff;
+  border: 0;
+}

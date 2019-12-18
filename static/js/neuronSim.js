@@ -20,6 +20,9 @@ $('button').on('click', function(){
   setModelAdjustmentPane(selectedEquation);
   plotVoltageTrace(calculatevoltagetrace(cellParameters))
 });
+$( window ).resize(function() {
+  plotVoltageTrace(calculatevoltagetrace(cellParameters));
+});
 
 function setEquationText(selectedEquation){
     if (selectedEquation == "lif") {

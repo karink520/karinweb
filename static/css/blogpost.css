@@ -37,6 +37,17 @@ button {
   background-color: #ddd;
 }
 
+.alternative-accordion,  .active-alternative-accordion:hover{
+  background-color: white;
+  font-weight: bold;
+  border: 2px solid lightgray;
+}
+
+.alternative-accordion:hover, .active-alternative-accordion{
+  background-color :#74a8306c;
+  font-weight: bold;
+}
+
 .panel {
   display: none;
   background-color: white;

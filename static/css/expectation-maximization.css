@@ -1,0 +1,9 @@
+#optimization-vs-sampling-table {
+    width: 90%;
+}
+
+@media screen and (min-width: 650px) {
+    #optimization-vs-sampling-table {
+        width: 70%;
+    }    
+}

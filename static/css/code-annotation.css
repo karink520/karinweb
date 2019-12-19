@@ -3,25 +3,31 @@ code {
     background-color: lightgray;
     padding: 20px;
     margin: 5px 5px;
-    clear: both;
 }
+
 
 code .highlight-on-hover:hover{
     background-color:yellow;
+}
+
+.ui-helper-hidden-accessible{
+    visibility: hidden;
+    display: none;
 }
 
 .ui-tooltip, .arrow:after {
     background:white;
     border: 2px solid white;
   }
-  .ui-tooltip {
+.ui-tooltip {
     padding: 10px 20px;
     color: black;
     border-radius: 20px;
     font: bold 14px;
     box-shadow: 0 0 7px black;
+    max-width: 600px;
   }
-  .arrow {
+.arrow {
     width: 70px;
     height: 16px;
     overflow: hidden;
@@ -54,7 +60,7 @@ code .highlight-on-hover:hover{
     top: auto;
   }
 
- p a{
+ p a, p a:visited{
       color: #74a830;
   }
   p a:visited{

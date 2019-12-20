@@ -2,7 +2,7 @@ var bFlagExplanation = "-b is a flag that makes git construct a new branch.  Omi
 var mFlagExplanation = "-m is a flag for attaching a message to your commit.  Always include a message.";
 var uFlagExplanation = "-u is a flag that adds the branch as a remote tracking branch, so that the remote repository has \
 a branch connected with your branch.  This is called setting the upstream remote branch. You only need to use `-u` once, and the association will be set up for future uses of `git push` and `git pull` without parameters."
-var masterExplanation = "master is the name of a branch.  We assume that it is the branch that contains the best and most stable version of the code. \
+var masterExplanation = "`master` is the name of a branch.  We assume that it is the branch that contains the best and most stable version of the code. \
 We want to avoid changing the master branch until we have something worthwhile to add, which is why we check out a separate branch to work on, and combine that work back in later. \
 Master is the default name, but you might have changed the name of this special branch to something else.";
 var originExplanation = "`origin` is the short name for the remote repository.  \

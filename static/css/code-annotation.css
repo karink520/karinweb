@@ -8,6 +8,9 @@ code {
 
 code .highlight-on-hover:hover{
     background-color:yellow;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    cursor: help;
 }
 
 .ui-helper-hidden-accessible{

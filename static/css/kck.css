@@ -130,6 +130,11 @@ li {
   font-size: 1.5em;
 }
 
+#twitter-icon{
+  text-align: center;
+  color:#3037ff;
+  font-size:1.6em;
+}
 
 @media screen and (min-width: 650px) {
 

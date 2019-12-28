@@ -47,7 +47,7 @@
                 <li>
                     <h4> Commit changes.</h4>
                     <div><code><span class='highlight-on-hover git-status'>git status</span></code></div>
-                    <div><code><span class='highlight-on-hover git-add'>git add</span> &lt;filename&gt; </code></div>
+                    <div><code><span class='highlight-on-hover git-add'>git add</span> <span class='highlight-on-hover add-filename'>&lt;filename&gt;</span> </code></div>
                     <div><code><span class='highlight-on-hover git-commit'>git commit</span> <span class='highlight-on-hover mflag'>-m</span> <span class='highlight-on-hover commit-message'>"a short note about the changes you made"</span></code></div>
                 </li>
                 <li>
@@ -73,7 +73,12 @@
                     <h4>Make sure your code passes all quality control checks that you've included on GitHub.</h4>
                 </li>
                 <li>
-                    <h4>Wait for another member of your team to go to GitHub, review your changes, and approve merging them into the master branch.</h4>
+                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
+                </li>
+                <li>
+                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to master delete the old branch locally. </h4>
+                        <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                        <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
                 </li>
             </ol>
             <p>More information:</p>
@@ -90,7 +95,7 @@
                 <div class="panel">
                     <p>Perhaps you were so excited to start editing that you forgot to get any new updates from the remote repository before you started, and you forgot to
                         check out a branch or fetch and merge.  That is, you skipped steps 1 and 2 above, and moved straight to step 3, editing your 
-                        code. To recover from this mistake, you can insert the following steps before you commit.
+                        code. To recover from there, you can insert the following steps before you commit.
                     </p>
                     <ol></ol>
                     <li>
@@ -133,14 +138,14 @@
                             <li>
                                 <h4> Commit changes.</h4>
                                 <div><code><span class='highlight-on-hover git-status'>git status</span></code></div>
-                                <div><code><span class='highlight-on-hover git-add'>git add</span> &lt;filename&gt; </code></div>
+                                <div><code><span class='highlight-on-hover git-add'>git add</span> <span class='highlight-on-hover add-filename'> &lt;filename&gt; </span></code></div>
                                 <div><code><span class='highlight-on-hover git-commit'>git commit</span> <span class='highlight-on-hover mflag'>-m</span> <span class='highlight-on-hover commit-message'>"a short note about the changes you made"</span></code></div>
                             </li>
                             <li>
                                 <h4>Make and commit more changes, repeating the previous two steps, as desired.</h4>
                             </li>
                             <li>
-                                <h4>Make sure you're up to date with any changes anyone else has pushed to the remote repository while you were working (if necessary/appicable).</h4>
+                                <h4>Make sure you're up to date with any changes anyone else has pushed to the remote repository while you were working (if necessary/applicable).</h4>
                                 <div><code><span class='highlight-on-hover git-pull'>git pull</span>  <span class='highlight-on-hover rebase-with-git-pull'>--rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
                             
                             </li>
@@ -177,7 +182,7 @@
                                 <li>
                                     <h4> Commit changes.</h4>
                                     <div><code><span class='highlight-on-hover git-status'>git status</span></code></div>
-                                    <div><code><span class='highlight-on-hover git-add'>git add</span> &lt;filename&gt; </code></div>
+                                    <div><code><span class='highlight-on-hover git-add'>git add</span> <span class='highlight-on-hover add-filename'>&lt;filename&gt;</span> </code></div>
                                     <div><code><span class='highlight-on-hover git-commit'>git commit</span> <span class='highlight-on-hover mflag'>-m</span> <span class='highlight-on-hover commit-message'>"a short note about the changes you made"</span></code></div>
                                 </li>
                                 <li>
@@ -203,7 +208,12 @@
                                     <h4>Make sure your code passes all quality control checks that you've included on GitHub.</h4>
                                 </li>
                                 <li>
-                                    <h4>Wait for another member of your team to go to GitHub, review your changes, and approve merging them into the master branch.</h4>
+                                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
+                                </li>
+                                <li>
+                                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to master delete the old branch locally. </h4>
+                                        <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                                        <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
                                 </li>
                             </ol>
                 </div>

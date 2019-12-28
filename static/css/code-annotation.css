@@ -3,6 +3,7 @@ code {
     background-color: lightgray;
     padding: 20px;
     margin: 5px 5px;
+    
 }
 
 
@@ -18,10 +19,12 @@ code .highlight-on-hover:hover{
     display: none;
 }
 
-.ui-tooltip, .arrow:after {
+/* .arrow:after */
+.ui-tooltip {
     background:white;
     border: 2px solid white;
   }
+
 .ui-tooltip {
     padding: 10px 20px;
     color: black;
@@ -29,8 +32,9 @@ code .highlight-on-hover:hover{
     font: bold 14px;
     box-shadow: 0 0 7px black;
     max-width: 600px;
+    line-height: 1.4;
   }
-.arrow {
+/* .arrow {
     width: 70px;
     height: 16px;
     overflow: hidden;
@@ -61,7 +65,7 @@ code .highlight-on-hover:hover{
   .arrow.top:after {
     bottom: -20px;
     top: auto;
-  }
+  } */
 
  p a, p a:visited{
       color: #74a830;

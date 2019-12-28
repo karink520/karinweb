@@ -4,7 +4,7 @@ var uFlagExplanation = "-u is a flag that adds the branch as a remote tracking b
 a branch connected with your branch.  This is called setting the upstream remote branch. You only need to use `-u` once, and the association will be set up for future uses of `git push` and `git pull` without parameters."
 var masterExplanation = "`master` is the name of a branch.  We assume that it is the branch that contains the best and most stable version of the code. \
 We want to avoid changing the master branch until we have something worthwhile to add, which is why we check out a separate branch to work on, and combine that work back in later. \
-Master is the default name, but you might have changed the name of this special branch to something else.";
+The default name is `master`, but you might have changed the name of this special branch to something else.";
 var originExplanation = "`origin` is the short name for the remote repository.  \
 The name `origin` is conventional and so it is what we'll use as an example throughout. We'll also assume you only have one remote repository for the code at hand. \
 However, you could name the remote repository something besides `origin`, or have more than one remote repository, each with a different name. \
@@ -23,11 +23,12 @@ var gitStatusExplanation = "`git status` shows helpful information such as what 
 Since `git status` does not change anything about your repository, it is very safe, and you may use it often, especially as you prepare to commit.";
 
 var gitFetchExplanation = "`git fetch` retrieves any updates from the remote repository and downloads them for your consideration and future use. \
-It will not change your local repository, so it is a safe command to use.  Contrast `git fetch` with `git pull`; `git pull` combines `git fetch` and `git merge`\
+It will not change your local repository, so it is a safe command to use.  Contrast `git fetch` with `git pull`; `git pull` combines `git fetch` and `git merge`, \
 and thus will try to merge any new remote content into your local repository right away, which could cause merge conflicts.";
 var gitCheckoutExplanation = "You can `git checkout` files, commits, or branches, but here we're just checking out a branch.  Checking out a branch \
 moves you to the branch so that you can work on that branch.  For example, when creating a new features, rather than working directly on the master branch \
-it is a good idea to work on a branch specific to the new feature.  So we'll checkout a feature-specific branch before we get to work.";
+it is a good idea to work on a branch specific to the new feature.  So we'll checkout a feature-specific branch before we get to work, and we can also use `git checkout master` \
+to move us back to the master branch.";
 var gitAddExplanation = "`git add <filename>` stages a file for commit.  If `git status` shows you unstaged files that you have updated, and you want to \
 save those updates with a commit, you should `git add` all of the unstaged files.  You can also `git add` untracked files, if you want to start including them in \
 your repository.";
@@ -50,12 +51,19 @@ var gitStashExplanation = "`git stash` tucks away any changes since your last co
 the remote repository.  It is useful if you want to temporarily save your changes, do a few git operations, and then add your changes back in.";
 var gitStashPopExplanation = "`git stash pop` retrieves the most recent set of changes that you stashed and applies them to whatever branch you are currently \
 working on locally.";
+var gitBranchDExplanation = "Use `git branch` with the `-d` flag (for delete) to delete the specified branch.";
+
+var filenameExplanation = "This is the name of a file that you want to be included in your commit - a file in which you have made changes, or perhaps a new file that you would like to start tracking. \
+  For example, you might type `git add hello.py`. \
+Adding files one by one can be a helpful conservative approach that makes you consider what you are doing at each step.  If you prefer, you can add many files \
+at once.  For example, `git add -u` will stage changes to any files that are already being tracked.";
 
 $('.git-stash-pop').attr('title', gitStashPopExplanation);
 $('.git-stash').attr('title', gitStashExplanation);
 $('.git-rebase').attr('title',gitRebaseExplanation);
 $('.git-pull').attr('title', gitPullExplanation);
-$('.rebase-with-git-pull').attr('title', rebaseWithGitPullExplanation)
+$('.rebase-with-git-pull').attr('title', rebaseWithGitPullExplanation);
+$('.add-filename').attr('title',filenameExplanation);
 
 $('.bflag').attr('title', bFlagExplanation);
 $('.mflag').attr('title', mFlagExplanation);
@@ -73,5 +81,6 @@ $('.git-fetch').attr('title', gitFetchExplanation);
 $('.git-checkout').attr('title', gitCheckoutExplanation);
 $('.git-merge').attr('title', gitMergeExplanation);
 $('.git-push').attr('title', gitPushExplanation);
+$('.git-branch-d').attr('title', gitBranchDExplanation);
 
 $( document ).tooltip();

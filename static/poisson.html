@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/dirichletprocessesd3.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/jbhozp4n6fyvq0f/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate">January 6, 2020 </h3>
+            <span class="blogtopic" class="include-in-wordcloud"> Poisson distributions, gamma distributions, and Poisson processes </span>
+            <p>
+            Hello!  This post is meant to introduce some friendly and useful distributions: the Poisson distribution and the gamma distribution,
+            and then to get some intuition for a point process characterized by the Poisson distribution: the Poisson process. As a bonus, we'll see 
+            the exponential and negative binomial distributions appear along the way.
+            </p>
+            <p>
+              Poisson distributions are useful when you have whole number counts of events. Gamma distributions are flexible family of distributions that generalize some other distributions that 
+              might be familiar to you: the exponential and chi-squared distributions.  Poisson processes can be used to model events occuring with certain independence properties in
+              space and/or time.  Exponential distributions show up in modeling wait times between events, among other applications.  When we
+              encounter the negative binomial distribution it will be as a prior predictive distribution in our model, which is a useful-to-understand role for a distribution.
+            </p>
+            <p>
+              As we work with these distributions, we will take advantage of the opportunities that arise along the way to become more familiar with ideas about working with priors, likelihoods, and posterior 
+              distributions, as well as recognizing and using conjugacy properties when it is reasonable to do so, and looking at the role hyperparameters.  
+              <!-- We'll also take an optional detour to look 
+              at different parametrizations of the gamma distribution in more detail, which might sound boring until you have, say, spent time that you will never get back failing to replicate someone's 
+              methods, only to realize that you were parametrizing the gamma distribution differently from them. -->
+            </p>
+            <p>
+              This set of distributions and their various combinations are a useful bunch of tools to have handy for modeling in a variety of settings, so let's get started in taking a look at them, beginning with the Poisson distribution.
+            </p>
+
+            <button class="accordion">The Poisson distribution</button>
+            <div class="panel">
+            <p>
+                The Poisson distribution is a distribution over the space of whole number outcomes: 0, 1, 2, 3,... .  Because a draw
+                from a Poisson distribution can be any whole number, the Poisson distribution is a useful option when you want to 
+                model a variable that represents the count of something: the number of car accidents in a month, 
+                cases of a disease in a region, customer visits to a store.  I first encountered the Poisson distribution in the context of modeling the number of times a neuron fires
+                in a given time period.
+            </p>
+            <p>
+              The probability mass function for the Poisson distribution gives probability to whole number outcomes 0, 1, 2,... as follows:
+            </p>
+            <p id="poissonPdfEquation"></p>
+            <p>The Poisson distribution is governed by one parameter, a positive number denoted &lambda; in our notation.  Below you can see the 
+                probability mass function for different values of &lambda;.  
+              </p>
+            <p> &lambda; = 
+                <select id="choose-lambda" height=18px>
+                    <option value="1">1 </option>
+                    <option value="2" selected="selected"> 2</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                </select>
+            </p>
+            <p id="poissonPdfGraph"></p>
+            <p>Notice that as we increase &lambda;, the center of the distribution increases and so does its spread.  In fact, the 
+            mean and variance of a Poisson distribution are both exactly &lambda;.
+            </p>
+            <p>
+              <b>Side note:</b> Did you notice a bell shaped distribution emerging as &lambda; increases? Nice!  For large values of &lambda;, we can approximate
+              a Poisson distribution with a normal (Gaussian) distribution, taking a little care due to the fact that a Poisson distribution is discrete and 
+              the normal distribution is continuous.  We can justify the appropriateness of this approximation using the central limit theorem.
+            </p>
+            </div>
+            <button class="accordion">If you like &lambda; so much, why don't you put a prior on it?</button>
+            <div class="panel">
+              <p>
+                Knowing that the parameter &lambda; is both the mean and the variance of a Poisson distribution, we can easily imagine wanting to infer the value of &lambda;.
+                Suppose, for example, that we have a number of observed count values <span id="yEquation"></span> that we assume are drawn independently and identically distributed (i.i.d.)
+                from a Poisson distribution.  Perhaps the <em>y</em> are counts of occurrances of a disease in each of a number of regions with similar population size and characteristics.
+                We might like to know &lambda;, the expected count.  Multiplying together the Poisson probabilities for each of the <em>N</em> independent observation in <b>y</b>, we get:
+              <p id="poissonLikelihoodEquation"></p>
+              <p>Suppose that we also have some prior information, due to our epidemiological studies, perhaps,
+                about what might be a reasonable value of &lambda;.  We can represent this prior knowledge (and associated uncertainty) of &lambda; with
+                a <em>prior distribution</em> over &lambda;. 
+              </p>
+              <p>
+               What kind of distribution should we use to represent the prior over &lambda;?  It would be convenient if the prior distribution p(&lambda;) played nicely with the 
+               Poisson distributed <em>likelihood</em> p( <b>y</b>| &lambda;), in the sense that if we multiplied the two, we got another recognizable and reasonably friendly distribution over &lambda;.
+               We recall from Bayes theorem that, as a function of &lambda;, the <em>posterior</em> distribution of &lambda;, p(&lambda; | <b>y</b> ) is proportional to the product of the
+              prior and likelihood:
+              </p>
+              <p id="bayesTheoremProportion"></p>
+              <p>
+                A family of prior distributions is called <em>conjugate</em> to a likelihood if, when you combine the two, you obtain a posterior distribution that is in the 
+                same family as the prior.  Since our expected counts shouldn't be negative, we would like to choose a prior that gives probability only to positive values of &lambda;.  
+                Moreover, we see that our Poisson choice of likelihood has both a power of &lambda; and an exponentiated &lambda;, which would combine nicely with a prior distribution 
+                that also includes those components.  We may conclude that a gamma distribution would 
+                fit the bill nicely as a conjugate prior. A gamma distribution has the following probability distribution function (pdf):
+              </p>
+                <p id="gammaPdfEquation">
+                </p>
+            The parameters &alpha; and &beta; are positive real numbers.  Since for us they will play the role of parameters of a prior distribution, we can also call them <em>hyperparameters</em>.
+            
+            Multiplying the likelihood and prior we see that the posterior distribution p( &lambda; | <b>y</b>) is proportional to:
+            <p id="posteriorEquation"></p>
+
+            Comparing to the pdf of gamma distribution, we see that:
+            <p id="gammaPosteriorEquation"></p>
+            <p>
+              Looking at how incorporation of the data <b>y</b> updates the prior distribution also gives us insight into one possible interpretation of the hyperparamters 
+              &alpha; and &beta;.  Since &alpha; is updated by adding to it the total number of observed events (the sum of the <em>y</em>), and &beta; is equal to the number
+              of observations <em>y</em>, we can interpret a Gamma(&alpha;, &beta;) prior for the parameter of our Poisson distributed observations as encoding 
+              prior information equivalent to observing &alpha; total events in &beta; trials.
+            </p>
+            <p><b>Side note: </b> Because they can yield friendly posterior distributions, conjugate priors can ease computation and interpretation in Bayesian modeling. 
+              However, we are lucky enough now to live in an age of computational power that is often sufficient to help us deal effectively with decidedly less friendly 
+              posterior distributions, by, for example, using Markov Chain Monte Carlo (MCMC) methods to sample from them.
+              So, don't feel like you need to limit yourself to a conjugate prior if it is not appropriate!  If opting for conjugacy is appropriate, though, enjoy the ease it provides.
+            </p>
+            </div>
+
+            <button class="accordion">(Optional) I want to know about the prior predictive distribution</button>
+            <div class="panel">
+             <p>Great, let's look at it. Consider our previous setup, where we assume that observations <em>y</em> are Poisson distributed with Poisson parameter &lambda;, and that 
+             our prior distribution for  &lambda; follows a Gamma(&alpha;, &beta;) distribution, and we have chosen some values for &alpha; and &beta;.  Suppose we have made those assumptions but not yet observed any data (i.e., we do
+             not have any observations <em>y</em> yet).  What do these assumptions tell us about the probability that our first observation will be <em>y</em>? </p>
+            <p>
+              We don't know what &lambda; is exactly, but we can <em>marginalize</em> it out - we can look at the probability of <em>y</em> when we incorporate all that uncertainty about &lambda;. 
+              This will give us the <em>prior predictive distribution</em> for an observation <em>y</em>.
+            </p>
+            <p>To see the marginalization we are performing, where we are "integrating out" &lambda;, and to make explicit the role of the hyperparameters,
+               we can write down the prior predictive distribution as:
+            </p>
+            <p id="priorPredictiveEquation2"> </p>
+            <p>To calculate the desired quantity, we can use the following rearrangement of Bayes' rule (where we have dropped the hyperparameters from our notation for simplicity): </p>
+            <p id="priorPredictiveEquation1"> </p>
+            Substituting in  a Gamma (&alpha; + y , &beta; +1) distribution for p(&lambda; |y ), as derived in the previous section, a Gamma(&alpha;, &beta;) pdf for p(&lambda;),
+            and a Poisson(&lambda;) distribution for p(y| &lambda;) we obtain:
+            <p id="negativeBinomialEquation1"></p>
+            This distribution for <em>y</em> is another friendly neighborhood discrete distribution that is common enough to have a name: it is a <em>negative binomial</em>
+            distribution parametrized by (&alpha;, &beta;).
+            <p>
+            The prior predictive distribution is a useful concept to get your head around: it is the distribution of the data we expect to see just given our 
+            model assumptions and prior, and before we have seen any data. Exploring this distribution can be helpful in checking your model.  In
+            <a href="https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/rssa.12378"><b>[Gabry et al. 2019]</b></a>, for example, the authors include a discussion of the role of visualizing a prior predictive distribution within a broader Bayesian workflow.
+            </p>
+            </div>
+            <button class="accordion">(Optional) Three notes about gamma distributions</button>
+            <div class="panel">
+              <p>
+                First, note that even if the the gamma distributions are very new to you, they still might be more familiar than they seem: the exponential distribution
+                and chi-squared distribution are special cases of gamma distributions.  The pdf for an exponential distribution with parameter &theta; is:
+              <p id="exponentialPdfEquation"></p>
+              <p>We note that this is the same as the above pdf of a gamma distribution with &alpha;=1, &beta;=&theta;.</p>
+              <p>
+                The pdf for a chi-squared distribution with <em>k</em> degrees of freedom is given by:
+              </p>
+              <p id="chiSquaredPdfEquation"></p>
+              <p>
+                We note that this is the same as the above pdf of a gamma distribution with &alpha;=k/2, &beta;=1/2.
+              </p>
+              <p>Second, let's take some time to get more familiar with how the parameters of a gamma distribution adjust its shape:</p>
+              <p> &alpha; = 
+                  <select id="choose-alpha" height=18px>
+                      <option value="0.5">0.5</option>
+                      <option value="1">1 </option>
+                      <option value="2" selected="selected"> 2</option>
+                      <option value="3">3</option>
+                      <option value="5">5</option>
+                  </select>
+                  &beta; = 
+                  <select id="choose-beta" height=18px>
+                      <option value="0.25">0.25 </option>
+                      <option value="0.5" selected="selected"> 0.5</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="4">4</option>
+                  </select>
+              </p>  
+              <p id="gammaPdfGraph"></p>
+                <p>Third, when dealing with the gamma distribution, you should be aware that they are a number of different 
+                  parametrizations of the gamma distribution in use, including those that yield the following pdfs:
+                </p>
+                <p id="gammaParam1"></p>
+                <p id="gammaParam2"></p>
+                <p id="gammaParam3"></p>
+                <p>
+                </p>
+                <p>The parameter &alpha; or <em>k</em> is called the <em>shape</em> parameter.  &theta; is called the <em>scale</em> parameter,
+                   and &beta; is called the <em>inverse scale</em> or <em>rate</em> parameter. &mu; is the mean of the distribution, and &sigma; is the standard deviation.
+                   We can translate between the parametrizations with, e.g., the following relationships:</p>
+                <p id="paramTranslation1Equation"></p>
+                <p id="paramTranslation2Equation"></p>
+                The textbooks <em>Bayesian Data Analysis</em> [Gelman et al. 2013] and <em>Pattern Recognition and Machine Learning</em> [Bishop 2006] use the first parametrization above.
+                The JavaScript statistical library <a href="https://jstat.github.io/distributions.html#jStat.gamma"><b>jStat</b></a> uses the second.  
+                The Python probabilistic programming and Bayesian statistics library <a href="https://docs.pymc.io/api/distributions/continuous.html#pymc3.distributions.continuous.Gamma"><b>PyMC3</b></a> 
+                gives options to parameterize using the first or third.
+                The Python library <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gamma.html"><b>scipy</b></a>'s <code>stats.gamma</code> adapts the second parametrization above.
+                In scipy, functions like <code>stats.gamma.pdf</code> require a shape parameter 
+                (&alpha; or <em>k</em> above - called <em>a</em> in the scipy documentation), and by default set &theta; = 1.  You can set &theta; with the optional <code>scale</code> 
+                argument, and you can also replace the gamma distributed random variable <em>x</em> with a shifted version of itself by setting the <code>loc</code> 
+                parameter.  Thus, the value of <code>stats.gamma.pdf(x, 2, loc=3, scale=4)</code> is given by second equation above with &alpha; = 2, &theta; = 4, evaluated at &lambda; = x - 3.               
+              </p>
+              <p>
+                The take-home message here is to carefully to note <em>which</em> parametrization of the gamma distribution you 
+                are working with.  If you are reading or trying to reproduce someone else's work, and they just say, "we use a Gamma(3, 2)
+                prior", then you might not be able to recreate their work exactly without some detective work into which
+                parametrization they are using.
+              </p>
+              <p>
+                 On the flip side, if <em>you</em> are the one sharing statistical work or writing statistical code that 
+                includes the gamma distribution, I hope you'll make sure it is clear to your readers or users how you are parameterizing. 
+              </p> 
+                
+            </div>
+            
+            <button class="accordion">Poisson processes</button>
+            <div class="panel">
+            <p>
+              We can use the Poisson distribution to model the count of events in a certain time period or region of space.
+              What if we would like to describe not just the counts of these events, but their precise locations in space or time?  
+              For example, suppose we want to simulating the timing of a firing (spiking) neuron, where the spikes happen randomly in time.
+              A <em>point process</em> generates a sequence of events like this, and the most common example of a point process is a <em>Poisson process</em>,
+              which is closely related to the Poisson distribution.
+            </p>
+            <p>A Poisson process with rate <em>r</em> has independent increments between
+              events, and the count of events on any finite interval <em>T</em> follows a Poisson distribution with mean and variance <em>&lambda; = rT </em>.
+              (If you are familiar, compare this relationship of Poisson processes to Poisson distributions to the relationship of Dirichlet Processes to
+              Dirichlet distributions, where a Dirichlet process over a finite partition of the sample space follows a Dirichlet distribution
+              Dirichlet processes were the topic of <a href="dirichletprocesses.html"><b>another post</b></a>  on this blog.)
+            </p>
+            <p>
+              Below, choose a rate <em>r</em> to correspond to the expected number of events per unit time,
+              to visualize a set of points generated from Poisson process with rate <em>r</em>.  Each event is an orange dot, located at some point on the time axis
+              The count of the total number of events <em>y</em>
+              on this interval will follow a Poisson(<em>rT</em>) distribution. 
+            </p>
+            <p> r = 
+                <select id="choose-r" height=18px>
+                    <option value="0.25">0.25 </option>
+                    <option value="0.5"> 0.5 </option>
+                    <option value="1" selected="selected">1</option>
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                </select>
+            </p>
+            <p id="poissonPlot"></p>
+            <p id="poissonCounts"></p>
+            <p>T = 10</p>
+            <p>
+              We can imagine the time interval
+              extending infinitely forward, but here we only visualize a finite interval of size <em>T</em> = 10.  Moreover, while we could
+              work with time or space, for simplicity, we'll continue to assume that we're dealing with time. 
+            </p>
+            <p>
+              We won't prove it here, but another way to characterize the Poisson process is to specify that intervals are independently drawn from an exponential distribution
+              with mean of 1/<em>r</em>.  Thus, one easy way to generate a series of points following a Poisson process is to generate the points sequentially, drawing 
+              independent exponential random variables for each of the intervals between them.  If you replace the exponential distribution with some 
+              other choice of distribution, you won't have a Poisson process anymore, but you will have a generalization that is called a 
+              <em>renewal process</em>.
+            </p>
+            <p>
+              To get more intuition for the independence of the events in a Poisson process, we'll derive the Poisson distribution that characterizes a Poisson process from 
+              the following setup.  Break up a time interval of length <em>T</em> into subintervals of length &Delta;<em>t</em>.  The probability of an event
+              per unit time is <em>r</em>, so the probability of an event happening in a subinterval is given by <em>r&Delta;t</em>. Take &Delta;<em>t</em> to be small enough
+              relative to <em>r</em> that we can assume that there is no more than one event happening in each subinterval, and assume that whether or not an event occurs in a subinterval is independent of what happens in all the other subintervals.  Now consider the probability of seeing <em>y</em>
+              total events in the whole interval <em>T</em></p>
+              <p>
+                In the preceding paragraph, we created a setup with M = T/&Delta;t independent trials, each with a probability of success (where success is containing an event).  The probability of seeing
+                <em>y</em> total successes thus follows a binomial distribution:
+              </p>
+              <p id=poissonDerivationEquation1></p>
+            <p> Now consider the limiting case as we let the number of subintervals <em>M = T</em>/&Delta;<em>t</em> increase towards infinitiy and the
+              length &Delta;<em>t</em> of subintervals shrinks towards zero.</p>
+            </p>
+            <div class="slidecontainer">
+                <label for="num_subintervals"> M  <span id=M_value></span><span> = 3</span></label>
+                <input name="num_subintervals" type="range" min="2" max="15" value="3" class="slider" id="num_subintervalsRange">
+              </div>
+            <p id="poissonFromBinomialPlot"></p>
+            <p id="poissonFromBinomialCounts"></p>
+
+            <p>We are considering:</p>
+            <p id=poissonDerivationEquation2></p>
+            <p>As <em>M</em> gets large relative to y, we can approximate M - y by M, and we can approximate M!/(M-y)! = M(M-1)...(M-y+1) by <span id="MtoTheY"></span> and thus consider:</p>
+            <p id=poissonDerivationEquation3></p>
+            <p>On a good day, we also recall the identity (or definition, depending on your point of view):
+              <p></p><span id="definitionOfE"></span>, and so: <span id="applicationOfDefinitionOfEEquation"></span></p>
+
+            <p>Combining this observation with the fact that <span id="MEquation"></span>, we arrive at our conclusion:</p>
+            <p id=poissonDerivationEquation4></p> 
+            <p>Thus, we showed that the count of events in a finite interval of length T has a Poisson distribution, which is the main characterizing property
+              of a Poisson process. This derivation shows how we can arrive at a Poisson process from assumptions about the independence of events.</p>
+            <p>We have described a homogeneous Poisson process, where the rate <em>r</em> is constant.  Note that we could also imagine a more general, inhomogenous case where <em>r</em>
+              as varying in time, so that <em>r = r(t)</em>.  In our example of using a Poisson process to describe a firing (spiking) neuron, we could perhaps imagine <em>r</em>, the base rate of spikes,
+              per unit time, as being a function of some sensory input that the neuron is reacting to, so that different inputs cause higher or lower firing rates.
+              This is a powerful modeling tool.
+            </p>
+            <p>
+              We should celebrate the power and elegance of Poisson processes, but we should also note that the independence properties that give the Poisson
+              process its simplicity can be a crucial limitation.
+              Because each event is independent from the others, the Poisson process may be inadequate in situations where you might want interactions and dependencies between
+              events.  For example, the Poisson process might provide an approximate description of a neuron firing, but by itself it does not capture 
+              something like bursting, where one firing event begins a cluster of closely spaced firings.
+            </p>
+            </div>
+            <button class="accordion">Conclusion and references</button>
+            <div class="panel">
+              <p>
+                Thanks for reading, and I wish you much happy modeling of count data and more with Poisson distibutions and their friends!
+              </p>
+              <p>I encountered the derivation in the previous section of the Poisson distribution as the limit of a binomial in [Dayan and Abbot 2001]. 
+              The textbooks [Gelman et al. 2013] and [Bishop 2006] explain uses of Poisson distributions a Bayesian contexts - and are two of my
+              favorite resources for learning Bayesian statistics in general.</p>
+              <ul>
+                <li class="reflist">Bishop, C.M., 2006. Pattern recognition and machine learning. springer.</li>
+                <li class="reflist">Dayan, P. and Abbott, L.F., 2001. Theoretical neuroscience (Vol. 806). Cambridge, MA: MIT Press.</li>
+                <li class="reflist"><a href="https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/rssa.12378">Gabry, J., Simpson, D., Vehtari, A., Betancourt, M. and Gelman, A., 2019. Visualization in Bayesian workflow. Journal of the Royal Statistical Society: Series A (Statistics in Society), 182(2), pp.389-402.</a></li>
+                <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
+                <!-- <li class="reflist">Salvatier J., Wiecki T.V., Fonnesbeck C. (2016) Probabilistic programming in Python using PyMC3. PeerJ Computer Science 2:e55 <a href="https://peerj.com/articles/cs-55/">DOI: 10.7717/peerj-cs.55.</a></li>   -->
+                <!-- <li>Scipy</li> -->
+              </ul>
+              </div>
+
+        </div>          
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/poisson.js"></script>
+   <script src="js/blogpost.js"></script>
+   </body>
+</html>

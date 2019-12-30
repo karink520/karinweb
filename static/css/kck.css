@@ -19,7 +19,7 @@ html {
 
 #cloud {
   height: 400px;
-  width: 50%;
+  width: 95%;
   margin: 10vh auto;
   border: solid 0.5px #eeeeee;
 }
@@ -165,6 +165,13 @@ li {
    #profile-pic {
       margin: 50px auto;
    }
+
+   #cloud {
+    height: 400px;
+    width: 50%;
+    margin: 10vh auto;
+    border: solid 0.5px #eeeeee;
+  }
   
 
 

@@ -29,22 +29,21 @@
             <h3 class="blogdate">January 6, 2020 </h3>
             <span class="blogtopic" class="include-in-wordcloud"> Poisson distributions, gamma distributions, and Poisson processes </span>
             <p>
-            Hello!  This post is meant to introduce some friendly and useful distributions: the Poisson distribution and the gamma distribution,
-            and then to get some intuition for a point process characterized by the Poisson distribution: the Poisson process. As a bonus, we'll see 
+            Hello!  This post is meant to introduce some friendly and useful distributions, the Poisson distribution and the gamma distribution,
+            and to get some intuition for the related Poisson process (everyone's favorite point process?). As a bonus, we'll see 
             the exponential and negative binomial distributions appear along the way.
             </p>
             <p>
               Poisson distributions are useful when you have whole number counts of events. Gamma distributions are flexible family of distributions that generalize some other distributions that 
               might be familiar to you: the exponential and chi-squared distributions.  Poisson processes can be used to model events occuring with certain independence properties in
-              space and/or time.  Exponential distributions show up in modeling wait times between events, among other applications.  When we
-              encounter the negative binomial distribution it will be as a prior predictive distribution in our model, which is a useful-to-understand role for a distribution.
+              space and/or time.  Exponential distributions show up in modeling wait times between events, among other applications.  
             </p>
             <p>
               As we work with these distributions, we will take advantage of the opportunities that arise along the way to become more familiar with ideas about working with priors, likelihoods, and posterior 
-              distributions, as well as recognizing and using conjugacy properties when it is reasonable to do so, and looking at the role hyperparameters.  
-              <!-- We'll also take an optional detour to look 
-              at different parametrizations of the gamma distribution in more detail, which might sound boring until you have, say, spent time that you will never get back failing to replicate someone's 
-              methods, only to realize that you were parametrizing the gamma distribution differently from them. -->
+              distributions, as well as recognizing and using conjugacy properties when it is reasonable to do so, and looking at the role hyperparameters.  When we
+              encounter the negative binomial distribution it will be as a prior predictive distribution in our model, which is a useful-to-understand role for a distribution. We'll also take an optional detour to look 
+              at different parametrizations of the gamma distribution in more detail, which might sound boring until you, say, spend a bunch of time that you will never get back on failing to replicate someone's 
+              methods, only to realize that you and they were just parametrizing the gamma distribution differently.
             </p>
             <p>
               This set of distributions and their various combinations are a useful bunch of tools to have handy for modeling in a variety of settings, so let's get started in taking a look at them, beginning with the Poisson distribution.
@@ -206,10 +205,10 @@
                 <p id="paramTranslation1Equation"></p>
                 <p id="paramTranslation2Equation"></p>
                 The textbooks <em>Bayesian Data Analysis</em> [Gelman et al. 2013] and <em>Pattern Recognition and Machine Learning</em> [Bishop 2006] use the first parametrization above.
-                The JavaScript statistical library <a href="https://jstat.github.io/distributions.html#jStat.gamma"><b>jStat</b></a> uses the second.  
-                The Python probabilistic programming and Bayesian statistics library <a href="https://docs.pymc.io/api/distributions/continuous.html#pymc3.distributions.continuous.Gamma"><b>PyMC3</b></a> 
+                The JavaScript statistical library <a href="https://jstat.github.io/distributions.html#jStat.gamma" target="_blank" rel="noreferrer noopener"><b>jStat</b></a> uses the second.  
+                The Python probabilistic programming and Bayesian statistics library <a href="https://docs.pymc.io/api/distributions/continuous.html#pymc3.distributions.continuous.Gamma" target="_blank" rel="noreferrer noopener"><b>PyMC3</b></a> 
                 gives options to parameterize using the first or third.
-                The Python library <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gamma.html"><b>scipy</b></a>'s <code>stats.gamma</code> adapts the second parametrization above.
+                The Python library <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gamma.html" target="_blank" rel="noreferrer noopener"><b>scipy</b></a>'s <code>stats.gamma</code> adapts the second parametrization above.
                 In scipy, functions like <code>stats.gamma.pdf</code> require a shape parameter 
                 (&alpha; or <em>k</em> above - called <em>a</em> in the scipy documentation), and by default set &theta; = 1.  You can set &theta; with the optional <code>scale</code> 
                 argument, and you can also replace the gamma distributed random variable <em>x</em> with a shifted version of itself by setting the <code>loc</code> 
@@ -321,7 +320,7 @@
             <button class="accordion">Conclusion and references</button>
             <div class="panel">
               <p>
-                Thanks for reading, and I wish you much happy modeling of count data and more with Poisson distibutions and their friends!
+                Thanks for reading. I wish you much happy modeling of count data and more with Poisson distibutions and their friends!
               </p>
               <p>I encountered the derivation in the previous section of the Poisson distribution as the limit of a binomial in [Dayan and Abbot 2001]. 
               The textbooks [Gelman et al. 2013] and [Bishop 2006] explain uses of Poisson distributions a Bayesian contexts - and are two of my
@@ -329,7 +328,7 @@
               <ul>
                 <li class="reflist">Bishop, C.M., 2006. Pattern recognition and machine learning. springer.</li>
                 <li class="reflist">Dayan, P. and Abbott, L.F., 2001. Theoretical neuroscience (Vol. 806). Cambridge, MA: MIT Press.</li>
-                <li class="reflist"><a href="https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/rssa.12378">Gabry, J., Simpson, D., Vehtari, A., Betancourt, M. and Gelman, A., 2019. Visualization in Bayesian workflow. Journal of the Royal Statistical Society: Series A (Statistics in Society), 182(2), pp.389-402.</a></li>
+                <li class="reflist"><a href="https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/rssa.12378" target="_blank" rel="noreferrer noopener">Gabry, J., Simpson, D., Vehtari, A., Betancourt, M. and Gelman, A., 2019. Visualization in Bayesian workflow. Journal of the Royal Statistical Society: Series A (Statistics in Society), 182(2), pp.389-402.</a></li>
                 <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
                 <!-- <li class="reflist">Salvatier J., Wiecki T.V., Fonnesbeck C. (2016) Probabilistic programming in Python using PyMC3. PeerJ Computer Science 2:e55 <a href="https://peerj.com/articles/cs-55/">DOI: 10.7717/peerj-cs.55.</a></li>   -->
                 <!-- <li>Scipy</li> -->

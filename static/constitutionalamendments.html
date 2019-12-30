@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+  </head>
+  <style>
+    .amendment-dot {
+      opacity: 0.5;
+    }
+
+    .amendment-dot:hover {
+      color:darkslategray;
+      opacity: 1;
+    }
+
+    .selected-amendment-dot{
+      opacity: 1;
+    }
+
+    
+    .axis--x{
+      color:darkslategray;
+      opacity: 0.8;
+      padding: 2em;
+      font-family: inherit;
+    }
+    
+    .ratification{
+      font-weight:lighter;
+      font-style: italic;
+    }
+
+    main {
+      background-image: url('img/Bill_of_Rights2.jpg');
+      padding-bottom: 50px;
+      padding-top: 20px;
+    }
+
+    @media screen and (min-width: 700px) {
+      .axis--x{
+        font-size: 1.2em;
+        stroke-width: 3px;
+      }
+
+    }
+    /* #timeline-container{
+      background-color: white;
+      opacity: 0.3;
+    }
+
+    #timeline {
+      color:black;
+      opacity:1;
+    } */
+
+    .blogpost {
+      background-color: white;
+      opacity: 0.8;
+      max-width:600px;
+    }
+  </style>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/l35virsvp4f1bil/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div id="timeline-container">
+      <div id="timeline" height="200px">
+      </div></div>
+      <div class="blogpost">
+        <p id="amendment-description">Click on a dot for more information about the amendment it represents.</p>  
+      </div>
+
+      <div class="blogpost">
+        <p>References</p>
+        <ol>
+          <li class="reflist">Amendment text accessed from the <a href="https://www.archives.gov/founding-docs/amendments-11-27" target="_blank", rel="noreferrer noopener"><b>National Archives</b> </a></li>
+          <li class="reflist">Background image (Bill of Rights) from the <a href="https://www.archives.gov/founding-docs/downloads" target="_blank", rel="noreferrer noopener"><b>National Archives</b> </a></li>
+        </ol>
+      </div>
+
+    </main>
+    <footer>
+      <div></div>
+    </footer>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/dotplot.js"></script>
+  </body>
+</html>

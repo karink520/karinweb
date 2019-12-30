@@ -84,93 +84,90 @@ var amendments = [
   {date: 1992, ordinal: '27th', short_description: '', text: 'No law, varying the compensation for the services of the Senators and Representatives, shall take effect, until an election of representatives shall have intervened'}
 ]
 
+plotAmendments();
+$( window ).resize(plotAmendments);
+
+function plotAmendments(){
+  d3.select("svg").remove();
+  var margin = {top: 20, right: 60, bottom: 40, left: 50},
+              width = window.innerWidth * 0.95 - margin.left - margin.right,// Use the window's width
+              height = 260 + margin.top + margin.bottom; 
+
+  var svg = d3.select("#timeline")
+    .append("svg")
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width + margin.left + margin.right)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var xScale = d3.scaleLinear()
+            .rangeRound([0, width])
+            .domain([1780,2020])
+
+  //not sure if I need this
+  var yScale = d3.scaleLinear().range([height, 0 ]);
+
+  if (width > 650){
+    var nbins = 48;
+  }else {
+    var nbins = 24;
+  }
+
+  console.log(width/(2*nbins));
+  var circleRadius = width/(2*nbins);
+  var circleSpacing = circleRadius + 1;
+
+  var histogram = d3.histogram()
+      .domain(xScale.domain())
+      .thresholds(xScale.ticks(nbins))
+      .value(function(d) {return d.date}) //what was this supposed to do?
+
+  //filter out empty bins
+  var bins = histogram(amendments).filter(d => d.length>0);
+
+  //g container for each bin
+  let binContainer = svg.selectAll(".gBin")
+    .data(bins);
+
+  let binContainerEnter = binContainer.enter()
+        .append("g")
+          .attr("class", "gBin")
+          .attr("transform",function(d){ return "translate(" + xScale(d.x0) + "," + height + ")";});
+
+  //need to populate the bin containers with data the first time
+  binContainerEnter.selectAll("circle")
+  .data( d => d.map((p, i) => {
+      return {idx: i,
+              ordinal: p.ordinal,
+              value: p.date,
+              text: p.text,
+              radius: (xScale(d.x1)-xScale(d.x0))/2
+            }
+    }))
+    .enter()
+    .append("circle")
+      .attr("class", "amendment-dot")
+      .attr("cx", 0) //g element already at correct x pos
+      .attr("cy", function(d) {
+          return - d.idx * 2 * (circleSpacing)- d.radius; })
+      .attr("r", circleRadius)
+      .on("click", handleAmendmentClicked);
+
+  svg.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale)
+    .tickFormat(d3.format("d"))
+    .tickSize(0)
+    .tickPadding(10));
 
 
-var margin = {top: 20, right: 60, bottom: 40, left: 50},
-            width = window.innerWidth * 0.95 - margin.left - margin.right,// Use the window's width
-            height = 250 + margin.top + margin.bottom; 
-
-
-
-var svg = d3.select("#timeline")
-  .append("svg")
-    .attr("height", height + margin.top + margin.bottom)
-    .attr("width", width + margin.left + margin.right)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var xScale = d3.scaleLinear()
-          .rangeRound([0, width])
-          .domain([1780,2020])
-
-//not sure if I need this
-var yScale = d3.scaleLinear().range([height, 0 ]);
-
-if (width > 650){
-  var nbins = 48;
-}else {
-  var nbins = 24;
-}
-
-console.log(width/(2*nbins));
-var circleRadius = width/(2*nbins);
-var circleSpacing = circleRadius + 1;
-
-var histogram = d3.histogram()
-    .domain(xScale.domain())
-    .thresholds(xScale.ticks(nbins))
-    .value(function(d) {return d.date}) //what was this supposed to do?
-
-//filter out empty bins
-var bins = histogram(amendments).filter(d => d.length>0);
-
-//g container for each bin
-let binContainer = svg.selectAll(".gBin")
-  .data(bins);
-
-let binContainerEnter = binContainer.enter()
-      .append("g")
-        .attr("class", "gBin")
-        .attr("transform",function(d){ return "translate(" + xScale(d.x0) + "," + height + ")";});
-
-//need to populate the bin containers with data the first time
-binContainerEnter.selectAll("circle")
-.data( d => d.map((p, i) => {
-    return {idx: i,
-            ordinal: p.ordinal,
-            value: p.date,
-            text: p.text,
-            radius: (xScale(d.x1)-xScale(d.x0))/2
-          }
-  }))
-   .enter()
-   .append("circle")
-     .attr("class", "amendment-dot")
-     .attr("cx", 0) //g element already at correct x pos
-     .attr("cy", function(d) {
-         return - d.idx * 2 * (circleSpacing)- d.radius; })
-     .attr("r", circleRadius)
-     .on("click", handleAmendmentClicked);
-
-svg.append("g")
-  .attr("class", "axis axis--x")
-  .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(xScale)
-  .tickFormat(d3.format("d"))
-  .tickSize(0)
-  .tickPadding(10));
-
-
-function handleAmendmentClicked(d, i){
-  htmlToDisplay = "<h4>" +  d.ordinal + " " + "Amendment <span class='ratification'> (ratified in " + d.value + ")</span> </h4> " + d.text;
-  document.getElementById('amendment-description').innerHTML = htmlToDisplay;
-  d3.selectAll("circle").classed("selected-amendment-dot", false);
-  d3.selectAll("circle").classed("amendment-dot", true);
-  d3.select(this).attr("class", "selected-amendment-dot");
-}
-
-
-
-function plotAmendments(dataset) {
+  function handleAmendmentClicked(d, i){
+    htmlToDisplay = "<h4>" +  d.ordinal + " " + "Amendment <span class='ratification'> (ratified in " + d.value + ")</span> </h4> " + d.text;
+    document.getElementById('amendment-description').innerHTML = htmlToDisplay;
+    d3.selectAll("circle").classed("selected-amendment-dot", false);
+    d3.selectAll("circle").classed("amendment-dot", true);
+    d3.select(this).attr("class", "selected-amendment-dot");
+  }
 
 }

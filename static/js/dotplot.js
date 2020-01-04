@@ -1,14 +1,14 @@
 //Plots constitutional amendments in a dotplot using d3
 //Text and ratification dates from https://www.archives.gov/founding-docs/amendments-11-27 and https://www.archives.gov/founding-docs/bill-of-rights-transcript
+//Help on some aspects of the dotplot from: https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 
-//the data, as an array of objects
 var fourteenthText = "<h4>Section 1.</h4><p> All persons born or naturalized in the United States, and subject to the jurisdiction thereof, are citizens of the United States and of the State wherein they reside. No State shall make or enforce any law which shall abridge the privileges or immunities of citizens \
 of the United States; nor shall any State deprive any person of life, liberty, or property, without due process of law; nor deny to any person within its jurisdiction the equal protection of the laws.</p><h4>Section 2.</h4><p> \
 Representatives shall be apportioned among the several States according to their respective numbers, counting the whole number of persons in each State, excluding Indians not taxed. But when the right to vote at any election for the choice of electors for President \
 and Vice-President of the United States, Representatives in Congress, the Executive and Judicial officers of a State, or the members of the Legislature thereof, is denied to any of the male inhabitants of such State, being twenty-one years of age,* and citizens of the United States, or in any way abridged, except for participation in rebellion, or other crime, the basis of representation therein shall be reduced in the proportion which the number of such male citizens shall bear to the whole number of male citizens twenty-one years of age in such State.</p> \
 <h4>Section 3.</h4><p>No person shall be a Senator or Representative in Congress, or elector of President and Vice-President, or hold any office, civil or military, under the United States, or under any State, who, having previously taken an oath, as a member of Congress, or as an officer of the United States, or as a member of any State legislature, or as an executive or judicial officer of any State, to support the Constitution of the United States, shall have engaged in insurrection or rebellion against the same, or given aid or comfort to the enemies thereof. But Congress may by a vote of two-thirds of each House, remove such disability.</p> \
 <h4> Section 4.</h4><p> The validity of the public debt of the United States, authorized by law, including debts incurred for payment of pensions and bounties for services in suppressing insurrection or rebellion, shall not be questioned. But neither the United States nor any State shall assume or pay any debt or obligation incurred in aid of insurrection or rebellion against the United States, or any claim for the loss or emancipation of any slave; but all such debts, obligations and claims shall be held illegal and void.</p> \
-<h4> Section 5.</h4> The Congress shall have the power to enforce, by appropriate legislation, the provisions of this article. *Changed by section 1 of the 26th amendment.";
+<h4> Section 5.</h4> The Congress shall have the power to enforce, by appropriate legislation, the provisions of this article. <p><i>*Changed by section 1 of the 26th amendment.</i></p>";
 
 var amendments = [
   {date: 1791, ordinal: '1st', text:"Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances."},
@@ -22,7 +22,10 @@ var amendments = [
   {date: 1791, ordinal: '9th', text:"The enumeration in the Constitution, of certain rights, shall not be construed to deny or disparage others retained by the people."},
   {date: 1791, ordinal: '10th', text: "The powers not delegated to the United States by the Constitution, nor prohibited by it to the States, are reserved to the States respectively, or to the people."},
   {date: 1795, ordinal: '11th', text: 'The Judicial power of the United States shall not be construed to extend to any suit in law or equity, commenced or prosecuted against one of the United States by Citizens of another State, or by Citizens or Subjects of any Foreign State.'},
-  {date: 1804, ordinal: '12th', text: 'The Electors shall meet in their respective states and vote by ballot for President and Vice-President, one of whom, at least, shall not be an inhabitant of the same state with themselves; they shall name in their ballots the person voted for as President, and in distinct ballots the person voted for as Vice-President, and they shall make distinct lists of all persons voted for as President, and of all persons voted for as Vice-President, and of the number of votes for each, which lists they shall sign and certify, and transmit sealed to the seat of the government of the United States, directed to the President of the Senate; -- the President of the Senate shall, in the presence of the Senate and House of Representatives, open all the certificates and the votes shall then be counted; -- The person having the greatest number of votes for President, shall be the President, if such number be a majority of the whole number of Electors appointed; and if no person have such majority, then from the persons having the highest numbers not exceeding three on the list of those voted for as President, the House of Representatives shall choose immediately, by ballot, the President. But in choosing the President, the votes shall be taken by states, the representation from each state having one vote; a quorum for this purpose shall consist of a member or members from two-thirds of the states, and a majority of all the states shall be necessary to a choice. [And if the House of Representatives shall not choose a President whenever the right of choice shall devolve upon them, before the fourth day of March next following, then the Vice-President shall act as President, as in case of the death or other constitutional disability of the President. --]* The person having the greatest number of votes as Vice-President, shall be the Vice-President, if such number be a majority of the whole number of Electors appointed, and if no person have a majority, then from the two highest numbers on the list, the Senate shall choose the Vice-President; a quorum for the purpose shall consist of two-thirds of the whole number of Senators, and a majority of the whole number shall be necessary to a choice. But no person constitutionally ineligible to the office of President shall be eligible to that of Vice-President of the United States. *Superseded by section 3 of the 20th amendment.'},
+  {date: 1804, ordinal: '12th', text: 'The Electors shall meet in their respective states and vote by ballot for President and Vice-President, one of whom, at least, shall not be an inhabitant of the same state with themselves; they shall name in their ballots the person voted for as President, and in distinct ballots the person voted for as Vice-President, and they shall make distinct lists of all persons voted for as President, and of all persons voted for as Vice-President, and of the number of votes for each, which lists they shall sign and certify, and transmit sealed to the seat of the government of the United States, directed to the President of the Senate; -- the President of the Senate shall, in the presence of the Senate and House of Representatives, open all the certificates and the votes shall then be counted; -- The person having the greatest number of votes for President, shall be the President, if such number be a majority of the whole number of Electors appointed; and if no person have such majority, then from the persons having the highest numbers not exceeding three on the list of those voted for as President, \
+  the House of Representatives shall choose immediately, by ballot, the President. But in choosing the President, the votes shall be taken by states, the representation from each state having one vote; a quorum for this purpose shall consist of a member or members from two-thirds of the states, and a majority of all the states shall be necessary to a choice. [And if the House of Representatives shall not choose a President whenever the right of choice shall devolve upon them, before the fourth day of March next following, then the Vice-President shall act as President, as in case of the death or other constitutional disability of the President. --]* The person having the greatest number of votes as Vice-President, shall be the Vice-President, if such number be a majority of the whole number of Electors appointed, and if no person have a majority, then from the two highest numbers on the list, the Senate shall choose the Vice-President; a quorum for the purpose shall consist of two-thirds of the whole number of Senators, and a majority of the whole number shall be necessary to a choice. But no person constitutionally ineligible\
+   to the office of President shall be eligible to that of Vice-President of the United States. \
+   <p><i>*Superseded by section 3 of the 20th amendment.</i><p>'},
   {date: 1865, ordinal: '13th', text: "<h4> Section 1. </h4> <p>Neither slavery nor involuntary servitude, except as a punishment for crime whereof the party shall have been duly convicted, shall exist within the United States, or any place subject to their jurisdiction.</p><h4> Section 2. </h4>Congress shall have power to enforce this article by appropriate legislation."},
   
   {date: 1868, ordinal: '14th', text: fourteenthText},
@@ -33,7 +36,8 @@ var amendments = [
   {date: 1919, ordinal: '18th', short_description: 'Liquor Outlawed', text: "<h4>Section 1.</h4><p> After one year from the ratification of this article the manufacture, sale, or transportation of intoxicating liquors within, the importation thereof into, or the exportation thereof from \
   the United States and all territory subject to the jurisdiction thereof for beverage purposes is hereby prohibited.<p> \
   <h4>Section 2.</h4> <p>The Congress and the several States shall have concurrent power to enforce this article by appropriate legislation.</p> \
-  <h4>Section 3.</h4><p>This article shall be inoperative unless it shall have been ratified as an amendment to the Constitution by the legislatures of the several States, as provided in the Constitution, within seven years from the date of the submission hereof to the States by the Congress.</p>"},
+  <h4>Section 3.</h4><p>This article shall be inoperative unless it shall have been ratified as an amendment to the Constitution by the legislatures of the several States, as provided in the Constitution, within seven years from the date of the submission hereof to the States by the Congress.</p>\
+  <p><i>[The 18th amendment was repealed by the 21st amendment]</i></p>"},
   {date: 1920, ordinal: '19th', text: "The right of citizens of the United States to vote shall not be denied or abridged by the United States or by any State on account of sex. Congress shall have power to enforce this article by appropriate legislation."},
   {date: 1933, ordinal: '20th', text: "<h4>Section 1.</h4><p>The terms of the President and the Vice President shall end at noon on the 20th day of January,\
    and the terms of Senators and Representatives at noon on the 3d day of January, of the years in which such terms would have ended if this article had not \
@@ -81,7 +85,7 @@ var amendments = [
    and duties of his office, the Vice President shall continue to discharge the same as Acting President; otherwise, the President shall resume the powers and duties of his office.</p>"},
 
   {date: 1971, ordinal: '26th', text: '<h4>Section 1.</h4> The right of citizens of the United States, who are eighteen years of age or older, to vote shall not be denied or abridged by the United States or by any State on account of age. <h4> Section 2.</h4> The Congress shall have power to enforce this article by appropriate legislation.'},
-  {date: 1992, ordinal: '27th', short_description: '', text: 'No law, varying the compensation for the services of the Senators and Representatives, shall take effect, until an election of representatives shall have intervened'}
+  {date: 1992, ordinal: '27th', short_description: '', text: 'No law, varying the compensation for the services of the Senators and Representatives, shall take effect, until an election of representatives shall have intervened.'}
 ]
 
 plotAmendments();
@@ -89,9 +93,21 @@ $( window ).resize(plotAmendments);
 
 function plotAmendments(){
   d3.select("svg").remove();
-  var margin = {top: 20, right: 60, bottom: 40, left: 50},
-              width = window.innerWidth * 0.95 - margin.left - margin.right,// Use the window's width
-              height = 260 + margin.top + margin.bottom; 
+
+  if (window.innerWidth > 1500) {
+    var margin = {top: 20, right: 30, bottom: 40, left: 30},
+    width = 1500 * 0.80 - margin.left - margin.right,
+    nbins = 48; 
+  } else if  (window.innerWidth > 700) {  
+    var margin = {top: 20, right: 30, bottom: 40, left: 30},
+    width = window.innerWidth * 0.80 - margin.left - margin.right,
+    nbins = 48; 
+  } else {
+    var margin = {top: 20, right: 20, bottom: 40, left: 20},
+    width = window.innerWidth * 0.95 - margin.left - margin.right,
+    nbins = 24; 
+  }
+  var height = 260 + margin.top + margin.bottom;
 
   var svg = d3.select("#timeline")
     .append("svg")
@@ -104,17 +120,7 @@ function plotAmendments(){
             .rangeRound([0, width])
             .domain([1780,2020])
 
-  //not sure if I need this
-  var yScale = d3.scaleLinear().range([height, 0 ]);
-
-  if (width > 650){
-    var nbins = 48;
-  }else {
-    var nbins = 24;
-  }
-
-  console.log(width/(2*nbins));
-  var circleRadius = width/(2*nbins);
+  var circleRadius = width/(2*nbins) - 1;
   var circleSpacing = circleRadius + 1;
 
   var histogram = d3.histogram()
@@ -125,7 +131,6 @@ function plotAmendments(){
   //filter out empty bins
   var bins = histogram(amendments).filter(d => d.length>0);
 
-  //g container for each bin
   let binContainer = svg.selectAll(".gBin")
     .data(bins);
 
@@ -161,8 +166,15 @@ function plotAmendments(){
     .tickSize(0)
     .tickPadding(10));
 
+  svg.append("text")
+  .attr("x", (width / 2))             
+  .attr("y", 4 * margin.top )
+  .attr("text-anchor", "middle")  
+  .attr("class", "graph-title") 
+  .text("Amendments to the U.S. Constitution");
 
-  function handleAmendmentClicked(d, i){
+
+  function handleAmendmentClicked(d){
     htmlToDisplay = "<h4>" +  d.ordinal + " " + "Amendment <span class='ratification'> (ratified in " + d.value + ")</span> </h4> " + d.text;
     document.getElementById('amendment-description').innerHTML = htmlToDisplay;
     d3.selectAll("circle").classed("selected-amendment-dot", false);

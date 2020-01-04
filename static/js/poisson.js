@@ -20,7 +20,7 @@ var priorPredictiveEq2 = "p(y |\\alpha, \\beta) = \\int p(y, \\lambda | \\alpha,
 var negativeBinomialEq1 = "p(y) = \\frac{\\Gamma(\\alpha + y)\\beta^\\alpha}{\\Gamma(\\alpha) y! (1+ \\beta)^{\\alpha+y}} = \\binom{\\alpha + y - 1}{y} (\\frac{\\beta}{\\beta + 1})^\\alpha (\\frac{1}{\\beta + 1})^y";
 
 
-var poissonDerivationEq1 = "p(y) = \\text{Binom}(y; M, r\\Delta t) = \\frac{M!}{(M-y)!y!}(r \\Delta t)^y (1 - r \\Delta t)^{M - y}"
+var poissonDerivationEq1 = "\\text{Binom}(y; M, r\\Delta t) = \\frac{M!}{(M-y)!y!}(r \\Delta t)^y (1 - r \\Delta t)^{M - y}"
 var poissonDerivationEq2 = "\\lim_{\\Delta t \\to 0} \\frac{M!}{(M-y)!y!}(r \\Delta t)^y (1 - r \\Delta t)^{M - y} "
 var poissonDerivationEq3 = "\\frac{1}{y!} \\lim_{\\Delta t \\to 0} M^y (r \\Delta t)^{y} (1- r\\Delta t)^M = \\frac{1}{y!} \\lim_{\\Delta t \\to 0} (rT)^{-y} (1- r\\Delta t)^M";
 var poissonDerivationEq4 = "p(y) = \\frac{1}{y!} (rT)^{-y} e^{-rT}";

@@ -24,9 +24,37 @@
   </header>
   <main>
     <section>
+      <div class=blogpost>
+        <h3 class="blogdate">January 6, 2020 </h3>
+        <span class="blogtopic"><a href="poisson.html" class="include-in-wordcloud">Poisson distributions, gamma distributions, and Poisson processes </a></span>
+        <p class="include-in-wordcloud">
+        This post is meant to introduce some friendly and useful distributions &mdash; the <em>Poisson distribution</em> and the <em>gamma distribution</em> &mdash;
+        and to get some intuition for the related <em>Poisson process</em>. As a bonus, we'll see 
+        the <em>exponential</em> and <em>negative binomial distributions</em> appear along the way, with the negative binomial appearing in the role of <em>prior predictive distribution</em>.
+        </p>
+        <p class="include-in-wordcloud">
+          Poisson distributions are useful when you have whole number counts of events. Gamma distributions are a flexible family of distributions that generalize some other distributions that 
+          might be familiar to you: the exponential and chi-squared distributions.  Poisson processes can be used to model events occuring with certain independence properties in
+          space and/or time.  Exponential distributions show up in modeling wait times between events, among other applications.  If these sound like a useful bunch of distributions for 
+          modeling in many settings, they are.
+        </p>
+        <p class="include-in-wordcloud">
+          As we work with these distributions, we will take advantage of the opportunities that arise along the way to become more familiar with ideas about working with priors, likelihoods, and posterior 
+          distributions, recognizing and using conjugacy properties when it is reasonable to do so, and looking at the role of hyperparameters.  When we
+          encounter the negative binomial distribution it will be as a prior predictive distribution in our model, which is a useful-to-understand role for a distribution. We'll also take an optional detour to look 
+          at different parametrizations of the gamma distribution in more detail, which might sound boring until you &mdash; say &mdash; spend a bunch of time that you will never get back on failing to replicate someone's 
+          methods, only to realize that you and they were parametrizing the gamma distribution differently.
+        </p>
+        <p class="include-in-wordcloud">
+          Ready? Let's get started, beginning with the Poisson distribution.
+        </p>
+        <p> <a href="poisson.html"><b>(Read post)</b></a></p>
+      </div>
+
+
       <div class="blogpost">
       <h3 class="blogdate">December 18, 2019 </h3>
-      <span class="blogtopic include-in-wordcloud"> <a href="git_workflow.html"> A Git workflow with branches</span>
+      <span class="blogtopic"> <a href="git_workflow.html" class="include-in-wordcloud"> A Git workflow with branches</span>
         <p class="include-in-wordcloud"> This post is a reference and explainer for a basic collaborative git workflow. I felt like it took me forever to learn 
           the basics of git, so I put this put this together for myself, and posted it in case it could be helpful for anyone else!
         </p>
@@ -34,7 +62,7 @@
       </div>
       <div class="blogpost">
           <h3 class="blogdate">December 4, 2019 </h3>
-          <span class="blogtopic include-in-wordcloud"> <a href="dirichletprocesses.html">Beta distributions, Dirichlet distributions and Dirichlet processes </a></span>
+          <span class="blogtopic"> <a href="dirichletprocesses.html" class="include-in-wordcloud">Beta distributions, Dirichlet distributions and Dirichlet processes </a></span>
           <p class="include-in-wordcloud">Today I am writing about some of my <em> favorite </em> distributions: the beta distribution,
           the Dirchlet distribution, and the Dirichlet process. All three are handy options
           to have at your disposal in specifying priors in certain Bayesian models, and they're also rather lovely

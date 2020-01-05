@@ -26,7 +26,7 @@
     </header>
     <main>
         <div class=blogpost>
-            <h3 class="blogdate">January 6, 2020 </h3>
+            <h3 class="blogdate">January 5, 2020 </h3>
             <span class="blogtopic"> Poisson distributions, gamma distributions, and Poisson processes </span>
             <p>
             This post is meant to introduce some friendly and useful distributions &mdash; the <em>Poisson distribution</em> and the <em>gamma distribution</em> &mdash;
@@ -165,7 +165,7 @@
             <div class="panel">
               <p>
                 First, note that even if the the gamma distributions are very new to you, they still might be more familiar than they seem: the exponential distribution
-                and chi-squared distribution are special cases of gamma distributions.  The pdf for an exponential distribution with parameter &theta; is:
+                and chi-squared distribution are special cases of gamma distributions.  The pdf for an exponential distribution with parameter &theta; &gt; 0 is:
               <p id="exponentialPdfEquation"></p>
               <p>We note that this is the same as the above pdf of a gamma distribution with &alpha;=1, &beta;=&theta;.</p>
               <p>
@@ -207,12 +207,12 @@
                    We can translate between the parametrizations with, e.g., the following relationships:</p>
                 <p id="paramTranslation1Equation"></p>
                 <p id="paramTranslation2Equation"></p>
-                The textbooks <em>Bayesian Data Analysis</em> [Gelman et al. 2013] and <em>Pattern Recognition and Machine Learning</em> [Bishop 2006] use the first parametrization above.
+                The textbooks <em>Bayesian Data Analysis</em> [Gelman et al. 2013] and <em>Pattern Recognition and Machine Learning</em> [Bishop 2006] use the first parametrization listed above.
                 The JavaScript statistical library <a href="https://jstat.github.io/distributions.html#jStat.gamma" target="_blank" rel="noreferrer noopener"><b>jStat</b></a> uses the second.  
                 The Python probabilistic programming and Bayesian statistics library <a href="https://docs.pymc.io/api/distributions/continuous.html#pymc3.distributions.continuous.Gamma" target="_blank" rel="noreferrer noopener"><b>PyMC3</b></a> 
                 gives options to parameterize using the first or third.
-                The Python library <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gamma.html" target="_blank" rel="noreferrer noopener"><b>scipy</b></a>'s <code>stats.gamma</code> adapts the second parametrization above.
-                In scipy, functions like <code>stats.gamma.pdf</code> require a shape parameter 
+                The Python library <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gamma.html" target="_blank" rel="noreferrer noopener"><b>SciPy</b></a>'s <code>stats.gamma</code> adapts the second parametrization above.
+                In SciPy, functions like <code>stats.gamma.pdf</code> require a shape parameter 
                 (&alpha; or <em>k</em> above - called <em>a</em> in the scipy documentation), and by default set &theta; = 1.  You can set &theta; with the optional <code>scale</code> 
                 argument, and you can also replace the gamma distributed random variable <em>x</em> with a shifted version of itself by setting the <code>loc</code> 
                 parameter.  Thus, the value of <code>stats.gamma.pdf(x, 2, loc=3, scale=4)</code> is given by second equation above with &alpha; = 2, &theta; = 4, evaluated at &lambda; = x - 3.               

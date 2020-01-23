@@ -76,9 +76,14 @@
                     <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
                 </li>
                 <li>
-                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to master delete the old branch locally. </h4>
-                        <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
-                        <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
+                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the master branch and delete the old branch locally. </h4>
+                    <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                    <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
+                    
+                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely and merging them into to your local master branch. </h4>
+                    <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+             
                 </li>
             </ol>
             <p>More information:</p>
@@ -211,9 +216,13 @@
                                     <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
                                 </li>
                                 <li>
-                                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to master delete the old branch locally. </h4>
+                                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the master branch and delete the old branch locally. </h4>
                                         <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
                                         <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
+                                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely, and merging them into to your local master branch. </h4>
+                                        <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
+                                        <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                    
                                 </li>
                             </ol>
                 </div>

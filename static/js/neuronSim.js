@@ -80,40 +80,7 @@ function setModelAdjustmentPane(selectedEquation){
 
     if (cellParameters.selectedEquation =="hodgkinhuxley"){
       property = {"title": "Applied Current", "id": "appliedcurrent", 'katex': 'I_app', "min": "0", "max": "100","defaultValue": "0", "units": "nA", "SIFactor":"-11"}
-      // $('#modeladjustmentpane').append("<button id = 'hh0' value = '0'> I_app = 0 </button>");
-      // $('#modeladjustmentpane').append("<button id = 'hh2' value = '3'> I_app = 3 </button>");
-      // $('#modeladjustmentpane').append("<button id = 'hh5' value = '5'> I_app = 5 </button>");
-      // $('#modeladjustmentpane').append("<button id = 'hh20' value = '50'> I_app = 50 </button>");
-      // $('#modeladjustmentpane').append("<button id = 'hh60' value = '60' > I_app = 60 </button>");
-      // $('#modeladjustmentpane').append("<button id = 'hh100' value = '100' > I_app = 100 </button>");
-      //
-      //
-      // document.getElementById('hh0').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // document.getElementById('hh2').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // document.getElementById('hh5').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // document.getElementById('hh20').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // document.getElementById('hh60').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // document.getElementById('hh100').onclick = function() {
-      //   cellParameters[p.id] = this.value * Number(1 + 'E' + p.SIFactor);
-      //   plotVoltageTrace(calculatevoltagetrace(cellParameters));
-      // }
-      // var property = {"title": "Applied Current", "id": "appliedcurrent", 'katex': 'I_app', "min": "0", "max": "50","defaultValue": "0", "units": "nA", "SIFactor":"-11"}
-       $('#modeladjustmentpane').append(makeSlider(property));
+           $('#modeladjustmentpane').append(makeSlider(property));
        makeResponseToSlider(property);
        katex.render("I_{app}", I_app, {  throwOnError: false});
     }
@@ -135,13 +102,13 @@ function setModelAdjustmentPane(selectedEquation){
    }
  }
 
-var lifEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L (E_L - V_M) + I_{app} ";
+var lifEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L (E_L - V_m) + I_{app} ";
 var lifEquationLine2 = "\\text{if } V_m > V_{th} \\text{ then } V_m \\mapsto V_{reset}";
 
-var elifEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L \\left(E_L - V_M + \\Delta_{th} \\exp \\left( \\dfrac{V_m - V_{th}}{\\Delta_{th} }\\right) \\right)+ I_{app} ";
+var elifEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L \\left(E_L - V_m + \\Delta_{th} \\exp \\left( \\dfrac{V_m - V_{th}}{\\Delta_{th} }\\right) \\right)+ I_{app} ";
 var elifEquationLine2 = lifEquationLine1;
 
-var hodgkinhuxleyEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L(E_L - V_M) + G_{Na}^{max} m^3 h (E_{Na} - V_m) + G_K^{max}n^4(E_K - V_m)+ I_{app} ";
+var hodgkinhuxleyEquationLine1 = "C_m \\dfrac{dV_m}{dt} = G_L(E_L - V_m) + G_{Na}^{max} m^3 h (E_{Na} - V_m) + G_K^{max}n^4(E_K - V_m)+ I_{app} ";
 var hodgkinhuxleyEquationLine2 = "\\dfrac{dm}{dt} = \\alpha_m(1-m) + \\beta_m m";
 var hodgkinhuxleyEquationLine3 = "\\dfrac{dh}{dt} = \\alpha_h(1-h) + \\beta_h h";
 var hodgkinhuxleyEquationLine4 = "\\dfrac{dn}{dt} = \\alpha_n(1-n) + \\beta_n n"
@@ -166,43 +133,3 @@ function renderKatex(){
     throwOnError: false
   });
 }
-//Slider code from W3Schools:
-// var slider = document.getElementById("appliedcurrentRange");
-//
-// // Update the current slider value (each time you drag the slider handle)
-// slider.oninput = function() {
-//   console.log($('this'));
-//   this.previousElementSibling.childNodes[2].innerHTML =  "= " + this.value + " nA";
-//   cellParameters.appliedCurrentValue = this.value * 10e-12;
-//   currdataset = calculatevoltagetrace(cellParameters);
-//   plotVoltageTrace(currdataset);
-// }
-//
-// var membraneCapacitanceSlider = document.getElementById("membraneCapacitanceRange");
-//
-// // Update the current slider value (each time you drag the slider handle)
-// membraneCapacitanceSlider.oninput = function() {
-//   console.log($('this'));
-//   this.previousElementSibling.childNodes[2].innerHTML = "= " + this.value + " pF";
-//   cellParameters.membraneCapacitance = this.value * 1e-12;
-//   currdataset = calculatevoltagetrace(cellParameters);
-//   plotVoltageTrace(currdataset);
-// }
-//
-// var leakConductanceSlider = document.getElementById("leakConductanceRange");
-// leakConductanceSlider.oninput = function() {
-//   console.log($('this'));
-//   this.previousElementSibling.childNodes[2].innerHTML = "= " + this.value + " nS";
-//   cellParameters.leakConductance = this.value * 1e-9;
-//   currdataset = calculatevoltagetrace(cellParameters);
-//   plotVoltageTrace(currdataset);
-// }
-//
-// var leakEquilibriumPotentialSlider = document.getElementById("leakequilibriumpotentialRange");
-// leakEquilibriumPotentialSlider.oninput = function() {
-//   console.log($('this'));
-//   this.previousElementSibling.childNodes[2].innerHTML = "= " + this.value + " mV";
-//   cellParameters.leakEquilibriumPotential = this.value * 1e-3;
-//   currdataset = calculatevoltagetrace(cellParameters);
-//   plotVoltageTrace(currdataset);
-// }

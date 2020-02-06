@@ -3,7 +3,6 @@ code {
     background-color: lightgray;
     padding: 20px;
     margin: 5px 5px;
-    
 }
 
 
@@ -23,9 +22,6 @@ code .highlight-on-hover:hover{
 .ui-tooltip {
     background:white;
     border: 2px solid white;
-  }
-
-.ui-tooltip {
     padding: 10px 20px;
     color: black;
     border-radius: 20px;
@@ -33,7 +29,10 @@ code .highlight-on-hover:hover{
     box-shadow: 0 0 7px black;
     max-width: 600px;
     line-height: 1.4;
+    position: absolute;
   }
+
+ 
 /* .arrow {
     width: 70px;
     height: 16px;

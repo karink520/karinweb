@@ -83,4 +83,9 @@ $('.git-merge').attr('title', gitMergeExplanation);
 $('.git-push').attr('title', gitPushExplanation);
 $('.git-branch-d').attr('title', gitBranchDExplanation);
 
-$( document ).tooltip();
+//$( document ).tooltip();
+$( document ).tooltip( {
+  // close: function( event, ui ) {
+  //   $(this).css("z-index","4")
+  // }
+});

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/dirichletprocessesd3.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/jbhozp4n6fyvq0f/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate">February 10, 2020 </h3>
+            <span class="blogtopic" class="include-in-wordcloud">Wasserstein distance and Kullback-Leibler divergence</span>
+            <p>Quick, what's better than one probability distribution?</p>
+            <p>That's right, two probability distributions.  And once you have two probability distributions, it is likely only a matter  
+            of time before find yourself comparing them to each other.  Are they similar, or different, you might ask, and to what extent?
+            If one of them is a ground truth, how far is the other one from it?  Since this is a common question, there are several
+            widely used tools to answer these questions.
+            </p>
+            <p>
+            In this post, we explore two widely used ways of quantifying distribution differs from another: Kullback-Leibler (KL) Divergence (also called relative entropy),
+            and the Wasserstein metric. For each of these two quantities, we'll define it, have the chance build up intuition by playing around graphically (and interactively - yay!)
+            and then dive into more detail for those who are interested in more about why we define them this way and when they are useful. 
+            </p>
+
+
+            <button class="accordion">Kullback-Leibler divergence (relative entropy) </button>
+            <div class="panel">
+              <p>
+                Equation for KL divergence.
+              </p>
+              <p id="KLdefinition"></p>
+              <p>Let's make a few observations from this equation, then explore visually. (Or should we do these things in the opposite order?)</p>
+              <p>First, let's note that the KL divergence of a distribution with itself is zero  &mdash; because <span id="KLdivOfPWithSelf"></span>, so 
+                <span id="KLdivOfPWithSelf2"></span> for any P. 
+              </p>
+              <p>Second, the KL divergence between two distributions is always nonnegative. We can prove this by applying Jensen's inequality.
+                Jensen's inequality, in its simplest form, tells us that the line connecting two points on a convex curve lies above the curve itself, and
+                more generally tells us that the expectation of a convex function is greater than the convex function of the expectation).  
+                We'll use the formulation of Jensen's inequality that tells us that for a probility density function <em>P</em>, a real-valued, measurable 
+                function <em>g</em> and a convex function <em>c</em>, that:
+              </p>
+              <p id="jensens"></p>
+              <p>With <em>c</em> as the (convex!) negative logarithm function and <span id="jensens2"></span>, we conclude:</p>
+              <p id="jensens3"></p>
+              <p>Third, note that the two distributions P and Q play different roles in the equation above. In general, <span id="nonsymmetric"></span>. This is important, because
+              we may talk casually of KL divergence as measuring the "distance" between two probability distributions, and we need to be aware
+              that its lack of symmetry sets it apart from our common intuition of distance.  It satisfies some of our intuition of
+              what a distance is (nonnegative always, and zero when we compare a distribution when itself), but its lack of symmetry (among other properties)
+              means that it fails to meet the mathematical definition of a <em>metric</em>, which more closely matches our intuition for what a distance 
+              should entail.</p>
+              <p>Let's now build our intuition for the KL divergence visually.</p>
+
+              <button id="drawp"> Redraw p </button>
+              <button id="drawq"> Redraw q </button>
+              <button id="klReset"> Swap p and q </button>
+              <button id="klReset"> Copy p and q from Wasserstein plot </button>
+              <button id="klReset"> Reset to default </button>
+              <!--Plot of p and q, with options to redraw either one-->
+              <div id="kldivergenceplot"></div> 
+              <!--Plot of log p and log q, and their difference?-->
+              <div id="kllogprobsplot"></div>
+              <!--Plot of p times log p - log q. with area under the curve shaded-->
+              <div id="p_log_p_over_q"></div>
+              <div> KL divergence: <span id=calculatedKLDivergence></span>
+              </div>
+              </div>
+
+            <button class="accordion">Some interpretations of KL Divergence</button>
+            <div class="panel">
+              <p> There are a number of ways to conceptualize KL divergence.  Here, we will consider two.  The approach taken in the graphical breakdown 
+              above visualizes the following breakdown of KL divergence: </p>
+              <p id="KLdiffOfLogs"></p>
+              <p>That is, we look at the expected difference of the log proabilities of P and Q, where the expectation is taken with respect to P.
+              So, KL divergences will be large if the log probabilities of P and Q differ <em>in regions of the sample space [check word choice] that are highly probable under P</em>.
+              On the other hand, large differences in the log probablities with respect to P and Q make little impact on the KL divergence if those differences
+              occur over values of <em>x</em> that have low probablitiy under P.</p>
+              <p>This view of KL divergence can be a helpful way to get a handle on the ideas at play, especially if you're already used to
+                working with log probability density funcitions (which you may well be - the log-pdfs are often easier to compute with than the pdfs themselves.)
+              </p>
+              <p >Now let's consider a different way to conceptualize, based on (what's the word for the kind of coding)</p>
+
+              <p> Cross entropy minus entropy</p>
+              </div>
+            <button class="accordion">Wasserstein distance</button>
+            <div class="panel">
+              <p>
+                Thanks for reading, and I wish you much happy modeling of count data (and more) with Poisson distributions and their friends!
+              </p>
+              <p>I encountered the derivation in the previous section of the Poisson distribution as the limit of a binomial in [Dayan and Abbot 2001]. 
+              The textbooks [Gelman et al. 2013] and [Bishop 2006] explain uses of Poisson distributions in Bayesian contexts &mdash; and are two of my
+              favorite resources for learning Bayesian statistics in general.</p>
+
+              </div>
+
+ 
+
+        
+            <button class="accordion">Conclusion and references</button>
+            <div class="panel">
+              <p>
+                  That's it for now!  I'm having fun writing these posts, and hope they might occasionally hit at the right time to be helpful to someone who is reading.  
+                  If you like them on <a href="https://twitter.com/karinknudson" target="_blank" rel="noreferrer noopenener">Twitter</a>, I take that as encouragement to write more.
+              <ul>
+                <li class="reflist">Bishop, C.M., 2006. Pattern recognition and machine learning. Springer.</li>
+                <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
+              </ul>
+              </div>
+
+         
+          </div>         
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/kldivergence.js"></script>
+   <script src="js/blogpost.js"></script>
+   </body>
+</html>

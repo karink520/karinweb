@@ -1,7 +1,8 @@
 // X Make a plot with two probability distributions on it
-// O Make a plot with their log pdfs and the difference between those two
-// O Make a plot of the product of those things and display
-// 0 Calculate and display the KL divergence
+// X Make a plot with their log pdfs
+// X Make a plot with the difference between the log pdfs and the product of the diff with P
+// O Shade in the area under the curve 
+// X Calculate and display the KL divergence
 // O Make it so that I can turn on and off the pieces of each plot
 // O Make it so that I can click a "clear and redraw" button and draw a distribution
 // O Make the drawing work
@@ -16,59 +17,194 @@
 var plotColors = {"ppdf": "#74a830", "qpdf":"#0000ff","logppdf": "#74a830", "logqpdf":"#0000ff", "logratio": "#ffab00", "ptimeslogratio": "#000000"};
 var displayNames = {"ppdf": "p(x)", "qpdf": "q(x)", "logppdf": "log(p(x))", "logqpdf": "log(q(x))", "logratio": "log(p(x) / q(x)) = log(p(x)) - log(q(x))", "ptimeslogratio": "p(x)log(p(x)/q(x))"};
 
-var res = 100
+var res = 20
 var n = 8 * res
 var xmax = 8;
-var xstep = 0.01
+var xstep = 1.0 / res
+var sketchable_svg;
+var xScale;
+var sketchable_yScale;
+var pdata = [];
 
-var defaultPAndQ =  d3.range(0.01, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 3, 1), "qpdf": jStat.gamma.pdf(d, 2, 1)  } });
-defaultPAndQ.forEach(function(d){d["logppdf"] = Math.log(d.ppdf)});
-defaultPAndQ.forEach(function(d){d["logqpdf"] = Math.log(d.qpdf)});
-defaultPAndQ.forEach(function(d){d["ratio"] = d.ppdf/ d.qpdf});
-defaultPAndQ.forEach(function(d){d["logratio"] = Math.log(d.ratio)});
-defaultPAndQ.forEach(function(d){d["ptimeslogratio"] = d.ppdf * d.logratio});
+var defaultPAndQ =  d3.range(xstep, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 3, 1), "qpdf": jStat.gamma.pdf(d, 2, 1)  } });
 
-var currentPAndQ = defaultPAndQ;
+function createDefaultPAndQ(){
+  return d3.range(xstep, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 3, 1), "qpdf": jStat.gamma.pdf(d, 2, 1)  } });
+
+}
+
+var currentPAndQ = createDefaultPAndQ();
 
 console.log(defaultPAndQ);
-console.log(typeof(defaultPDataset));
+//console.log(typeof(defaultPDataset));
 
 $(document).ready(function(){
     renderKatex();
-    var xScale, width, margin, height;
-    plot_kl(defaultPAndQ);
+    var width, margin, height;
+    plot_kl(currentPAndQ);
 });
 
 $('#drawP').click( function() {
-    d3.selectAll("svg").remove();
-    plot_kl_distributions(currentPAndQ, ["qpdf"]);
+    //TO DO: Add some visual indication that the graph is now draggable    
+    d3.selectAll("svg").remove(); //IS THIS GOING TO BE A PROBLEM?
+    sketchable_svg = plot_kl_distributions(currentPAndQ, ["qpdf"]);
     plot_kl_log_densities(currentPAndQ, ["logqpdf"]);
     plot_p_log_p_over_q(currentPAndQ);
-    calculate_and_display_kL_divergence(currentPAndQ);
+    //calculate_and_display_kL_divergence(currentPAndQ);
 
+    var canvas = d3.select('#kldivergenceplot')
+        .call(d3.drag()
+        .container(function(){ return this; })
+        .subject(function() { var p = [d3.event.x, d3.event.y]; return [p, p]; })
+        .on('start', drag_started)
+        .on('end', drag_ended)
+        );
 });
+
+
+function coordinates_in_bounds() {
+    var x1 = d3.event.x,
+      y1 = d3.event.y,
+      inv_y = sketchable_yScale.invert(y1),
+      inv_x = xScale.invert(x1);
+
+      y1 = inv_y
+      x1 = inv_x
+
+      y1 = inv_y < 0 ? sketchable_yScale(0) : y1;
+    // y1 = inv_y > y_max ? sketchable_yScale(y_max) : y1;
+    // x1 = inv_x < x_min ? xScale(x_min) : x1;
+    // x1 = inv_x > x_max ? xScale(x_max) : x1;
+    return {x: x1, y: y1};
+  }
+
+function drag_started(){
+    console.log("drag started")
+    var canvas = d3.select('#kldivergenceplot');
+    canvas.selectAll('path.line').remove();
+    var d = d3.event.subject,
+      active = canvas.append('path').attr('class', 'line').datum(d),
+      x0 = d3.event.x,
+      y0 = d3.event.y;
+    pdata = [];
+    d3.event.on('drag', function() { 
+        var coords = coordinates_in_bounds(),
+          x1 = coords.x,
+          y1 = coords.y,
+          dx = x1 - x0,
+          dy = y1 - y0,
+          last = d[d.length - 1];
+          //console.log(last);
+          //console.log(x1);
+       // if (last[0] < x1) {
+          d.push([x0 = x1, y0 = y1]);
+          console.log(x0)
+          console.log(x1)
+          //console.log(x0);
+         // pdata.push([x0, y0]);
+          pdata.push([x0, y0]);
+          //Math.round(xScale.invert(x0)*100)/100
+       // }
+       // active.attr('d', render_line);
+      });
+}
+
+function drag_ended(){
+    //console.log(pdata);
+    for (var i=0; i < currentPAndQ.length; i++) {
+        currentPAndQ[i].ppdf = 0;
+    }
+    for( var j=0; j < pdata.length; j++){
+        var lastAssignedK = 0;
+        var lastValidY = 0;
+        var dy = 0;
+        //console.log(pdata[j][0]);
+        //console.log(xScale(pdata[j][0]));
+        //console.log(xScale.invert(pdata[j][0]));
+        var thisX = Math.round( pdata[j][0] * res) / res;
+        console.log(thisX);
+        for (var k=0; k< currentPAndQ.length; k++){
+            if ( Math.abs(currentPAndQ[k].x - thisX) <= xstep/2){
+                dy = (pdata[j][1] - lastValidY) / (k - lastAssignedK);
+                lastValidY = pdata[j][1];           
+                lastAssignedK = k;
+                currentPAndQ[k].ppdf = pdata[j][1];
+            } else if (k > lastAssignedK && k < lastAssignedK + 30) {
+                currentPAndQ[k].ppdf = lastValidY + (k-lastAssignedK) * dy;
+            }
+        }
+        //find index of closest x value
+       // var index
+        //set the associated ppdf to match
+    }
+    for(var k=0; k< currentPAndQ.length; k++){
+        var match_found = false;
+        var closestBelowIndex = 0;
+        for(var j=0; j<pdata.length; j++){
+            var thisX = Math.round( pdata[j][0] * 100) / 100;
+            if (thisX < currentPAndQ[k].x){
+                closestBelowIndex = j;
+            }
+            if ( Math.abs(currentPAndQ[k].x - thisX) <= 0.005){
+                match_found = true;
+                currentPAndQ[k].ppdf = pdata[j][1];
+            }
+        }
+        if (!match_found && closestBelowIndex !=0 && closestBelowIndex != pdata.length-1) {
+            currentPAndQ[k].ppdf = currentPAndQ[k-1].ppdf + xstep*(pdata[closestBelowIndex][1] - pdata[closestBelowIndex+1][1])/ (pdata[closestBelowIndex][0] - pdata[closestBelowIndex+1][0])
+        }
+    }
+    plot_kl(currentPAndQ);
+    console.log("drag ended");
+    //turn off the dragability here?
+}
+
 
 $('#swapPandQ').click(function(){
     newPAndQ = d3.range(0.01, xmax, xstep).map(function(d, i) { return {"x": d, "ppdf": currentPAndQ[i].qpdf, "qpdf": currentPAndQ[i].ppdf, } });
-    newPAndQ.forEach(function(d){d["logppdf"] = Math.log(d.ppdf)});
-    newPAndQ.forEach(function(d){d["logqpdf"] = Math.log(d.qpdf)});
-    newPAndQ.forEach(function(d){d["ratio"] = d.ppdf/ d.qpdf});
-    newPAndQ.forEach(function(d){d["logratio"] = Math.log(d.ratio)});
-    newPAndQ.forEach(function(d){d["ptimeslogratio"] = d.ppdf * d.logratio});
-    currentPAndQ = newPAndQ;
+    currentPAndQ = newPAndQ.slice();
     plot_kl(currentPAndQ);
 })
 
 $('#klReset').click(function(){
-    plot_kl(defaultPAndQ);
+    console.log("resetting");
+    currentPAndQ = createDefaultPAndQ();
+    plot_kl(currentPAndQ);
 });
+
+function robust_log(z){
+    if (z < 1e-100){
+        return -100;
+    } else {
+        return Math.log(z);
+    }
+}
 
 function plot_kl(dataset){
     d3.selectAll("svg").remove();
-    plot_kl_distributions(dataset, ["ppdf", "qpdf"]);
+    dataset = normalize(dataset);
+    sketchable_svg = plot_kl_distributions(dataset, ["ppdf", "qpdf"]);
+
+    dataset.forEach(function(d){d["logppdf"] = robust_log(d.ppdf)});
+    dataset.forEach(function(d){d["logqpdf"] = robust_log(d.qpdf)});
+    dataset.forEach(function(d){d["logratio"] = d.logppdf - d.logqpdf});
+    dataset.forEach(function(d){d["ptimeslogratio"] = d.ppdf * d.logratio});
+    console.log(dataset);
     plot_kl_log_densities(dataset, ["logppdf", "logqpdf"]);
     plot_p_log_p_over_q(dataset);
     calculate_and_display_kL_divergence(dataset);
+}
+
+function normalize(dataset){
+    p_sum = 0;
+    q_sum = 0;
+    for (var i = 0; i< dataset.length; i++){
+        p_sum += dataset[i].ppdf * xstep;
+        q_sum += dataset[i].qpdf * xstep;
+    }
+    dataset.forEach(function(d){d["ppdf"] =d.ppdf / p_sum});
+    dataset.forEach(function(d){d["qpdf"] =d.qpdf / q_sum});
+    return dataset;
 }
 
 
@@ -84,17 +220,16 @@ function plot_kl_distributions(dataset, groupsToPlot) {
       };
     });
 
-
     var plotWidth = (document.getElementsByClassName('blogdate')[0]).offsetWidth;
     margin = {top: 20, right: 30, bottom: 20, left: 30};
     width = plotWidth - margin.left - margin.right;
     height = 300;
 
     xScale = d3.scaleLinear()
-        .domain([0, n/100]) // input
+        .domain([0, n/res]) // input
         .range([0, width]); //output
   
-    var yScale = d3.scaleLinear()
+    sketchable_yScale = d3.scaleLinear()
         .domain([0, 0.5]) // input
         .range([height, 0]); // output
 
@@ -114,11 +249,12 @@ function plot_kl_distributions(dataset, groupsToPlot) {
     //  Call the y axis in a group tag
     svg.append("g")
         .attr("class", "y axis")
-        .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+        .call(d3.axisLeft(sketchable_yScale)); // Create an axis component with d3.axisLeft
 
     var line = d3.line()
+    .curve(d3.curveBasis) 
     .x(function(d, i) { return xScale((i+1)/res); })
-    .y(function(d) { return yScale(+d.value) })
+    .y(function(d) { return sketchable_yScale(+d.value) })
 
     svg.selectAll("myLines")
     .data(dataReady)
@@ -139,6 +275,9 @@ function plot_kl_distributions(dataset, groupsToPlot) {
         .text(function(d) { return displayNames[d.name]; })
         .style("fill", function(d){ return plotColors[d.name] })
         .style("font-size", 18)
+
+    console.log(svg);
+    return svg;
 }
 
 function plot_kl_log_densities(dataset, groupsToPlot) {
@@ -177,6 +316,7 @@ function plot_kl_log_densities(dataset, groupsToPlot) {
     .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
 
     var line = d3.line()
+        .curve(d3.curveBasis)   
         .x(function(d, i) { return xScale((i+1)/res); })
         .y(function(d) { return yScale(+d.value) })
 
@@ -207,7 +347,7 @@ function plot_kl_log_densities(dataset, groupsToPlot) {
 
 
 function plot_p_log_p_over_q(dataset){
-    var groupsToPlot = ["logratio", "ppdf", "ptimeslogratio"]
+    var groupsToPlot = ["logratio", "ptimeslogratio"]
     // Reformat the data: we need an array of arrays of {x, y} tuples
     var dataReady = groupsToPlot.map( function(grpName) { // .map allows to do something for each element of the list
       return {
@@ -217,8 +357,8 @@ function plot_p_log_p_over_q(dataset){
         })
       };
     });
-    // I strongly advise to have a look to dataReady with
-    console.log(dataReady)
+    
+    //console.log(dataReady)
 
     var yScaleRight = d3.scaleLinear()
         .domain(d3.extent(dataset, function(d) { return d.logratio; } )) // input
@@ -254,10 +394,12 @@ function plot_p_log_p_over_q(dataset){
 
     //d3's line generator
     var line = d3.line()
+    .curve(d3.curveBasis)   
       .x(function(d, i) { return xScale((i+1)/res); })
       .y(function(d) { return yScale(+d.value) })
     
     var lineRight = d3.line()
+    .curve(d3.curveBasis) 
       .x(function(d, i) { return xScale((i+1)/res); })
       .y(function(d) { return yScaleRight(+d.value) })
 
@@ -323,7 +465,6 @@ function plot_p_log_p_over_q(dataset){
 
 function calculate_and_display_kL_divergence(dataset){
     var kl_divergence = d3.sum(dataset, function(d){ return d.ptimeslogratio*xstep});
-    console.log(kl_divergence);
     $(calculatedKLDivergence).text(kl_divergence.toFixed(3));
 }
 

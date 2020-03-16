@@ -31,12 +31,12 @@
             <p>Quick, what's better than one probability distribution?</p>
             <p>That's right, two probability distributions.  And once you have two probability distributions, it is likely only a matter  
             of time before find yourself comparing them to each other.  Are they similar, or different, you might ask, and to what extent?
-            If one of them is a ground truth, how far is the other one from it?  Since this is a common question, there are several
-            widely used tools to answer these questions.
+            If one of them represents ground truth, how far is the other one from it?  Since these are common questions, there are several
+            widely used tools to help answer them.
             </p>
             <p>
             In this post, we explore two widely used ways of quantifying distribution differs from another: Kullback-Leibler (KL) Divergence (also called relative entropy),
-            and the Wasserstein metric. For each of these two quantities, we'll define it, have the chance build up intuition by playing around graphically (and interactively - fun!)
+            and the Wasserstein metric. For each of these two quantities, we'll define it, have the chance build up intuition by playing around graphically,
             and then dive into more detail for those who are interested in more about why we define them this way and when they are useful. 
             </p>
 
@@ -56,21 +56,21 @@
                 more generally tells us that the expectation of a convex function is greater than the convex function of the expectation.  
                 We'll use the formulation of Jensen's inequality that tells us that for a probility density function <em>P</em>, a real-valued, measurable 
                 function <em>g</em> and a convex function <em>c</em>, we have:
-              <span id="jensens"></span>
-              With <em>c</em> as the (convex!) negative logarithm function and <span id="jensens2"></span>, we conclude:
+              <p id="jensens">.</p>
+              With <em>c</em> as the (convex!) negative logarithm function and <span id="jensens2"></span>, we conclude that the KL divergence is nonnegative as follows:
               <p id="jensens3"></p>
-              <p>Third, note that the two distributions P and Q play different roles in the equation above. In general, <span id="nonsymmetric"></span>. This is important, because
+              <p>Third, note that the two distributions P and Q play different roles in the equation above. In general, <span id="nonsymmetric"></span>. This point is important, because
               we may talk casually of KL divergence as measuring the "distance" between two probability distributions, and we need to be aware
               that its lack of symmetry sets it apart from our common intuition of distance.  It satisfies some of our intuition of
               what a distance is (nonnegative always, and zero when we compare a distribution when itself), but its lack of symmetry (among other properties)
               means that it fails to meet the mathematical definition of a <em>metric</em>, which more closely matches our intuition for what a distance 
               should entail.</p>
               <p>Let's now build our intuition for the KL divergence visually.  First, we start with a plot of two example probability density functions, p and q.
-                You can experiment with redrawing them, if you'd like.
+                You can experiment with redrawing them, if you'd like, using the 'redraw' button and then clicking and dragging on the graph.
               </p>
 
               <button id="drawP"> Redraw p </button>
-              <button id="drawQ"> Redraw q </button>
+              <!--<button id="drawQ"> Redraw q </button>-->
               <button id="swapPandQ"> Swap p and q </button>
              <!--<button id="klReset"> Copy p and q from Wasserstein plot </button>-->
               <button id="klReset"> Reset to default </button>

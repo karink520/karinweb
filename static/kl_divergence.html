@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/dirichletprocessesd3.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/jbhozp4n6fyvq0f/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate">March 22, 2020 </h3>
+            <span class="blogtopic" class="include-in-wordcloud">Kullback-Leibler divergence</span>
+            <p>Quick, what's better than one probability distribution?</p>
+            <p>That's right, two probability distributions. Once you have two probability distributions, though, it is likely only a matter  
+            of time before find yourself comparing them to each other.  Are they similar, or different, you might ask, and to what extent?
+            If one of them represents ground truth, how far is the other one from it?  Since these are common questions, there are several
+            widely used tools to help answer them.
+            </p>
+            <p>
+            In this post and an upcoming one, we will explore two widely used ways of quantifying how one distribution differs from another: Kullback-Leibler (KL) Divergence (also called relative entropy),
+            and the Wasserstein metric. This post discusses KL divergence.  We will define KL divergence, explore it graphically,
+            then look deeper into the definition with a few different interpretations.
+            </p>
+
+            <button class="accordion">Definition of Kullback-Leibler divergence </button>
+            <div class="panel">
+              <p>
+                The KL divergence of two continuous probability distributions P and Q is given by:
+              </p>
+              <p id="KLdefinition"></p>
+              <p> For discrete distributions P and Q, we replace the integral with a summation over the sample space X.  
+              </p>
+              <p>Let's make three preliminary observations from this equation, then explore visually.</p>
+              <ol>
+              <li>First, let's note that the KL divergence of a distribution with itself is zero  &mdash; because <span id="KLdivOfPWithSelf"></span>, so 
+                <span id="KLdivOfPWithSelf2"></span> for any P.  That's a satisfying observation if we're trying to use KL divergence to understand how probability distributions
+                differ, because a distribution doesn't differ from itself.
+              </li>
+              <li>Second, the KL divergence between two distributions is always nonnegative. We can prove this by applying Jensen's inequality.
+                Jensen's inequality, in its simplest form, tells us that the line connecting two points on a convex curve lies above the curve itself, and
+                more generally tells us that the expectation of a convex function is greater than the convex function of the expectation.  
+                We'll use the formulation of Jensen's inequality that tells us that for a probability density function <em>p</em>, a real-valued, measurable 
+                function <em>g</em>, and a convex function <em>c</em>, we have:
+              <p id="jensens">.</p>
+              With <em>c</em> as the negative logarithm function (it's convex!) and <span id="jensens2"></span>, we conclude that the KL divergence is nonnegative as follows:
+              <p id="jensens3"></p>
+              </li>
+              <li><p>Third, note that the two distributions P and Q play different roles in the equation above, so we might correctly expect that, usually, <span id="nonsymmetric"></span>. This lack of equality is important, because
+              we may talk casually of KL divergence as measuring the "distance" between two probability distributions, but we need to be aware
+              that its asymmetry in P and Q makes it quite different from our common intuition of distance.  KL divergence satisfies some of our intuition of
+              what a distance is (nonnegative always, and zero when we compare a distribution when itself), but its lack of symmetry (among other properties)
+              means that it fails to meet the mathematical definition of a <em><a href="https://en.wikipedia.org/wiki/Metric_(mathematics)">metric</a></em> &mdash; and metrics more closely match our intuition of a "distance" 
+              between two mathematical objects.</p></li>
+            </ol>
+              <p>Let's now build our intuition for the KL divergence visually.  First, we start with a plot of two example probability density functions, <em>p</em> and <em>q</em>.
+                You can experiment with redrawing them, if you'd like, using the 'redraw' button and then clicking and dragging on the graph. 
+              </p>
+              <p>  
+                (Under construction:
+                draw slowly for best results, and note that your sketch will be rescaled vertically to make the total probability equal one.)
+              </p>
+
+              <button id="drawP"> Redraw p </button>
+              <!--<button id="drawQ"> Redraw q </button>-->
+              <button id="swapPandQ"> Swap p and q </button>
+             <!--<button id="klReset"> Copy p and q from Wasserstein plot </button>-->
+              <button id="klReset"> Reset to default </button>
+              <!--Plot of p and q, with options to redraw either one-->
+              <div id="kldivergenceplot"></div> 
+              <p>
+                Now, we consider the log of each of the probability density functions.  They are helpful to visualize, because
+                we are working up to the integral of p(x) log (p(x) / q(x)).  Let's recall that log(p(x)/log(q(x))) = log(p(x)) - log(q(x)), so
+                we eventually want to consider the difference of the two log pdfs.
+              </p>
+              <!--Plot of log p and log q, and their difference?-->
+              <div id="kllogprobsplot"></div>
+              <p>Lastly, we show the difference of the log probabilites, log (p(x) / q(x)).  We'll multiply this function by p(x), and then
+                sum up the area under the resulting curve, in gray, with area above the x-axis counting as positive, and below the x-axis counting as 
+                negative.  The total signed area is the KL divergence!
+              <!--Plot of p times log p - log q. with area under the curve shaded-->
+              <div id="p_log_p_over_q"></div>
+              <div class="resultsDisplay"> KL divergence: <span id="KLdefinitionDisplay"></span><span id=calculatedKLDivergence></span>
+              </div>
+            <p>There are a number of ways to conceptualize KL divergence.  Next, we will consider three. </p>
+            </div>
+            <button class="accordion">Interpretation 1: Expected difference of log probabilities</button>
+            <div class="panel">
+              <p> The approach taken in the graphical breakdown 
+              above visualizes the following breakdown of KL divergence: </p>
+              <p id="KLdiffOfLogs"></p>
+              <p>(This rearragement of the KL divergence expression above comes from remembering from algebra that <span id="logDiffIdentity"></span>, of course!)</p>
+              <p>Thus, KL divergence is the expected difference of the log probabilities of P and Q, where the expectation is taken with respect to P.  If you prefer, it is a weighted 
+                difference of the log probabilities of P and Q, where the weights come from P.
+              That means that the KL divergences will be large if the log probabilities of P and Q differ <em>in regions of the sample space that are highly probable under P</em>.
+              On the other hand, large differences in the log probablities with respect to P and Q make little impact on the KL divergence if those differences
+              occur over regions or values that have low probability under P.</p>
+              <p>We should be able to see this property showing up in for the (default) P and Q graphed above.  Note how there is a great deal of shaded gray area in 
+                the bottom curve (the weighted log difference curve) in the region where P and Q are different and P is large &mdash; in the region the second bump of P.
+                However, if we swap P and Q, this same region of the graph contributes little to the shaded area (i.e. it contributes little to the KL divergence), because while P and Q still differ
+                on this region, now the distribution that provides the weighting is small on this region.
+              </p>
+              <p>This first view of KL divergence can be a helpful way to get a handle on the ideas at play, especially if you're already used to
+                working with log probability density funcitions (which you may well be, especially if you work with distributions computationally, since log-pdfs are often easier to compute with than the pdfs themselves).
+              </p>
+            </div>
+            <button class="accordion">Interpretation 2: Coding theory</button>
+            <div class="panel">
+              <p >Now let's consider a different way to conceptualize KL a divergence, using ideas from coding theory.  It will be helpful to consider a discrete example here.
+                Let's say P gives a distribution that assigns probabilities to the three letters, 'p', 'e', 't' of 0.25, 0.5, and 0.25 respectively, as shown
+                in the table below.  Now we're going to assign each letter a binary code, trying to make trying to make efficient choices based on how common the letters are. 
+                Following a <a href="https://en.wikipedia.org/wiki/Huffman_coding">Huffman code</a> that has the nice property that no codeword is a prefix to any other, I encode 'p' with 10, 'e' with 0, and 't' with '11'. 
+              </p>
+              <table>
+                <tr><th>x</th> <th>P(x) </th> <th>code based on P</th><th>-log2 P(x)</th> </tr>
+                <tr><td>'p'</td> <td>0.25</td> <td>'10'</td> <td>2</td> </tr>
+                <tr><td>'e'</td> <td>0.5</td> <td>'0'</td> <td>1</td></tr>
+                <tr><td>'t'</td> <td>0.25</td> <td>'11'</td> <td>2</td></tr>
+              </table>
+              <p>
+                Thus, for example, a sequence like p-e-t-e would be encoded 100110.
+                Note that using 0 for 'e' is a nice economical choice, if I think I'm going to be encoding a bunch of these letters and transmitting that code. It is helpful to use the shortest code 
+                '0', with the most common letter, 'e'.   If I'm communicating a bunch of letters letter-by-letter, and each letter is independent and identically distributed according to P, the expected number of digits (bits) per letter is: 
+              </p>
+              <p id="codingEquation0"></p>
+              <p>
+                Knowing the true distribution of letters P helped us make an efficient coding choice. But, what if we didn't know P, and just had a guess at it, that 
+                we'll call Q?  For concreteness, suppose Q gives letters 'p', 'e', 't' probabilities of 0.5, 0.25, and 0.25 respectively.  Then, we might create our code differently,
+                giving 0 to 'p', since we <em>think</em> that 'p'
+                is the most common, 10 to 'e', and 11 to 't'.  Extending the previous table to now include Q, we have:
+              </p>
+              <table>
+                <tr><th>x</th> <th>P(x)</th>  <th>code based on P</th> <th>-log2 P(x)</th>    <th> Q(x) </th> <th>code based on Q</th> <th> -log2 Q(x)</th> </tr>
+                <tr><td>'p'</td> <td>0.25</td> <td>'10'</td> <td>2</td>      <td>0.5</td> <td>'0'</td> <td> 1 </td></tr>
+                <tr><td>'e'</td> <td>0.5</td> <td>'0'</td> <td>1</td>    <td>0.25</td> <td>'10'</td> <td> 2 </td></tr>
+                <tr><td>'t'</td> <td>0.25</td> <td>'11'</td> <td>2</td>      <td>0.25</td> <td>'01</td> <td> 2 </td></tr>
+              </table>
+              <p>
+               If we used the code based on Q to encode letters that were <em>actually distributed according to P</em>, the expected number of bits per letter required would be:
+               <p id= "codingEquation1">
+              </p>
+              <p>
+              Thus, not knowing the true distribution P, and only approximating it with Q, we used 1.75 - 1.5 = 0.25 extra bits per letter.  That is, the difference in expected bits per letter is given by:
+              </p>
+              <p id= "codingEquation2">
+              </p>
+              <p>
+              Wow!  This last expression is the KL divergence we saw before &mdash; up to a scaling factor for using log base 2 instead of the natural log (to speak in <a href="https://en.wikipedia.org/wiki/Bit">bits</a> instead of <a href="https://en.wikipedia.org/wiki/Nat_(unit)">nats</a>) and with a sum replacing the integral because
+              we are working with discrete probabilities. 
+              </p>
+              <p>
+                To summarize, the KL divergence captures the idea of the number of extra bits required to encode 
+                elements truly distributed under P if we make a code for them based on Q instead of P. Pretty neat!
+              </p>
+
+
+            </div>
+            <button class="accordion">Interpretation 3: Cross entropy</button>
+            <div class="panel">
+                   <p> This may not deserve its own section, but in case you often work with entropies and cross entropies, it is worth pointing out that,
+                   expanding the KL divergence as we did in the previous section* as:
+                  </p>
+                  <p id= "crossEntropy">
+                  </p>
+                  we see that the KL diverence is the <em>cross entropy</em> between P and Q minus the <em>entropy</em> of P.
+
+                  <p>(* with hope for understanding in moving back and forth rather cavalierly between sums and integrals)</em></p>
+ 
+              </div>
+            
+            <!-- <button class="accordion">Some uses</button>
+              <div class="panel">
+                     <p> Variational Bayes</p>
+                     Breakdown of EM (p. 451)
+   
+                </div> -->
+        
+            <button class="accordion">Conclusion and references</button>
+            <div class="panel">
+              <p>
+                Thanks for making it this far!  There are a number of ways to compare distributions, and KL divergence is just one.  It has some helpful interpretations that can make it more intuitive as a quantity. 
+                We should all make sure to remember properties like its asymmetry as well, so that we don't get carried away in our intuition of it as a dissimilarity
+                &mdash; let's remember that it's not a metric on distributions.
+              </p>
+              <p>
+                If you want to see KL divergence in action, take a look at variational Bayes approaches, where we seek to approximate a posterior distribution, and 
+                can use KL divergence as the relevant criterion in that approximation.  <em> Bayesian Data Analysis </em> has helpful material on the role of KL divergence in variational Bayes
+                (as well as, of course, helpful information on SO MANY other topics!). 
+              </p>
+              <p>
+               As another resource, I found Bishop's introduction to KL divergence in <em>Pattern Recognition and Machine Learning</em> extremely helpful in building up an intuition for it, and this blog post reflects that.
+               It also looks at on the role of KL divergence in variational inference.
+              </p>
+              <ul>
+                <li class="reflist"><a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Bishop, C.M., 2006. Pattern recognition and machine learning. Springer.</a></li>
+                <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
+              </ul>
+              <p>
+                That's it for now!  I'm having fun writing these posts, and hope they might occasionally come at the right time to be helpful to someone reading. 
+                Feel free to let me know on <a href="https://twitter.com/karinknudson" target="_blank" rel="noreferrer noopenener">Twitter</a>, if you'd like to see a particular statistical topic show up.
+                Or just let me know that you like them, and I'll take that as encouragement to write more.  Take care out there.
+            </p>
+              </div>
+
+         
+          </div>         
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/kldivergence.js"></script>
+   <script src="js/blogpost.js"></script>
+   </body>
+</html>

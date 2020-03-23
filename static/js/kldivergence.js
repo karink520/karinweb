@@ -1,15 +1,15 @@
 // X Make a plot with two probability distributions on it
 // X Make a plot with their log pdfs
 // X Make a plot with the difference between the log pdfs and the product of the diff with P
-// O Shade in the area under the curve 
+// X Shade in the area under the curve 
 // X Calculate and display the KL divergence
-// O Make it so that I can turn on and off the pieces of each plot
+// X Make it so that I can turn on and off the pieces of each plot
 // O Make it so that I can click a "clear and redraw" button and draw a distribution
 // O Make the drawing work
 // O Make the drawing rescale to the correct height
 // O make the log plots adjust to the redrawing
 // O make the KL divergence adjust to the new drawing
-// O Reset button
+// X Reset button
 
 // O Add coding intuition for KL divergence
 // O Write plan for Wasserstein distance
@@ -29,7 +29,7 @@ var pdata = [];
 var defaultPAndQ =  d3.range(xstep, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 3, 1), "qpdf": jStat.gamma.pdf(d, 2, 1)  } });
 
 function createDefaultPAndQ(){
-  return d3.range(xstep, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 3, 1), "qpdf": jStat.gamma.pdf(d, 2, 1)  } });
+  return d3.range(xstep, xmax, xstep).map(function(d) { return {"x": d, "ppdf": jStat.normal.pdf(d, 1.5, 1) * 0.75 + jStat.normal.pdf(d, 4.5, 0.5) * 0.25, "qpdf": jStat.gamma.pdf(d, 4, 0.5)  } });
 
 }
 
@@ -66,7 +66,7 @@ function coordinates_in_bounds() {
     var x1 = d3.event.x,
       y1 = d3.event.y,
       inv_y = sketchable_yScale.invert(y1),
-      inv_x = xScale.invert(x1);
+      inv_x = xScale.invert(x1) - xScale.invert(30);
 
       y1 = inv_y
       x1 = inv_x
@@ -82,8 +82,8 @@ function drag_started(){
     console.log("drag started")
     var canvas = d3.select('#kldivergenceplot');
     canvas.selectAll('path.line').remove();
-    var d = d3.event.subject,
-      active = canvas.append('path').attr('class', 'line').datum(d),
+    var d = d3.event.subject;//,
+      //active = canvas.append('path').attr('class', 'line').datum(d),
       x0 = d3.event.x,
       y0 = d3.event.y;
     pdata = [];
@@ -129,7 +129,7 @@ function drag_ended(){
                 lastValidY = pdata[j][1];           
                 lastAssignedK = k;
                 currentPAndQ[k].ppdf = pdata[j][1];
-            } else if (k > lastAssignedK && k < lastAssignedK + 30) {
+            } else if (k > lastAssignedK && k < lastAssignedK + 1) {
                 currentPAndQ[k].ppdf = lastValidY + (k-lastAssignedK) * dy;
             }
         }
@@ -141,7 +141,7 @@ function drag_ended(){
         var match_found = false;
         var closestBelowIndex = 0;
         for(var j=0; j<pdata.length; j++){
-            var thisX = Math.round( pdata[j][0] * 100) / 100;
+            var thisX = Math.round( pdata[j][0] * res) / res;
             if (thisX < currentPAndQ[k].x){
                 closestBelowIndex = j;
             }
@@ -161,13 +161,12 @@ function drag_ended(){
 
 
 $('#swapPandQ').click(function(){
-    newPAndQ = d3.range(0.01, xmax, xstep).map(function(d, i) { return {"x": d, "ppdf": currentPAndQ[i].qpdf, "qpdf": currentPAndQ[i].ppdf, } });
+    newPAndQ = d3.range(xstep, xmax, xstep).map(function(d, i) { return {"x": d, "ppdf": currentPAndQ[i].qpdf, "qpdf": currentPAndQ[i].ppdf, } });
     currentPAndQ = newPAndQ.slice();
     plot_kl(currentPAndQ);
 })
 
 $('#klReset').click(function(){
-    console.log("resetting");
     currentPAndQ = createDefaultPAndQ();
     plot_kl(currentPAndQ);
 });
@@ -230,7 +229,7 @@ function plot_kl_distributions(dataset, groupsToPlot) {
         .range([0, width]); //output
   
     sketchable_yScale = d3.scaleLinear()
-        .domain([0, 0.5]) // input
+        .domain([0, 0.7]) // input
         .range([height, 0]); // output
 
     // Add the SVG to the page
@@ -346,6 +345,9 @@ function plot_kl_log_densities(dataset, groupsToPlot) {
 }
 
 
+
+
+
 function plot_p_log_p_over_q(dataset){
     var groupsToPlot = ["logratio", "ptimeslogratio"]
     // Reformat the data: we need an array of arrays of {x, y} tuples
@@ -359,14 +361,20 @@ function plot_p_log_p_over_q(dataset){
     });
     
     //console.log(dataReady)
+    var lower_bound = d3.max([d3.extent(dataset, function(d) { return d.logratio; })[0], -8]);
+    var upper_bound =d3.extent(dataset, function(d) { return d.logratio; })[1]
 
+    var max_abs_bound = d3.max([Math.abs(lower_bound), Math.abs(upper_bound)]);
     var yScaleRight = d3.scaleLinear()
-        .domain(d3.extent(dataset, function(d) { return d.logratio; } )) // input
+        .domain([-max_abs_bound , max_abs_bound ] ) // input
         .range([height, 0]) // output
         .nice();
     
+    var left_y_extent = d3.extent(dataset, function(d) { return d.ptimeslogratio; });
+    max_abs_bound = d3.max([Math.abs(left_y_extent[0]), Math.abs(left_y_extent[1])])
+    console.log(max_abs_bound);
     var yScale = d3.scaleLinear()
-        .domain(d3.extent(dataset, function(d) { return d.ptimeslogratio; })) // input
+        .domain([-max_abs_bound, max_abs_bound]) // input
         .range([height, 0]); // output
 
 
@@ -403,6 +411,15 @@ function plot_p_log_p_over_q(dataset){
       .x(function(d, i) { return xScale((i+1)/res); })
       .y(function(d) { return yScaleRight(+d.value) })
 
+    var	area = d3.area()	
+    .x(function(d ) { return xScale(d.x) })	//CHANGE
+    .y0(yScale(0))					
+    .y1(function(d) { return yScale(d.ptimeslogratio); }) //CHANGE
+  
+  svg.append("path")
+      .data([dataset]) // CHANGE
+      .attr("class", "shaded-area")
+      .attr("d", area);
 
     svg.selectAll("myLines")
       .data(dataReady.slice(0,1))
@@ -465,7 +482,7 @@ function plot_p_log_p_over_q(dataset){
 
 function calculate_and_display_kL_divergence(dataset){
     var kl_divergence = d3.sum(dataset, function(d){ return d.ptimeslogratio*xstep});
-    $(calculatedKLDivergence).text(kl_divergence.toFixed(3));
+    $(calculatedKLDivergence).text(kl_divergence.toFixed(2));
 }
 
 
@@ -474,15 +491,17 @@ function calculate_and_display_kL_divergence(dataset){
 function renderKatex(){
     KLdefinitionEq = "D_{KL}(P || Q) = \\displaystyle\\sum_{x \\in X} P(x) \\log \\left( \\frac{P(x)}{Q(x)} \\right)";
     KLdefinitionContEq = "D_{KL}(P || Q) = \\int_{x \\in X} P(x) \\log \\left( \\frac{P(x)}{Q(x)} \\right) \\, dx";
-    KLdefinitionContDispEq = "D_{KL}(P || Q) = \\int P(x) \\log \\left( \\frac{P(x)}{Q(x)} \\right) \\, dx = \\,";
+    KLdefinitionContDispEq = "D_{KL}(P || Q) = \\int P(x) \\log \\left( \\frac{P(x)}{Q(x)} \\right) \\, dx \\approx \\,";
 
-    katex.render(KLdefinitionEq, KLdefinition, {throwOnError: false}); //text to render, element id
+    katex.render(KLdefinitionContEq, KLdefinition, {throwOnError: false}); //text to render, element id
     katex.render(KLdefinitionContDispEq, KLdefinitionDisplay, {throwOnError: false});
     //katex.render( , , {throwOnError: false}); //text to render, element id
 
-    KLdiffOfLogsEq = "\\sum P(x) ( \\log P(x) - \\log Q(x))";
+    KLdiffOfLogsEq = "\\int P(x) ( \\log P(x) - \\log Q(x)).";
     katex.render(KLdiffOfLogsEq , KLdiffOfLogs, {throwOnError: false});
-    
+    logDiffIdentityEq = "\\log \\frac{a}{b} = \\log a - \\log b";
+    katex.render( logDiffIdentityEq,  logDiffIdentity, {throwOnError: false});
+
     KLdivOfPWithSelfEq = "\\log \\left( \\frac{P(x)}{P(x)} \\right) = \\log(1) = 0";
     katex.render(KLdivOfPWithSelfEq, KLdivOfPWithSelf, {throwOnError: false});
     KLdivOfPWithSelfEq2 = "D_{KL} (P || P) = 0";
@@ -490,11 +509,23 @@ function renderKatex(){
 
     jensensEq = "\\int p(x) c(g(x))  \\, dx \\geq c \\left( \\int p(x) g(x) \\, dx \\right)";
     katex.render(jensensEq, jensens, {throwOnError: false});
-    jensensEq2 = "g(x) = \\frac{q(x)}{p(x)}";
+    jensensEq2 = "g(x) = \\frac{Q(x)}{P(x)}";
     katex.render(jensensEq2, jensens2, {throwOnError: false});
-    jensensEq3 = "D_{KL} (P || Q) = \\displaystyle\\int p(x) \\left(-\\log\\frac{p(x)}{q(x)}\\right) \\, dx \\geq -\\log \\left( \\int p(x) \\frac{q(x)}{p(x)} \\, dx \\right) = -\\log \\left(\\int q(x) \\, dx \\right)= -\\log(1) = 0";
+    jensensEq3 = "D_{KL} (P || Q) = \\displaystyle\\int P(x) \\left(-\\log\\frac{P(x)}{Q(x)}\\right) \\, dx \\geq -\\log \\left( \\int P(x) \\frac{Q(x)}{P(x)} \\, dx \\right) = -\\log \\left(\\int Q(x) \\, dx \\right)= -\\log(1) = 0";
     katex.render(jensensEq3, jensens3, {throwOnError: false});
 
     nonsymmetricEq = "D_{KL} (P || Q ) \\neq D_{KL}( Q || P)" 
     katex.render(nonsymmetricEq, nonsymmetric, {throwOnError: false});
+
+    codingEq0 = "0.25 \\times 2 + 0.5 \\times 1 + 0.25 \\times 2 = \\sum\\limits_{x \\in \\{p,e,t\\}} - P(x) \\log_2 P(x) = 1.5."
+    katex.render(codingEq0, codingEquation0, {throwOnError: false});
+
+    codingEq1 = "0.25 \\times 1 + 0.5 \\times 2 + 0.25 \\times 2 = \\sum\\limits_{x \\in \\{p,e,t\\}} - P(x) \\log_2 Q(x) = 1.75."
+    katex.render(codingEq1, codingEquation1, {throwOnError: false});
+
+    codingEq2 = "\\sum\\limits_{x \\in \\{p,e,t\\}} - P(x) \\log_2 Q(x) - \\sum\\limits_{x \\in \\{p,e,t\\}} - P(x) \\log_2 P(x) = \\sum\\limits_{x \\in \\{p,e,t\\}} P(x) \\log_2 \\frac{P(x)}{Q(x)}."
+    katex.render(codingEq2, codingEquation2, {throwOnError: false});
+
+    crossEntropyEq = "\\int - P(x) \\log Q(x) \\, dx- \\int - P(x) \\log P(x) \\, dx";
+    katex.render(crossEntropyEq, crossEntropy, {throwOnError: false});
 }

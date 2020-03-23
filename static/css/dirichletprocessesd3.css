@@ -14,3 +14,25 @@
     fill: #ffab00;
     stroke: #fff;
 }
+
+.shaded-area {
+  fill: #cccccc;
+  opacity: 0.5;
+}
+
+.ptimeslogratio {
+  fill: #cccccc;
+  opacity: 0.5;
+}
+
+.axisOrange line{
+  stroke: #ffab00;
+}
+
+.axisOrange path{
+  stroke: #ffab00;
+}
+
+.axisOrange text{
+  fill: #ffab00;
+}  

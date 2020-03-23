@@ -7,6 +7,10 @@ button {
   display: inline-block;
 }
 
+p a {
+  text-decoration: underline;
+}
+
 .plotpane {
   background-color: #fff9bc;
   display: inline-block;
@@ -52,6 +56,12 @@ button {
   display: none;
   background-color: white;
   overflow: hidden;
+}
+
+.resultsDisplay {
+  margin: 1em auto;
+  text-align:center;
+  font-size: 1.8rem;
 }
 
 #betaSample, #dirichletSample {

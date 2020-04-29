@@ -511,10 +511,10 @@ function renderKatex(){
     katex.render(jensensEq, jensens, {throwOnError: false});
     jensensEq2 = "g(x) = \\frac{Q(x)}{P(x)}";
     katex.render(jensensEq2, jensens2, {throwOnError: false});
-    jensensEq3 = "D_{KL} (P || Q) = \\displaystyle\\int P(x) \\left(-\\log\\frac{P(x)}{Q(x)}\\right) \\, dx \\geq -\\log \\left( \\int P(x) \\frac{Q(x)}{P(x)} \\, dx \\right) = -\\log \\left(\\int Q(x) \\, dx \\right)= -\\log(1) = 0";
+    jensensEq3 = "D_{KL} (P || Q) = \\displaystyle\\int P(x) \\left(-\\log\\frac{Q(x)}{P(x)}\\right) \\, dx \\geq -\\log \\left( \\int P(x) \\frac{Q(x)}{P(x)} \\, dx \\right) = -\\log \\left(\\int Q(x) \\, dx \\right)= -\\log(1) = 0";
     katex.render(jensensEq3, jensens3, {throwOnError: false});
 
-    nonsymmetricEq = "D_{KL} (P || Q ) \\neq D_{KL}( Q || P)" 
+    nonsymmetricEq = "D_{KL} (P || Q ) \\neq D_{KL}( Q || P)"; 
     katex.render(nonsymmetricEq, nonsymmetric, {throwOnError: false});
 
     codingEq0 = "0.25 \\times 2 + 0.5 \\times 1 + 0.25 \\times 2 = \\sum\\limits_{x \\in \\{p,e,t\\}} - P(x) \\log_2 P(x) = 1.5."

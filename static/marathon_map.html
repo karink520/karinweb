@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Karin Knudson </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src = "js/kck.js"></script>
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+  <link rel="stylesheet" href="css/kck.css">
+  <link rel="stylesheet" href="css/traininglog.css">
+  <style>
+    .land {
+      fill: #999;
+    }
+
+    .boundary {
+      fill: none;
+      stroke: #fff;
+      stroke-width: .5px;
+    }
+    .tab-heading {
+      display : block;
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+      padding: 0.1em;
+      padding-top: 1em;
+      padding-bottom: 1em;
+      border-top: 2px solid mediumseagreen;
+      background-color:mediumseagreen;
+      height: 100%;
+    }
+
+    .tab-heading-selected {
+      background-color: white;
+    }
+    .centered {
+      margin: 0 auto;
+      text-align: center;
+    }
+    .months {
+      display: none;
+    }
+    .months, .inception-year {
+      margin: 0 auto;
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    .tab-heading-container{
+        background-color:mediumseagreen;
+        margin-top:20px;
+    }
+
+    #us-map{
+      margin: 0 auto;
+    }
+
+    .tooltip {   
+      position: absolute;           
+      text-align: center;           
+      width: 80px;                  
+      height: auto;                 
+      padding: 2px;             
+      font: 12px sans-serif;        
+      background: white;   
+      border: 0px;      
+      border-radius: 8px;           
+      pointer-events: none;         
+    }
+
+    #caption{
+      padding-top:3em;
+      padding-left:1em;
+      padding-bottom: 1em;
+    }
+   
+
+    @media screen and (min-width: 700px){
+        .tab-heading {
+          display : inline-block;
+          width:25%;
+          padding: 1em;
+        }
+
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div></div>
+    <nav>
+      <ul>
+        <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+        <li> <a href="blog.html">Blog</a> </li>
+        <li> <a href="projects.html">Projects</a></li>
+        <li> <a href="https://www.dropbox.com/s/jbhozp4n6fyvq0f/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+    </ul>
+    </nav>
+  </header>
+<main>
+<div class="centered tab-heading-container">
+  <span id="pick-marathons-by-month" class="tab-heading">
+      Marathons by Month
+  </span>
+  <span id="pick-marathons-by-inception-year" class="tab-heading tab-heading-selected">
+      Marathons by Inception Year
+  </span>
+  <span id="pick-marathons-by-temperature" class="tab-heading">
+    Marathons by Temperature
+  </span> 
+</div>
+<div id="slider-months" class="months"></div>
+<div id="value-months" class="months">(Adjust the slider to choose a month)</div>
+<div id="slider-inception-year" class='inception-year'></div>
+<div id="value-inception-year" class='inception-year'>(Adjust the slider to choose a year)</div>
+<div id="us-map" class="centered"></div>
+<div id="total-marathons-by-year"></div>
+<br>
+<div id="caption">Black dots indicate missing data.  List of marathons from <a href=https://en.wikipedia.org/wiki/List_of_marathon_races_in_North_America>Wikipedia</a>, accessed April 2020. Geocoding performed with <a href="https://pypi.org/project/geopy/">geopy</a>.
+</div>
+
+</main>
+<footer>
+  <div></div>
+</footer>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+<script src="js/marathon_maps.js"></script>
+</body>
+</html>

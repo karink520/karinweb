@@ -10,84 +10,8 @@
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
   <link rel="stylesheet" href="css/kck.css">
   <link rel="stylesheet" href="css/traininglog.css">
-  <style>
-    .land {
-      fill: #999;
-    }
+  <link rel="stylesheet" href="css/marathon_map.css">
 
-    .boundary {
-      fill: none;
-      stroke: #fff;
-      stroke-width: .5px;
-    }
-    .tab-heading {
-      display : block;
-      width: 80%;
-      margin: 0 auto;
-      text-align: center;
-      padding: 0.1em;
-      padding-top: 1em;
-      padding-bottom: 1em;
-      border-top: 2px solid mediumseagreen;
-      background-color:mediumseagreen;
-      height: 100%;
-    }
-
-    .tab-heading-selected {
-      background-color: white;
-    }
-    .centered {
-      margin: 0 auto;
-      text-align: center;
-    }
-    .months {
-      display: none;
-    }
-    .months, .inception-year {
-      margin: 0 auto;
-      text-align: center;
-      font-family: sans-serif;
-    }
-
-    .tab-heading-container{
-        background-color:mediumseagreen;
-        margin-top:20px;
-    }
-
-    #us-map{
-      margin: 0 auto;
-    }
-
-    .tooltip {   
-      position: absolute;           
-      text-align: center;           
-      width: 80px;                  
-      height: auto;                 
-      padding: 2px;             
-      font: 12px sans-serif;        
-      background: white;   
-      border: 0px;      
-      border-radius: 8px;           
-      pointer-events: none;         
-    }
-
-    #caption{
-      padding-top:3em;
-      padding-left:1em;
-      padding-bottom: 1em;
-    }
-   
-
-    @media screen and (min-width: 700px){
-        .tab-heading {
-          display : inline-block;
-          width:25%;
-          padding: 1em;
-        }
-
-    }
-
-  </style>
 </head>
 <body>
   <header>
@@ -117,10 +41,23 @@
 <div id="value-months" class="months">(Adjust the slider to choose a month)</div>
 <div id="slider-inception-year" class='inception-year'></div>
 <div id="value-inception-year" class='inception-year'>(Adjust the slider to choose a year)</div>
+<div id="space-holder-for-temp" class="temperature"></div>
+<div id="value-temp" class="temperature">US marathons by temperature during month of race</div>
+
 <div id="us-map" class="centered"></div>
-<div id="total-marathons-by-year"></div>
+<div id="total-marathons-by-year" class='inception-year'></div>
+<div id="colorbar-legend" class="temperature">
+  <p>Average daily high during marathon month (&deg;F)</p>
+</div>
+<div id="race-day-temperature-graph" class='temperature'></div>
 <br>
-<div id="caption">Black dots indicate missing data.  List of marathons from <a href=https://en.wikipedia.org/wiki/List_of_marathon_races_in_North_America>Wikipedia</a>, accessed April 2020. Geocoding performed with <a href="https://pypi.org/project/geopy/">geopy</a>.
+<div id="caption">
+  <p>List of marathons from <b><a href="https://en.wikipedia.org/wiki/List_of_marathon_races_in_North_America" target="_blank">Wikipedia</a></b>, accessed April 2020. Geocoding performed with <b><a href="https://pypi.org/project/geopy/" target="_blank">geopy</a></b>.
+  Weather data and averages from <b><a href="https://www.worldweatheronline.com/" target="_blank">World Weather Online</a></b> and <b><a href="https://www.wunderground.com/" target="_blank">Weather Underground</a></b>.</p>
+  <p>*Please note that I do not expect this set of marathons to be complete.  If your favorite marathon is missing, <b><a href="https://twitter.com/karinknudson" target="_blank">let me know</a></b> about it and I can add it!</p> 
+  <p>If you'd like to see
+  a temperature history of race day for a particular marathon (click on Boston or New York in the temperature tab for examples), feel free to send a list of the race <em>dates</em> for the past few years, and I'll add in the corresponding temperature data.</p>
+  </p> 
 </div>
 
 </main>

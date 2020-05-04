@@ -1,0 +1,111 @@
+/*Style for map */
+.land {
+  fill: #999;
+}
+
+.boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+#us-map{
+    margin: 0 auto;
+ }
+
+/*Style for tab selection */
+.tab-heading {
+  display : block;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0.1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-top: 3px solid mediumseagreen;
+  background-color:mediumseagreen;
+  height: 100%;
+}
+
+.tab-heading-selected {
+  background-color: white;
+  border-bottom: 3px solid mediumseagreen;
+}
+
+.tab-heading-container{
+    background-color:mediumseagreen;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+/*Additional styling */
+.centered {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.months, .temperature {
+  display: none;
+}
+
+.months, .inception-year, .temperature {
+  margin: 0 auto;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.slider-months, .slider-inception-year{
+  padding-top:2em;
+}
+
+.mini-graph-line{
+    fill: none;
+    stroke: rgb(252, 60, 3);
+    stroke-width: 3;
+}
+
+.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 80px;                  
+  height: auto;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: white;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;  
+         
+}
+.tooltip p {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+}
+
+# caption{
+  padding-top:3em;
+  padding-left:1em;
+  padding-bottom: 1em;
+}
+
+#space-holder-for-temp {
+  height:105px;
+}
+
+@media screen and (min-width: 700px){
+    .tab-heading {
+      display : inline-block;
+      width:25%;
+      padding: 1em;
+    }
+  .tab-heading-selected {
+    background-color: white;
+    border-bottom: 0px;
+  }
+  #race-day-temperature-graph{
+    margin-top:20px;
+  }
+
+}
+
+</style>

@@ -1,10 +1,10 @@
 var width = d3.min([parseInt(d3.select('body').style("width"))-50,1000])
 var height = width * 5.5 /10;
-var circleColor = "rgb(252, 60, 3)";
+const circleColor = "rgb(252, 60, 3)";
 const margin = 30;
 const margintop = 10;
-var miniGraphWidth = 400;
-var miniGraphHeight = 200;
+var miniGraphWidth = d3.min([400,width]);
+var miniGraphHeight = miniGraphWidth/2;
                
 var svg = d3.select("#us-map")
         .append("svg")
@@ -262,8 +262,7 @@ d3.select("#pick-marathons-by-temperature").on("click", function(){
 
             // Small graph for race day temperature (currently only for boston)
             var tempData;
-            if (d.Name == "Boston Marathon" || d.Name == "New York City Marathon"){
-                console.log("Boston or new york");
+            if (d.Name == "Boston Marathon" || d.Name == "New York City Marathon" || d.Name =="Napa Valley Marathon"){
                 // Data for graph (TODO: generate programatically)
                 tempData = [
                     {'Year': 2019, 'High': d.high_2019, 'Low': d.low_2019},
@@ -309,16 +308,12 @@ d3.select("#pick-marathons-by-temperature").on("click", function(){
                 var line = d3.line()
                 .x(function(td) { return xScale((td.Year + 1 - 1970)*1000 * 60 * 60 * 24 * 365); }) 
                 .y(function(td) { return yScale(td.High); }) 
+                .defined(function (d) { return d.High !== ''; }); //handle missing in data by showing gap in graph -- e.g. 2012 NYC marathon was cancelled
             
                 var lowTempLine = d3.line()
                     .x(function(td) { return xScale((td.Year + 1 - 1970)*1000 * 60 * 60 * 24 * 365); })
                     .y(function(td) { return yScale(td.Low); }) 
-
-                if (d.Name == "New York City Marathon"){
-                    line.defined(function (d) { return d.High !== ''; }); //2012 NYC marathon was cancelled
-                    lowTempLine.defined(function (d) { return d.Low !== ''; }); //2012 NYC marathon was cancelled
-                   
-                }
+                    .defined(function (d) { return d.Low !== ''; }); //handle gaps in data by showing gap in graph
 
                 miniGraphSvg.append("path")
                     .datum(tempData)

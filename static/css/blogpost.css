@@ -7,8 +7,9 @@ button {
   display: inline-block;
 }
 
-p a {
+p a, p a:visited {
   text-decoration: underline;
+  color:#74a830;  
 }
 
 .plotpane {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title> Karin Knudson </title>
+  <title> US marathons by location, date, and temperature </title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src = "js/kck.js"></script>
@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
   <link rel="stylesheet" href="css/kck.css">
-  <link rel="stylesheet" href="css/traininglog.css">
+  <!--<link rel="stylesheet" href="css/traininglog.css">-->
   <link rel="stylesheet" href="css/marathon_map.css">
 
 </head>
@@ -26,7 +26,7 @@
     </nav>
   </header>
 <main>
-<div class="centered tab-heading-container">
+<div class="centered tab-heading-container" style="margin-top: 1em;">
   <span id="pick-marathons-by-month" class="tab-heading">
       Marathons by Month
   </span>
@@ -54,10 +54,14 @@
 <div id="caption">
   <p>List of marathons from <b><a href="https://en.wikipedia.org/wiki/List_of_marathon_races_in_North_America" target="_blank">Wikipedia</a></b>, accessed April 2020. Geocoding performed with <b><a href="https://pypi.org/project/geopy/" target="_blank">geopy</a></b>.
   Weather data and averages from <b><a href="https://www.worldweatheronline.com/" target="_blank">World Weather Online</a></b> and <b><a href="https://www.wunderground.com/" target="_blank">Weather Underground</a></b>.</p>
-  <p>*Please note that I do not expect this set of marathons to be complete.  If your favorite marathon is missing, <b><a href="https://twitter.com/karinknudson" target="_blank">let me know</a></b> about it and I can add it!</p> 
+  <p>*Please note that I do not expect this set of marathons to be complete.  If your favorite marathon is missing,
+     <b><a href="https://twitter.com/karinknudson" target="_blank">let me know</a></b> and I can about it  add it to the plots!</p> 
   <p>If you'd like to see
-  a temperature history of race day for a particular marathon (click on Boston or New York in the temperature tab for examples), feel free to send a list of the race <em>dates</em> for the past few years, and I'll add in the corresponding temperature data.</p>
+  a temperature history of race day for a particular marathon (click on Boston or New York in the temperature tab for examples), feel free to <b><a href="https://twitter.com/karinknudson" target="_blank">send me</a></b> a list of the race <em>dates</em> for the past few years, and I can add in the corresponding temperature data.</p>
   </p> 
+  <p>
+  Here is a <b><a href="marathon_map_description.html">blog post</a></b> describing how these plots were made.
+  </p>
 </div>
 
 </main>
@@ -65,8 +69,8 @@
   <div></div>
 </footer>
 <script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://d3js.org/topojson.v2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://unpkg.com/d3-simple-slider"></script>
 <script src="js/marathon_maps.js"></script>
 </body>

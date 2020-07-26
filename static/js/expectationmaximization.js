@@ -1,8 +1,95 @@
 var QThetaThetaOldEq = "Q(\\theta, \\theta^{(old)}) = \\mathbb{E}";
 var ThetaNewEq = "\\theta^{(new)} = \\text{argmax}_{\\theta} Q(\\theta, \\theta^{(old)} )";
-
-katex.render(QThetaThetaOldEq, QThetaThetaOld, {  throwOnError: false  });
 katex.render(ThetaNewEq, ThetaNew, {  throwOnError: false  });
+katex.render(QThetaThetaOldEq, QThetaThetaOld, {  throwOnError: false  });
+
+//Katex for Guassian mixtures
+var gaussianMixtureLikelihood = "p(x | mu, Sigma, pi) ~ \\Sigma p(z) p(x|z, mu, Sigma, pi) = \\Sigma pi_k N(x |\\mu_k, \\Sigma_k)";
+var classMembershipProbsEq = "\\gamma(z_{nk}):= p(z_{kn} = 1 | \\mathbf{x}_n, \\theta^{old}) = \\frac{\\pi_k N(\\mathbf{x}_n| \\mathbf{\\mu}_k^{old}, \\Sigma_k^{old})}{\\sum_{j=1}^K \\pi_j N(\\mathbf{x}_n | \\mathbf{\\mu}_j^{old}, \\mathbf{\\Sigma}_j^{old})}";
+var classMembershipNotationEq ="\\gamma(z_{nk})";
+katex.render(classMembershipNotationEq, classMembershipNotation, {throwOnError: false});
+katex.render(classMembershipProbsEq, classMembershipProbs, {throwOnError:false});
+var gaussianCompleteDataLogLikelihoodEq = "Q(\\theta, \\theta^{old}) = \\sum_{n=1}^N \\sum_{k=1}^K \\gamma(z_{nk}) (\\ln \\pi_k + \\ln N( \\mathbf{x}_n | \\mathbf{\\mu}_k, \\mathbf{\\Sigma_k})) ";
+var gaussianCompleteDataLogLikelihoodExtendedEq = "\\begin{aligned} Q(\\theta, \\theta^{old}) = & \\mathbb{E}_{Z | X, \\theta^{(old)}} \\ln p(X,Z | \\theta ) \\\\= & \\mathbb{E}_{Z | X, \\theta^{(old)}} \\ln \\prod_{n=1}^N \\prod_{k=1}^K \\pi_k^{z_{nk}} N (\\mathbf{x}_n | \\mu_k, \\Sigma_k)^{z_{nk}} \\\\ = &\\mathbb{E}_{Z | X, \\theta^{old}} \\sum_{n=1}^N \\sum_{k=1}^K  z_{nk} (\\ln \\pi_k + \\ln N( \\mathbf{x}_n | \\mathbf{\\mu}_k, \\mathbf{\\Sigma_k})) \\\\ = & \\sum_{n=1}^N \\sum_{k=1}^K \\mathbb{E}_{Z | X, \\theta^{old}} (z_{nk}) (\\ln \\pi_k + \\ln N( \\mathbf{x}_n | \\mathbf{\\mu}_k, \\mathbf{\\Sigma_k})) \\\\ = & \\sum_{n=1}^N \\sum_{k=1}^K \\gamma(z_{nk}) (\\ln \\pi_k + \\ln N( \\mathbf{x}_n | \\mathbf{\\mu}_k, \\mathbf{\\Sigma_k})) \\end{aligned} ";
+var muUpdate = "\\mathbf{\\mu}_k^{new} = \\frac{ \\sum_{n=1}^N \\gamma(z_{nk}) \\mathbf{x}_n }{\\sum_{n=1}^N \\gamma(z_{nk})} ";
+var muUpdateDetailed ="\\text{Setting the derivative of Q with respect to } \\mathbf{\\mu}_k \\text{ to zero yields:} \\\\ \\sum_{n=1}^N \\gamma(z_{n,k}) \\mathbf{\\Sigma}_k^{-1}(\\mathbf{x}_n - \\mathbf{\\mu}_k) = 0 \\implies \\\\ \\mathbf{\\mu}_k^{new} = \\frac{ \\sum_{n=1}^N \\gamma(z_{nk}) \\mathbf{x}_n }{\\sum_{n=1}^N \\gamma(z_{nk})}";
+var sigmaUpdate = ""
+
+
+var showDetailsToggleObj ={};
+
+function toggleEquationDetailsSetup(idName, idNameStr, detailedVersion, nonDetailedVersion){
+    showDetailsToggleObj[idNameStr] = false;
+    katex.render(nonDetailedVersion, idName, {throwOnError: false});
+    $(idNameStr).click(function(){
+        if (showDetailsToggleObj[idNameStr]) {
+            katex.render(detailedVersion, idName, {throwOnError: false});
+        } else {
+            katex.render(nonDetailedVersion, idName, {throwOnError: false});
+        }
+        showDetailsToggleObj[idNameStr] = !showDetailsToggleObj[idNameStr];
+    });
+}
+
+toggleEquationDetailsSetup(gaussianCompleteDataLogLikelihood,"#gaussianCompleteDataLogLikelihood", gaussianCompleteDataLogLikelihoodExtendedEq, gaussianCompleteDataLogLikelihoodEq);
+
+toggleEquationDetailsSetup(muEquation, "#muEquation", muUpdateDetailed, muUpdate);
+//toggleEquationDetailsSetup(piEquation, "#piEquation", piUpdateDetailed, piUpdate);
+
+$('.showExplanation').click(function() {
+    $(this).next().toggle();
+}
+)
+
+// Hide all example details to start
+$('.gaussian-mixture').css("display", "none");
+
+//Hide explanations to start
+$('.explanation').css("display", "none");
+
+$('#select-gaussian-mixture').click( function(){
+    console.log("Selected gaussian mixture")
+    //$('#Xdata').text("{x_n}_n=1^N")
+    katex.render("\\{x_n\\}_{n=1}^N", Xdata, {});
+    $('#Zlatent').text("\(z_{nk}\), encodes the class membership of data point X_n, so z_nk=1 if x_n is in class k, zero otherwise");
+    renderMathInElement(document.getElementById('Zlatent'));
+    $('#thetaParams').text("Mu, Sigma, pi, the mean mu and variance Sigma of Gaussian distributions, and the mixing weights pi")
+    $('#modelDecription').text("We have N data points represented by vectors x_n, that we assume to be drawn from a mixture of K multivariate Gaussian distributions \
+    each with a mean given by vector mu_k and a covariance matrix given by Sigma_k. The mixing weights are given pi, a vector of length K whose components sum to 1.")
+    $('#tab-select li').removeClass('selected');
+    $('#select-gaussian-mixture').addClass('selected');
+    $('.gaussian-mixture').css("display", "block");
+})
+
+$('#select-example2').click( function(){
+    console.log("Selected example2")
+    $('#Xdata').text("x_n")
+    $('#Zlatent').text("z_nk")
+    $('#thetaParams').text("Mu, Sigma, pi")
+    $('#tab-select li').removeClass('selected')
+    $('#select-example2').addClass('selected')
+
+    $('.gaussian-mixture').css("display", "none");
+
+})
+
+
+$('#select-missing-data').click( function(){
+    console.log("Selected gaussian mixture")
+    $('#Xdata').text("x_n")
+    $('#Zlatent').text("z_nk")
+    $('#thetaParams').text("Mu, Sigma, pi")
+    $('#tab-select li').removeClass('selected')
+    $('#select-missing-data').addClass('selected')
+    $('.gaussian-mixture').css("display", "none");
+})
+
+
+
+
+
+
+//Sampling vs. optimization
 
 var samplingPlot = plotSampling();
 var optimizationPlot = plotOptimization();

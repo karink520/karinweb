@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/dirichletprocessesd3.css">
+    <link rel="stylesheet" href="css/expectation-maximization.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+  </head>
+  <style>
+
+    .tab-select li {
+      display: inline-block;
+      width: 25%;
+      padding: 4px;
+      background-color: lightgray;
+    }
+
+    .tab-select {
+      text-align: center;
+    }
+
+    .tab-select-small-margins{
+      margin:.2em auto;
+    }
+
+    .tab-select li:hover{
+        cursor: pointer;
+    }
+
+    .tab-select .selected{
+      background-color: #95C35A;
+      border: solid 1px #777777;
+    }
+
+    .panel li {
+        margin: .5em;
+    }
+    
+    .example-header {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .example-step {
+      border: solid 2px #eeeeee;
+      border-radius: 10px;
+      margin-top: 1em;
+      padding: 0 1.5em;
+    }
+
+    .showExplanation :hover{
+      cursor: help;
+    }
+    
+    .explanation {
+      font-size:.8em;
+      width: 90%;
+      box-shadow: 0.5px 1px #eeeeee;
+      border: solid 0.5px #eeeeee;
+      border-radius:5px;
+      padding-left: 5%;
+    }
+
+    .explanation :hover{
+      cursor:pointer;
+    }
+
+    #select-reset{
+      margin: 0 auto;
+    }
+
+  </style>
+
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="https://www.dropbox.com/s/jbhozp4n6fyvq0f/KarinKnudsonResume.pdf?dl=0">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+    <div class=blogpost>
+        <h3 class="blogdate">July 31, 2020</h3>
+        <span class="blogtopic" class="include-in-wordcloud"> Expectation Maximization (EM)</span>
+        <!-- <p>Teaching taught me to be careful about the word "just," as in: "then you just solve for x" or "this just reduces to a double integral."
+        If that remaining step is <em>not</em> familiar and tractable for the listener, then "just" is be at best unhelpful, at worst demoralizing.  We don't need to
+        excise the word from our vocabulary, however; if the listener in these remarks <em>does</em> know how to solve for x or solve the double integral, 
+        then when they get to something that is "just" that &mdash;
+        just something they've done before in some form&mdash; then they know that they are on solid ground, and they can press on, reassured,
+        bringing their framework of understanding to the problem at hand.
+        </p>
+        <p>
+        For me, hearing that an algorithm was, say, "just a variant of expectation maximization (EM)" or that "we just do EM for the inference" 
+        was unhelpful for a long time, because I didn't know much about EM.
+        The speaker might as well have told me I just needed to evaluate the double integral of an ice cream sundae.
+        But EM is powerful, widespread, and versatile in machine learning.  EM can be used maximize (at least locally) a likelihood or a posterior distribution 
+        that resists a more direct approach. EM is worth understanding.
+        </p> -->
+
+        <p>Trying to maximize a likelihood or a posterior? Got some latent variables on hand? The EM algorithm might be useful for you.
+
+        </p>
+        <p>It took me a long time to get around to understanding EM, perhaps because it's a framework that can be
+          adapted to a variety of problems, and so the particular implementations of it for different problems can look quite quite different 
+          from each other. Those differences in the particulars obscure the underlying structure of the algorithm, which pretty elegant, and is 
+          what we'll start by presenting here.
+        </p>
+        <p>
+        The goal of this post is to explain the broad framework of expectation maximization (EM), give a sense when EM is applicable and helpful, and illustrate
+        EM as an adaptable framework by showing it in action in a mixture model and in a situation with missing data.  Hopefully, by the end of this, when you 
+        see EM in context, you'll be able to see the underlying structure, and if you want to adapt EM to your own particular problem, you'll
+        have some idea of where you might start.
+        </p>
+
+        <button class="accordion">Introduction and goals</button>
+        <div class="panel">
+
+          Let's suppose we have the following reasonably broad setup. Let's say we have:
+          <ul>
+            <li>observed data \(X\)</li>
+            <li>latent variables \(Z\) (which could also represent missing data, auxiliary variables that we introduce for convenience, or additional parameters)</li>
+            <li>parameters of interest \(\theta\)</li>
+          </ul>
+          Moreover, suppose we have the following hopes, dreams, and circumstances:
+          <ul>
+            <li>We seek to find the value of \(\theta\) that maximizes a likelihood \(P(X|\theta)\) or a posterior distribution \(P(\theta|X)\).</li>
+            <li>We find it hard to hard to do the desired maximization of \(P(X|\theta)\) or a \(P(\theta|X)\) directly (in fact it may be difficult to even calculate them -- e.g. if we're seeking \(P(X|\theta) = \int  P(X,Z | \theta) \, dZ\), we may not be able to compute that integral exactly.)
+              We have \(P(X,Z | \theta) \) that is easier to deal with.</li>
+            <li>We're comfortable accepting a solution that may be just a local maximum (not necessarily a global maximum).</li>
+            <li>Roughly speaking, if we knew \(X\) and \(Z\), we'd be okay estimating \(\theta\), and if we know \(X\) and \(\theta\), we could say useful things about the distribution of \(Z\).</li>
+          </ul>
+          <p>
+            If someone was asking me in an informal conversation about how you would proceed using EM to try to do the following, I might give
+            the following very intuitive-but-not-specific-enough outline of the EM plan of action:
+          </p>
+          <ul>
+            <li>Choose an initial \(\theta\)</li>
+            <li>Use \(\theta\) update your knowledge about about \(Z\)</li>
+            <li>Use your updated knowledge about Z in an optimization problem that you will solve to update \(\theta\)</li>
+            <li>Repeat the previous two steps, alternately updating \(\theta\) and some Z-related quantity until convergence</li>
+          </ul>
+          <p>It's not that anything that follows the above rough intuition is EM &mdash; we'll outline EM carefully in a moment. 
+            But as the EM steps get technical, it helps to keep in mind this basic intuition of iteration, alternating between
+            updates related to \(Z\) and updates related to \(\theta\);.
+          </p>
+          <p>
+          Somewhat more specifically we can proceed by choosing some starting value of \(\theta\), (e.g. at random). Condition on X and the chosen value of theta, and compute the distribution of Z.
+          With respect to the distribution just computed, calculate the expectation of the log likelihood of \(P(X, Z | \theta) \) - an expected log likelihood which of course depends on theta, 
+          and then find theta to maximize that expected log likelihood. Repeat the process, using the latest value of theta
+          to compute the distribution of \(Z\) given \(X\) and \(\theta\).
+          </p>
+
+          Let's pin that down a little more, assuming we are trying find theta to maximize the likelihood \(P(X|\theta)\), or, alternatively, that we are maximizing a posterior \(P(\theta|X)\) and have prior \(p(\theta)\).
+          We would set \(\theta\) to some initial value and then repeat the following until convergence (that's convergence in estimates of \(\theta\), or in the log likelihood or posterior).
+
+          <ul class="tab-select">
+            <li id="select-likelihood">Likelihood</li>
+            <li id="select-posterior">Posterior</li>
+          </ul>
+
+          <ol class="likelihood">
+            <li>Evaluate \(P(Z | X, \theta^{old})\)</li>
+            <li>Compute the expectation under \(P(Z|X , \theta^{old})\) of the log likelihood \(P(X, Z | \theta)\) denoted \(Q(\theta, \theta^{old}) = \mathbb{E}_{Z|X, \theta^{old}} \ln (P(X, Z | \theta))\)</li>
+            <li>Choose \(\theta^{new}\) to be the value of theta that maximizes \(Q(\theta, \theta^{old})\) </li>
+           </ol>
+
+          <ol class="posterior">
+            <li>Evaluate \(P(Z | X, \theta^{old})\).</li>
+            <li>Compute the expectation under \(P(Z|X , \theta^{old})\) of the log posterior \(P(\theta, Z | X)\) denoted \( Q(\theta, \theta^{old}) = \mathbb{E}_{Z | X, \theta^{old}} \ln (P(\theta, Z | X)) \propto \mathbb{E}_{Z|X, \theta^{old}} \ln (P(X, Z | \theta)) + P(\theta) \)</li>
+            <li>Choose \(\theta^{new}\) to be the value of theta that maximizes \(Q(\theta, \theta^{old})\). </li>
+           </ol>
+
+           <p> For a likelihood versus a posterior, this outline differs only in the second step, where we swap \(P(\theta, Z | X)\) for \(P(X,Z | \theta)\).
+          </p>
+
+          <p>Does the setup and the general proceedure still seem a little fuzzy? That's fine. We'll make a quick vocabulary note 
+           and then pretty much the rest of this post will some examples so that you can see the
+           what the different quantities above mean and how the iterative 
+           process of EM works in two different realms where
+           where EM is applicable: a mixture of Gaussians (see, e.g. [1 Ch. 9]) and a setup with missing data (adapting an example from [2 Ch. 18]. </p> 
+
+           <p><b>Keep in mind:</b> The above step-by-step procedures can look pretty different from how we actually <em>perform</em> EM in practice for two main reasons.
+            First, we probably won't be actually recalculating \(Q(\theta, \theta^{old})\) at every step - instead, we'll hopefully just work out once and for all 
+            an expression for \(\theta\) that maximizes it. Second, we may not calculate \( P(Z | X, \theta^{old})\) itself,
+            but rather just some derived quantities that are relevant to the maximization of \(Q\). Look out for how this works in the examples!
+          </p>    
+
+          </div>
+  
+
+          <button class="accordion">Do all these quantities have fun names?</button>
+          <div class="panel">
+              <p>Oh, sure, some of them do, depending on what you mean by "fun".  Mostly you just need to know what the "complete"
+              and "incomplete" datasets are and the other names follow. We have:
+              </p>
+              <table>
+                <tr>
+                  <th>Quantity</th> <th>Fun name</th>
+                </tr>
+                <tr>
+                    <td>{X, Z} </td> <td> complete data set</td>
+                </tr>
+                <tr>
+                  <td>X</td> <td> incomplete data </td>
+                </tr>
+                <tr>
+                  <td>ln p(X, Z | &theta;) </td> <td>complete data log-likelihood</td>
+                </tr>
+                <tr>
+                  <td>p(Z | X, &theta;)</td> <td>posterior distribution of the latent variables</td>
+                </tr>
+              </table>
+
+              <p>I somehow find the EM steps a little easier to read and remember in terms of symbols (especially if I'm trying to remember the connection between when
+                I'm maximizing a likelihood vs. a posterior), but you might find the opposite to be true. So we'll write the EM method for maximizing a likelihood as follows:</p>
+          
+              <ol>
+                <li>Evaluate the posterior distribution of the latent variables.</li>
+                <li>Compute the expectation under the posterior distribution of the latent variables of the complete data log-likelihood (as a function of the parameters).</li>
+                <li>Find the parameters that maximize the expectation function that was computed in the previous step.</li>
+               </ol>
+               <p>The step of computing the expectation of the complete data log-likelihood (or at least the pieces of it that are necessary for the maximization) is called the 
+                <b>expectation</b> step or E-step, the computing of new parameters to maximize that expectation is the <b>maximization</b> or M-step.
+              </p>
+            </div> 
+    
+
+        <button class="accordion">Two examples</button>
+        <div class="panel">
+          <p>It's pretty great that EM is applicable to a pretty wide range of problems. But, that range can also make it hard to get a handle on EM itself, and what's common to each application. Here, we present the EM algorithm in 
+            two rather different problems, within a common framework so that you can keep the outline of the algorithm itself in mind as you see how 
+            it can be applied.</p>
+            <p><em>Click equations to show or hide calculation details.</em></p>
+          <div>
+            <ul class="tab-select">
+              <li id="select-gaussian-mixture">Gaussian Mixture</li>
+              <li id="select-missing-data">Missing data</li>
+            </ul>
+            <ul class="tab-select tab-select-small-margins">
+              <li id="select-reset">Clear</li>
+            </ul>
+          </div>
+              <h3>Variables of interest and model description</h3>
+            <div class="example-step">
+              <p><span class="example-header">X (data):</span>
+                <span class="gaussian-mixture-inline"> \(\{\mathbf{x}_n\}_{n=1}^N\), data assumed to come from a mixture of K Gaussians.</span> 
+                <span class="missing-data-inline">\( \{y_{nj} | n \in 1...N, j \in 1...d, \text{ and } y_{nj} \text{ observed}\}\) the observed components of \(\{\mathbf{y_n}\}_{n=1}^N\)</span> </p>
+              <p><span class="example-header">Z (latent variables):</span>
+                <span class="gaussian-mixture-inline"> We let \(z_{nk}\) encode the class membership of data point \(\mathbf{x}_n\), so \(z_{nk}=1\) if \(\mathbf{x}_n\) is in class k, \(z_{nk}=0\) otherwise. 
+                  Note that these are auxiliary variables; we can define the model without them, but introducing them will make inference easier; in particular, we use them in EM.
+                </span>
+                <span class="missing-data-inline">\( \{y_{nj} | n \in 1...N, j \in 1...d, \text{ and } y_{nj} \text{ unobserved}\}\) the unobserved components of \(\{\mathbf{y_n}\}_{n=1}^N\)</span></p>
+              <p><span class="example-header">\(\theta\) (parameters):</span>
+                <span class="gaussian-mixture-inline">\( \{\mu, \Sigma_k, \pi_k\}_{k=1}^K\), where \(\mu\), \(\Sigma\) are the means and variances of the Gaussian distributions in the mixture, and \(\pi\) gives the mixing weights, which sum to 1.</span>
+                <span class="missing-data-inline">\(\mathbf{\mu}, \mathbf{\Sigma} = \mathbf{\Lambda}^{-1}\), the mean and covariance of the normal distribution from which the \(\mathbf{y_n}\) are assumed to be drawn </span>
+              <p class="gaussian-mixture"> We have that the data points \(\mathbf{x}_n\) are conditionally independent from each other given the parameters, that \(P(\mathbf{z}_n | \pi_k) = \prod_{k=1}^K \pi_k^{z_{nk}}\) and \(P(\mathbf{x}_n | \theta) = \prod_{k=1}^K N(\mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma}_k)^{z_{nk}} \). </p>
+              <p class="missing-data">For this setup, we have \(Y = \{\mathbf{y}_n \}_{n=1}^N =\{X, Z\} \), the complete data. We'll us
+               \(\mathbf{y}_n^{obs}\) to denote the vector observed values in each
+                data vector, \(\mu^{obs}\) to be the vector of elements of \(\mu\) that correspond to observed (non-missing) values of \(\mathbf{y_n}\),
+                and \( \Lambda_{j, obs_n}\) to be elements of the \(j^{th}\) row of \(\Lambda\) in columns that correspond to observed (non-missing) values of \(\mathbf{y_n}\).
+                We assume the mechanism of the missing data is ignorable.</p>
+              </p>
+            </div>
+            <h3>Goal</h3>
+            <div class="example-step">
+              <p class="gaussian-mixture"> Maximize \(P(X | \theta)\) &mdash; a likelihood! </p>
+              <p class="missing-data"> Maximize \(P(\theta | X)\) &mdash; a posterior distribution!</p>
+            </div>
+            <h3>Steps to iterate until convergence</h3>
+            <div class="example-step">
+              <p class="example-header">Evaluate P(Z | X, &theta;):</p>
+              <div class="gaussian-mixture">
+              <p>
+                Recall that each \(z_{nk}\) can be either 1 or 0, so probability distribution for \(Z\) is specified by the following quantities:</p>
+                <p id="classMembershipProbs"></p>
+              <p>Because we'll need to reference these probabilities for Z a lot, we'll follow [1] in defining \(\gamma(z_{nk}):= p(z_{kn} = 1 | \mathbf{x}_n, \theta^{old})\) </p>
+              </div>
+
+              <div class="missing-data">
+                <p>If \(y_{ni}\) is missing, its distribution is Gaussian: </p>
+                <p class="showExplanation">
+                  \(y_{ni} | \mathbf{y}_n^{obs}, \mu^{old}, \mathbf{\Lambda}^{old} \sim N(\mu_i - \Lambda^{old -1}_{ii} \Lambda_{j,obs_n}  (\mathbf{y}_{n,obs} - \mu^{old}_{obs}) , \Lambda_{ii}^{-1}\)) 
+                </p>
+                <p class="explanation">See, e.g. [1, Section 2.3.2, Partitioned Gaussians]</p>
+                <p>Now we'll actually peek ahead a little and note that all the quantities we'll need to compute will depend on some particular quantities
+                  derived from this posterior distribution of missing data. For ease of notation later on, we'll define the following as they apply to both missing and observed data. (Click for more detail on how to compute each.)
+                </p>
+                <p class="showExplanation">
+                    \(\gamma(y_{ni}) = \mathbb{E} (y_{ni} | X = \{\mathbf{y}_n^{obs}\}, \mu^{old}, \Lambda^{old}) \)</p> 
+                <p class="explanation"> $$ \gamma(y_{ni}) = \begin{cases} y_{ni} \text{ if } y_{ni} \text{ is observed} \\
+                         \mu_i - (\Lambda^{old}_{ii})^{-1}  \Lambda_{j,obs_n}(\mathbf{y}_n^{obs} - \mu^{old, obs}) \text{ if } y_{ni} \text{ is missing } \\
+                         
+                         \end{cases}
+                         $$ 
+                    </p>
+                <p class="showExplanation">\( s_{nij} = \mathbb{E} \left(y_{ni}y_{nj} | X = \{\mathbf{y}_n^{obs}\}, \mu^{old}, \Lambda^{old}\right)\) </p>
+                <p class="explanation">
+
+                  $$ s_{nij} = \begin{cases} 
+                        \gamma(y_{ni}) \gamma(y_{nj}) = y_{ni}y_{nj} \text{ if }y_{ni} \text{ and } y_{nj} \text{ are observed } \\
+                        \gamma(y_{ni}) \gamma(y_{nj}) \text{ if exactly one of } y_{ni} \text{ and } y_{nj} \text{ are observed} \\
+                        \Lambda_{ij}^{-1} + \gamma(y_{ni}) \gamma(y_{nj}) \text{ if }y_{ni} \text{ and } y_{nj} \text{ are missing } 
+
+                     \end{cases}
+                  $$
+                  </p>
+                <!-- <p>
+                  \(S_{ij} = \mathbb{E} \left(\sum_{n=1}^N y_{ni}y_{nj} | X = \{\mathbf{y}_n^{obs}\}, \mu^{old} , \Lambda^{old}\right) = \sum_{n=1}^N s_{nij}\)     
+                </p> -->
+              </div>
+            </div>
+
+            <div class="example-step">
+              <!-- <p class="example-header">Compute the expectation under \(P(Z | X , \theta^{old})\) of the log likelihood
+                 \(P(X, Z | \theta)\), that is \(Q (\theta, \theta^{old}) = \mathbb{E}_{Z|X, \theta^{old}} \ln P(X, Z | \theta)\):</p> -->
+              <p class="example-header">Choose a new value of \(\theta\) to maximize the expectation under \(P(Z | X , \theta^{old})\) of the log likelihood
+                  \(P(X, Z | \theta)\), that is to maximize \(Q (\theta, \theta^{old}) = \mathbb{E}_{Z|X, \theta^{old}} \ln P(X, Z | \theta)\):</p>
+              <div class="gaussian-mixture">
+              <p class="showExplanation">We have \(Q(\theta, \theta^{old}) = \sum_{n=1}^N \sum_{k=1}^K \gamma(z_{nk}) (\ln \pi_k + \ln N( \mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma_k})) \)</p>
+              <p class="explanation">
+                $$\begin{aligned} Q(\theta, \theta^{(old)}) := & \mathbb{E}_{Z | X, \theta^{(old)}} \ln p(X,Z | \theta ) \\ 
+                = & \mathbb{E}_{Z | X, \theta^{(old)}} \ln \prod_{n=1}^N \prod_{k=1}^K \pi_k^{z_{nk}} N (\mathbf{x}_n | \mu_k, \Sigma_k)^{z_{nk}}  \\
+                = & \mathbb{E}_{Z | X, \theta^{old}} \sum_{n=1}^N \sum_{k=1}^K  z_{nk} (\ln \pi_k + \ln N( \mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma_k})) \\
+                = & \sum_{n=1}^N \sum_{k=1}^K \mathbb{E}_{Z | X, \theta^{(old)}} (z_{nk}) (\ln \pi_k + \ln N( \mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma}_k))  \\ 
+                = & \sum_{n=1}^N \sum_{k=1}^K \gamma(z_{nk}) (\ln \pi_k + \ln N( \mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma_k})) \end{aligned}$$
+              </p>
+              <p>Maximizing \(Q(\theta, \theta^{old})\) with respect to \(\theta\), we obtain the following updates for \(\theta\):</p>
+            <!-- </div>
+              <p class="example-header">Choose a new value of \(\theta\) that maximizes \(Q(\theta, \theta^{old})\):</p>
+              <div class="gaussian-mixture"> -->
+              <p class="showExplanation">\(\mathbf{\mu}_k^{new} = \frac{ \sum_{n=1}^N \gamma(z_{nk}) \mathbf{x}_n }{\sum_{n=1}^N \gamma(z_{nk})}\)</p>
+              <p class="explanation"> Setting the derivative of Q with respect to \(\mathbf{\mu}_k\) to zero and then reducing using the assumption that \(\mathbf{\Sigma}_k\) is nonsingular yields $$\sum_{n=1}^N \gamma(z_{n,k}) \mathbf{\Sigma}_k^{-1}(\mathbf{x}_n - \mathbf{\mu}_k) = 0 \implies \mathbf{\mu}_k^{new} = \frac{ \sum_{n=1}^N \gamma(z_{nk}) \mathbf{x}_n }{\sum_{n=1}^N \gamma(z_{nk})} $$</p>
+              <p class="showExplanation">\(\Sigma_k^{new} = \frac{\sum_{n=1}^N \gamma(z_{nk})(\mathbf{x}_n - \mathbf{\mu}_k^{new})(\mathbf{x}_n - \mathbf{\mu}_k^{new})^T} {\sum_{n=1}^N \gamma(z_{nk})} \)</p>
+              <p class="explanation">Set the derivative with respect to \(\Sigma^{-1}\) to zero. Calculations parallel those for finding the maximum likelihood for a Gaussian, with the extra \(\gamma(z_{nk})\) terms in tow.
+                See e.g. <a href="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/other-readings/chapter13.pdf">Section 13. 5, here</a>.
+              </p>
+              <p class="showExplanation">\(\pi_k^{new} = \frac{\sum_{n=1}^N \gamma(z_{nk})}{N}\)</p>
+              <p class="explanation">We need to maximize Q with respect to \(\pi\) subject to \(\sum_{k=1}^K \pi_k =1\). Lagrange multipliers make quick work of this constrained optimization problem. Omitting the terms of Q that do not depend 
+                on \(\pi\) we define \(L(\pi, \lambda) = \sum_{k=1}^K \sum_{n=1}^N \gamma(z_{nk}) \ln \pi_k - \lambda \left(\sum_{k=1}^K - 1\right) \). Setting the derivatives with respect to each \(\pi_k\) and \(\lambda\) simultaneously to zero yields \(\pi_k^{(new)} = \frac{\sum_{n=1}^N \gamma(z_{nk})}{N}\).</p>
+              </div>
+
+              <div class="missing-data">
+                <p class="showExplantion">\(Q(\theta, \theta^{old}) = \mathbb{E}_{Z|X, \theta^{old}} \ln P(X, Z | \theta) = \\
+                  \mathbb{E}_{Z|X, \theta^{old}} -\frac{N}{2} \ln | \Sigma^{-1} | - \frac{1}{2} \sum_{n=1}^N (\mathbf{y}_n - \mu)^T \Sigma^{-1} (\mathbf{y}_n - \mu) + C           
+                  \)
+
+                  where C does not depend on Z, X, or \(\theta\).
+                </p>
+                <p class="explanation">
+                  Let's sketch how the \(s_nij\) and \(\gamma(y_{ni}\) can be used to replace all quantities in Q that depend on \(Y\).
+                  Dropping the C for the sake of concision, we have \\
+                  \mathbb{E}_{Z|X, \theta^{old}} = -\frac{N}{2} \ln | \Sigma^{-1} | - \frac{1}{2} \sum_{n=1}^N (\mathbf{y}_n - \mu)^T \Sigma^{-1} (\mathbf{y}_n - \mu) 
+                  =  -\frac{N}{2} \ln | \Sigma^{-1} | - \mathbb{E} \frac{1}{2} \sum_{n=1}^N \text{Tr}[(\mathbf{y}_n - \mu)^T \Sigma^{-1} (\mathbf{y}_n - \mu)] \\
+                  =  -\frac{N}{2} \ln | \Sigma^{-1} | - \mathbb{E}\frac{1}{2} \sum_{n=1}^N \text{Tr}[(\mathbf{y}_n - \mu)(\mathbf{y}_n - \mu)^T \Sigma^{-1}] \\
+                  =  -\frac{N}{2} \ln | \Sigma^{-1} | - \mathbb{E}\frac{1}{2} \sum_{n=1}^N \text{Tr}[(\mathbf{y}_n\mathbf{y}_n^T - \mu\mathbf{y}_n^T - \mathbf{y_n}^T \mu + \mu \mu^T ) \Sigma^{-1}] \\
+                  =  -\frac{N}{2} \ln | \Sigma^{-1} | - \frac{1}{2} \sum_{n=1}^N \text{Tr}[(\mathbb{E}\mathbf{y}_n\mathbf{y}_n^T - \mu\mathbb{E}\mathbf{y}_n^T - \mathbb{E}\mathbf{y_n}^T \mu + \mu \mu^T ) \Sigma^{-1}] \\
+                 \)
+                  The expectations in this last line can be expressed in terms of \(s_nij\) and \(\gamma(y_{ni}\).
+                </p>
+                <p>We can rewrite Q in terms of the expectations defined in the previous step: \(\gamma(y_{ni})\) and \(s_{nij}\).</p>
+
+                <p>Maximizing Q follows similar calculations to maximizing the likelihood for a Gaussian. 
+                </p>
+                <p class="showExplanation">\(\mu_i^{new} = \frac{1}{N} \sum_{n=1}^N \gamma(y_{ij})\)</p>
+                <p class="explanation"> The derivation here parallels that of finding parameters that maximize the likelihood of a Gaussian. If
+                  we had no missing data, the mean that maximized the likelihood would be \(\frac{1}{N} \sum_{n=1}^N y_{ij}\), so our result
+                 just has the \(y_{ij}\) replaced with their expectation when they are missing.</p>
+                <p class="showExplanation">  \(\Sigma_{ij}^{new} = \frac{1}{N} \sum_{n=1}^N s_{ijn} - \mu_i^{new} \mu_j^{new} \)           
+               </p>
+               <p class="explanation">
+                  Again, the derivation follows that of maximizing the likelihood of a Gaussian. (see e.g. 13.5 <a href="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/other-readings/chapter13.pdf">here</a>.
+                  Note that if Y represented entirely non-missing data from a Gaussian distribution, then the likelihood-maximizing  \(\Sigma\) would be 
+                  $$ \Sigma_{ij} = \frac{1}{N} \sum_{n=1}^N y_{ni}y_{nj} - \mu^{ML}_i y_{nj} - y_{ni} \mu^{ML}_j + \mu^{ML}_i \mu^{ML}_j \\
+                  =\frac{1}{N}\sum_{n=1}^N y_{ni}y_{nj} - \frac{\mu^{ML}_i}{N}\sum_{n=1}^N y_{nj} -  \frac{\mu_j^{ML}}{N}\sum_{n=1}^N y_{ni} +   \mu^{ML}_i \mu^{ML}_j\\
+                  = \frac{1}{N}\sum_{n=1}^N y_{ni}y_{nj} - \frac{\mu^{ML}_i}{N} N \mu^{ML}_j - \frac{\mu^{ML}_j}{N} N \mu^{ML}_i + \mu^{ML}_i \mu^{ML}_j\\
+                  = \frac{1}{N}\sum_{n=1}^N y_{ni}y_{nj} -  \mu^{ML}_i \mu^{ML}_j. \\ $$
+                  Thus the result here is analogous to the maximum likelihood result, but with the expectations \(s_{ijn}\) appearing instead of \(y_{ni}y_{nj}\). 
+               </p>
+
+
+              </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+        <button class="accordion">This reminds me of Gibbs sampling! (Caution and a note on optimization and sampling) </button>
+        <div class="panel">
+        <p>
+        Great! There are fundamental conceptual similarities between EM and Gibbs sampling.  In both cases, we divide parameters into
+        groups and use appropriately chosen conditional distributions within an iterative process to obtain quantities of interest.  The connections continue when we look at implementation
+        details as well.  Tricks like adding auxiliary variables to make certain Gibbs sampling processes more efficient can be helpful in EM as well.
+        (I learned recently that some of these tools were actually developed for EM before being applied in the Gibbs sampling setting as well [2]).
+        </p>
+        <p>
+        However, we should keep in mind a fundamental difference between EM and Gibbs sampling: EM is a technique for optimization 
+        (in particular finding the maximum of a likelihood or posterior), while Gibbs sampling is for, well, sampling.
+        </p>
+        <table id="optimization-vs-sampling-table">
+                <tr>
+                <th>Optimization</th>
+                <th>Sampling </th>
+            </tr>
+                <tr>
+                    <td>EM</td>
+                    <td>Gibbs Sampling</td>
+                </tr>
+                <tr>
+                    <td>(Stochastic) gradient descent</td>
+                    <td>Importance sampling</td>
+                </tr>
+                <tr>
+                    <td>Newton's method</td>
+                    <td>Metropolis Hastings</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Other MCMC methods</td>
+                </tr>
+            </table>
+        <p>
+        Iterative techniques in optimization may resemble iterative techniques of sampling, and in both cases, we may end up with some iteratively obtained sequence of parameter values.  But the goals of
+        optimization and sampling are different, and so are the interpretations of the quantities produced by iteration. </p>
+        <p> When we are
+        optimizing, we are updating our parameter values in a way that we hope will get them closer to the optimum value at each iteration,
+        or at least that will trend closer to the optimum after many iterations.  In sampling, we are drawing values that will represent
+        a distribution - we expect our sampling process to produce both samples that are highly probable (many of these), others that correspond to 
+        lower probability regions (fewer of these). We're not expecting or hoping that our samples will
+        settle down on a single value once we have enough of them - on the contrary, we rely on our samples to <em>explore</em> the space and help us 
+        understand the distribution they come from. Lastly, when optimizing, we are interested in the optimizing parameter itself, not in all the points
+        that might have been sequentially considered to get us closer to that optimum.  With sampling, in contrast, we are likely to want to retain all of our
+        samples, to use them to understand the underlying distribution or at the very least to feed them in to some summary
+        statistics like a mean or standard deviation.
+        <p>
+        When you're learning about or working with a new iterative or sequential technique in machine learning, it can be surprisingly helpful to
+        just take a quick moment to ask yourself whether you are iterating in order to move towards some optimum,
+        or rather to generate representative samples of a distribution of interest.
+        </p>
+        <button id="samplingButton"> Sample </button>
+        <button id="restartSampling"> Restart </button>
+        <p id="sampling">
+        </p>
+        <button id="optimizingButton"> Optimize </button>
+        <button id="restartOptimization"> Restart </button>
+        <p id="optimization">
+        </p>     
+        
+    </div>
+        
+    <button class="accordion">Conclusion, References</button>
+    <div class="panel">
+      <p>To recap: EM is an iterative algorithm that may help you maximize likelihoods or posteriors if your model has latent variables &mdash; or
+        if you can <em>make</em> it have latent variables, by creating auxiliary variables as latent variables (as in our mixture of Gaussians)
+        by treating missing data as latent variables, or by thoughtfully partitioning your parameters to consider some of them as latent variables. 
+        EM is pretty broadly applicable, and the particular calculations involved will look different depending on the application.
+        And don't forget that EM helps you optimize over a distribution (not sample from it!).</p>
+      <p>Phew, thanks for reading! I promise more pictures in my next post.</p>
+      <p><b>References:</b></p>
+      <ol>
+        <li class="reflist"><a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Bishop, C.M., 2006. Pattern recognition and machine learning. Springer.</a></li>
+        <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
+      </ol>
+    </div> 
+    </div>       
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/blogpost.js"></script>
+   <script src="js/expectationmaximization.js"></script>
+   </body>
+</html>

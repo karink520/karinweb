@@ -114,57 +114,59 @@
         <p>Trying to maximize a likelihood or a posterior? Got some latent variables on hand? The EM algorithm might be useful for you.
 
         </p>
-        <p>It took me a long time to get around to understanding EM, perhaps because it's a framework that can be
+        <p>Although I knew it was useful, it took me a long time to get around to understanding EM, perhaps because it's a framework that can be
           adapted to a variety of problems, and so the particular implementations of it for different problems can look quite quite different 
-          from each other. Those differences in the particulars obscure the underlying structure of the algorithm, which pretty elegant, and is 
+          from each other. Those differences obscured for me the underlying structure of the algorithm, which is pretty elegant, and which is 
           what we'll start by presenting here.
         </p>
         <p>
-        The goal of this post is to explain the broad framework of expectation maximization (EM), give a sense when EM is applicable and helpful, and illustrate
-        EM as an adaptable framework by showing it in action in a mixture model and in a situation with missing data.  Hopefully, by the end of this, when you 
-        see EM in context, you'll be able to see the underlying structure, and if you want to adapt EM to your own particular problem, you'll
-        have some idea of where you might start.
+        The goal of this post is to explain the broad framework of expectation maximization, give a sense when EM is applicable and helpful, and illustrate
+        EM as an adaptable framework by showing it in action in a mixture model and in a situation with missing data. The calculations in the examples get detailed,
+        so that you can see what's involved in translating the outlines of the EM algorithm to a particular context. Hopefully, by the end of this, when you 
+        see EM in context, you'll be able to see the underlying structure, and have an idea of where to start if you someday want to adapt EM to your own particular problem.
         </p>
 
-        <button class="accordion">Introduction and goals</button>
+        <button class="accordion">What is EM and what kinds of problems is it for?</button>
         <div class="panel">
 
-          Let's suppose we have the following reasonably broad setup. Let's say we have:
+          Let's suppose we have the following reasonably broad setup. Say we have:
           <ul>
             <li>observed data \(X\)</li>
-            <li>latent variables \(Z\) (which could also represent missing data, auxiliary variables that we introduce for convenience, or additional parameters)</li>
+            <li>latent variables \(Z\) (which could also represent missing data, auxiliary variables that we introduce for convenience, or additional parameters that we group separately from \(\theta\))</li>
             <li>parameters of interest \(\theta\)</li>
           </ul>
-          Moreover, suppose we have the following hopes, dreams, and circumstances:
+          Moreover, suppose we have the following hopes, dreams, circumstances:
           <ul>
             <li>We seek to find the value of \(\theta\) that maximizes a likelihood \(P(X|\theta)\) or a posterior distribution \(P(\theta|X)\).</li>
-            <li>We find it hard to hard to do the desired maximization of \(P(X|\theta)\) or a \(P(\theta|X)\) directly (in fact it may be difficult to even calculate them -- e.g. if we're seeking \(P(X|\theta) = \int  P(X,Z | \theta) \, dZ\), we may not be able to compute that integral exactly.)
-              We have \(P(X,Z | \theta) \) that is easier to deal with.</li>
-            <li>We're comfortable accepting a solution that may be just a local maximum (not necessarily a global maximum).</li>
+            <li>We find it hard to hard to do the desired maximization of \(P(X|\theta)\) or a \(P(\theta|X)\) directly (in fact it may be difficult to even calculate it &mdash; e.g. if we're seeking \(P(X|\theta) = \int  P(X,Z | \theta) \, dZ\), we may not be able to compute that integral exactly).
+              We have a \(P(X,Z | \theta) \) that is easier to deal with.</li>
+            <li>We're comfortable accepting a solution that may be just a local maximum (not necessarily a global maximum).
+              Or, perhaps we're comfortable running the algorithm many times to find a number of local maxima.
+            </li>
             <li>Roughly speaking, if we knew \(X\) and \(Z\), we'd be okay estimating \(\theta\), and if we know \(X\) and \(\theta\), we could say useful things about the distribution of \(Z\).</li>
           </ul>
           <p>
             If someone was asking me in an informal conversation about how you would proceed using EM to try to do the following, I might give
-            the following very intuitive-but-not-specific-enough outline of the EM plan of action:
+            the following intuitive-but-not-specific-enough outline of the EM plan of action:
           </p>
           <ul>
             <li>Choose an initial \(\theta\)</li>
             <li>Use \(\theta\) update your knowledge about about \(Z\)</li>
-            <li>Use your updated knowledge about Z in an optimization problem that you will solve to update \(\theta\)</li>
+            <li>Use your updated knowledge about Z in a tractable optimization problem, and solve the optimization problem to update \(\theta\)</li>
             <li>Repeat the previous two steps, alternately updating \(\theta\) and some Z-related quantity until convergence</li>
           </ul>
-          <p>It's not that anything that follows the above rough intuition is EM &mdash; we'll outline EM carefully in a moment. 
+          <p>It's not that <em>anything</em> that follows the above rough intuition is EM &mdash; we'll outline EM carefully in a moment. 
             But as the EM steps get technical, it helps to keep in mind this basic intuition of iteration, alternating between
-            updates related to \(Z\) and updates related to \(\theta\);.
+            updates related to \(Z\) and updates related to \(\theta\).
           </p>
           <p>
-          Somewhat more specifically we can proceed by choosing some starting value of \(\theta\), (e.g. at random). Condition on X and the chosen value of theta, and compute the distribution of Z.
-          With respect to the distribution just computed, calculate the expectation of the log likelihood of \(P(X, Z | \theta) \) - an expected log likelihood which of course depends on theta, 
-          and then find theta to maximize that expected log likelihood. Repeat the process, using the latest value of theta
+          Somewhat more specifically we can say we will do the following. Choose some starting value of \(\theta\), (e.g. at random). Condition on X and the chosen value of \(\theta\), and compute the distribution of Z.
+          With respect to the distribution just computed, calculate the expectation of the log likelihood of \(P(X, Z | \theta) \) &mdash; an expected log likelihood which of course depends on \(\theta\), 
+          and then find \(\theta\) to maximize that expected log likelihood. Repeat the process, using the latest value of \(\theta\)
           to compute the distribution of \(Z\) given \(X\) and \(\theta\).
           </p>
 
-          Let's pin that down a little more, assuming we are trying find theta to maximize the likelihood \(P(X|\theta)\), or, alternatively, that we are maximizing a posterior \(P(\theta|X)\) and have prior \(p(\theta)\).
+          Let's pin that down a little more, assuming we are trying find \(\theta\) to maximize the likelihood \(P(X|\theta)\), or, alternatively, that we are trying to find \(\theta\) to maximize a posterior \(P(\theta|X)\) in the presence of a prior \(p(\theta)\).
           We would set \(\theta\) to some initial value and then repeat the following until convergence (that's convergence in estimates of \(\theta\), or in the log likelihood or posterior).
 
           <ul class="tab-select">
@@ -179,22 +181,22 @@
            </ol>
 
           <ol class="posterior">
-            <li>Evaluate \(P(Z | X, \theta^{old})\).</li>
+            <li>Evaluate \(P(Z | X, \theta^{old})\)</li>
             <li>Compute the expectation under \(P(Z|X , \theta^{old})\) of the log posterior \(P(\theta, Z | X)\) denoted \( Q(\theta, \theta^{old}) = \mathbb{E}_{Z | X, \theta^{old}} \ln (P(\theta, Z | X)) \propto \mathbb{E}_{Z|X, \theta^{old}} \ln (P(X, Z | \theta)) + P(\theta) \)</li>
-            <li>Choose \(\theta^{new}\) to be the value of theta that maximizes \(Q(\theta, \theta^{old})\). </li>
+            <li>Choose \(\theta^{new}\) to be the value of theta that maximizes \(Q(\theta, \theta^{old})\) </li>
            </ol>
 
            <p> For a likelihood versus a posterior, this outline differs only in the second step, where we swap \(P(\theta, Z | X)\) for \(P(X,Z | \theta)\).
           </p>
 
           <p>Does the setup and the general proceedure still seem a little fuzzy? That's fine. We'll make a quick vocabulary note 
-           and then pretty much the rest of this post will some examples so that you can see the
-           what the different quantities above mean and how the iterative 
+           and then will get to examples. The examples will help illustrate the meaning of 
+           the above quantities in context, so that you can see how iterative 
            process of EM works in two different realms where
-           where EM is applicable: a mixture of Gaussians (see, e.g. [1 Ch. 9]) and a setup with missing data (adapting an example from [2 Ch. 18]. </p> 
+           where EM is applicable: a mixture of Gaussians (see, e.g. [1 Ch. 9]) and a setup with missing data (as in an example from [2 Ch. 18]). </p> 
 
            <p><b>Keep in mind:</b> The above step-by-step procedures can look pretty different from how we actually <em>perform</em> EM in practice for two main reasons.
-            First, we probably won't be actually recalculating \(Q(\theta, \theta^{old})\) at every step - instead, we'll hopefully just work out once and for all 
+            First, we probably won't be actually recalculating \(Q(\theta, \theta^{old})\) at every step &mdash; instead, we'll hopefully just work out once and for all 
             an expression for \(\theta\) that maximizes it. Second, we may not calculate \( P(Z | X, \theta^{old})\) itself,
             but rather just some derived quantities that are relevant to the maximization of \(Q\). Look out for how this works in the examples!
           </p>    
@@ -204,8 +206,7 @@
 
           <button class="accordion">Do all these quantities have fun names?</button>
           <div class="panel">
-              <p>Oh, sure, some of them do, depending on what you mean by "fun".  Mostly you just need to know what the "complete"
-              and "incomplete" datasets are and the other names follow. We have:
+              <p>Oh, sure, some of them do, depending on what you mean by "fun". We can say:
               </p>
               <table>
                 <tr>
@@ -226,14 +227,14 @@
               </table>
 
               <p>I somehow find the EM steps a little easier to read and remember in terms of symbols (especially if I'm trying to remember the connection between when
-                I'm maximizing a likelihood vs. a posterior), but you might find the opposite to be true. So we'll write the EM method for maximizing a likelihood as follows:</p>
+                I'm maximizing a likelihood vs. a posterior), but you might find the opposite to be true for you. So we can write the EM method for maximizing a likelihood as follows:</p>
           
               <ol>
                 <li>Evaluate the posterior distribution of the latent variables.</li>
                 <li>Compute the expectation under the posterior distribution of the latent variables of the complete data log-likelihood (as a function of the parameters).</li>
                 <li>Find the parameters that maximize the expectation function that was computed in the previous step.</li>
                </ol>
-               <p>The step of computing the expectation of the complete data log-likelihood (or at least the pieces of it that are necessary for the maximization) is called the 
+               <p>The step of computing the expectation of the complete data log-likelihood (or at least the pieces of it that are necessary for the upcoming maximization) is called the 
                 <b>expectation</b> step or E-step, the computing of new parameters to maximize that expectation is the <b>maximization</b> or M-step.
               </p>
             </div> 
@@ -241,7 +242,7 @@
 
         <button class="accordion">Two examples</button>
         <div class="panel">
-          <p>It's pretty great that EM is applicable to a pretty wide range of problems. But, that range can also make it hard to get a handle on EM itself, and what's common to each application. Here, we present the EM algorithm in 
+          <p>It's pretty great that EM is applicable to a number of different problems. But, that range can also make it hard to get a handle on EM itself, and what is common to each application. Here, we present the EM algorithm in 
             two rather different problems, within a common framework so that you can keep the outline of the algorithm itself in mind as you see how 
             it can be applied.</p>
             <p><em>Click equations to show or hide calculation details.</em></p>
@@ -265,7 +266,7 @@
                 </span>
                 <span class="missing-data-inline">\( \{y_{nj} | n \in 1...N, j \in 1...d, \text{ and } y_{nj} \text{ unobserved}\}\) the unobserved components of \(\{\mathbf{y_n}\}_{n=1}^N\)</span></p>
               <p><span class="example-header">\(\theta\) (parameters):</span>
-                <span class="gaussian-mixture-inline">\( \{\mu, \Sigma_k, \pi_k\}_{k=1}^K\), where \(\mu\), \(\Sigma\) are the means and variances of the Gaussian distributions in the mixture, and \(\pi\) gives the mixing weights, which sum to 1.</span>
+                <span class="gaussian-mixture-inline">\( \{\mu_k, \Sigma_k, \pi_k\}_{k=1}^K\), where \(\mu\), \(\Sigma\) are the means and variances of the Gaussian distributions in the mixture, and \(\mathbf{\pi}\) gives the mixing weights, which sum to 1.</span>
                 <span class="missing-data-inline">\(\mathbf{\mu}, \mathbf{\Sigma} = \mathbf{\Lambda}^{-1}\), the mean and covariance of the normal distribution from which the \(\mathbf{y_n}\) are assumed to be drawn </span>
               <p class="gaussian-mixture"> We have that the data points \(\mathbf{x}_n\) are conditionally independent from each other given the parameters, that \(P(\mathbf{z}_n | \pi_k) = \prod_{k=1}^K \pi_k^{z_{nk}}\) and \(P(\mathbf{x}_n | \theta) = \prod_{k=1}^K N(\mathbf{x}_n | \mathbf{\mu}_k, \mathbf{\Sigma}_k)^{z_{nk}} \). </p>
               <p class="missing-data">For this setup, we have \(Y = \{\mathbf{y}_n \}_{n=1}^N =\{X, Z\} \), the complete data. We'll us
@@ -278,7 +279,8 @@
             <h3>Goal</h3>
             <div class="example-step">
               <p class="gaussian-mixture"> Maximize \(P(X | \theta)\) &mdash; a likelihood! </p>
-              <p class="missing-data"> Maximize \(P(\theta | X)\) &mdash; a posterior distribution!</p>
+              <p class="missing-data"> Maximize \(P(\theta | X)\) &mdash; a posterior distribution!*</p>
+              <p class="missing-data">*although, okay, we have an improper uniform prior here, which isn't so interesting - see [2 Ch. 18] for more interesting extensions</p>
             </div>
             <h3>Steps to iterate until convergence</h3>
             <div class="example-step">
@@ -446,9 +448,9 @@
         <p> When we are
         optimizing, we are updating our parameter values in a way that we hope will get them closer to the optimum value at each iteration,
         or at least that will trend closer to the optimum after many iterations.  In sampling, we are drawing values that will represent
-        a distribution - we expect our sampling process to produce both samples that are highly probable (many of these), others that correspond to 
+        a distribution &mdash; we expect our sampling process to produce both samples that are highly probable (many of these), others that correspond to 
         lower probability regions (fewer of these). We're not expecting or hoping that our samples will
-        settle down on a single value once we have enough of them - on the contrary, we rely on our samples to <em>explore</em> the space and help us 
+        settle down on a single value once we have enough of them &mdash; on the contrary, we rely on our samples to <em>explore</em> the space and help us 
         understand the distribution they come from. Lastly, when optimizing, we are interested in the optimizing parameter itself, not in all the points
         that might have been sequentially considered to get us closer to that optimum.  With sampling, in contrast, we are likely to want to retain all of our
         samples, to use them to understand the underlying distribution or at the very least to feed them in to some summary
@@ -472,12 +474,13 @@
     <button class="accordion">Conclusion, References</button>
     <div class="panel">
       <p>To recap: EM is an iterative algorithm that may help you maximize likelihoods or posteriors if your model has latent variables &mdash; or
-        if you can <em>make</em> it have latent variables, by creating auxiliary variables as latent variables (as in our mixture of Gaussians)
-        by treating missing data as latent variables, or by thoughtfully partitioning your parameters to consider some of them as latent variables. 
-        EM is pretty broadly applicable, and the particular calculations involved will look different depending on the application.
-        And don't forget that EM helps you optimize over a distribution (not sample from it!).</p>
-      <p>Phew, thanks for reading! I promise more pictures in my next post.</p>
+        if you can <em>make</em> it have latent variables, by creating auxiliary variables as latent variables,
+        by treating missing data as latent variables, or by thoughtfully partitioning parameters to consider some of them as latent variables. 
+        EM is applicable in a range of settings, and the particular calculations involved will look different depending on the application.
+        And don't forget that EM helps you <em>optimize</em> over a likelihood or posterior (not sample from it!).</p>
+      <p>Thanks for reading! I promise more pictures in my next post.</p>
       <p><b>References:</b></p>
+      <p>Note that the given outline of the general steps of EM follows [1].</p>
       <ol>
         <li class="reflist"><a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Bishop, C.M., 2006. Pattern recognition and machine learning. Springer.</a></li>
         <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>

@@ -57,6 +57,7 @@ var filenameExplanation = "This is the name of a file that you want to be includ
   For example, you might type `git add hello.py`. \
 Adding files one by one can be a helpful conservative approach that makes you consider what you are doing at each step.  If you prefer, you can add many files \
 at once.  For example, `git add -u` will stage changes to any files that are already being tracked.";
+var remotebranchnameExplanation = "Make sure this matches the name of your collaborator's branch. You can see the branch name on GitHub or in the list of branches that shows up if you enter `git branch -a`"
 
 $('.git-stash-pop').attr('title', gitStashPopExplanation);
 $('.git-stash').attr('title', gitStashExplanation);
@@ -82,6 +83,8 @@ $('.git-checkout').attr('title', gitCheckoutExplanation);
 $('.git-merge').attr('title', gitMergeExplanation);
 $('.git-push').attr('title', gitPushExplanation);
 $('.git-branch-d').attr('title', gitBranchDExplanation);
+
+$('.remote-branch-name').attr('title', remotebranchnameExplanation);
 
 //$( document ).tooltip();
 $( document ).tooltip( {

@@ -161,6 +161,7 @@
                             </li>
                         </ol>
                 </div>
+
                 <button class="accordion alternative-accordion">I want to use git rebase instead of git merge.</button>
                 <div class="panel">
                 <p>Sure.  Using rebase instead of merge will ensure a linear history, so you can choose this option if that's important to you.   For reference in that case, 
@@ -226,6 +227,46 @@
                                 </li>
                             </ol>
                 </div>
+
+                <button class="accordion alternative-accordion">My collaborator made a branch and pushed it to GitHub but it hasn't been merged yet. I want to add my own contributions to the branch.</button>
+                <div class="panel">
+                        <ol>
+                            <li>
+                                <h4>Before you start, make that sure any unrelated changes you were working on previously are committed to some appropriate branch.</h4>
+                            </li>
+                            <li>
+                                <h4>Make sure you have all the latest info about any changes anyone else has pushed to the remote repository (including your collaborator's great new remote branch!).</h4>
+                                <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
+                            </li>
+                            <li>
+                                <h4>Make a local copy of the branch that your collaborator started and pushed and move to that branch. </h4>
+                                <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover bflag'>-b</span> my-new-branch-name <span class="highlight-on-hover origin">origin</span>/<span class='highlight-on-hover remote-branch-name'>my-collaborators-remote-branch-name</span></code></div>
+                            </li>
+                            <li>
+                                <h4>You should now see the version of the code from your collaborator's branch when you look at your files locally.
+                                    Edit the files to make whatever contributions you were hoping to make.
+                                </h4>
+                            </li>
+                            <li>
+                                <h4> Commit changes.</h4>
+                                <div><code><span class='highlight-on-hover git-status'>git status</span></code></div>
+                                <div><code><span class='highlight-on-hover git-add'>git add</span> <span class='highlight-on-hover add-filename'> &lt;filename&gt; </span></code></div>
+                                <div><code><span class='highlight-on-hover git-commit'>git commit</span> <span class='highlight-on-hover mflag'>-m</span> <span class='highlight-on-hover commit-message'>"a short note about the changes you made"</span></code></div>
+                            </li>
+                            
+                            <li>
+                                <h4>Push your changes up to the remote branch that your collaborator started.</h4>
+                                <div><code><span class='highlight-on-hover git-push'>git push</span> <span class='highlight-on-hover origin'>origin</span> HEAD:<span class='highlight-on-hover remote-branch-name'>my-collaborators-remote-branch-name</span></code></div>
+                            
+                            </li>
+                            <li>
+                                <h4>If desired, move back to the master branch, or whatever branch you want to work on next.</h4>
+                                <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+
+                    
+                            </li>
+                        </ol>
+                </div>
             </div>  
 
     </main>
@@ -239,5 +280,14 @@
    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
    <script src="js/blogpost.js"></script>
    <script src='js/git-workflow.js'></script>
+   <script type="text/javascript">
+    document._EUGO = '7af3562faf60972b7f5d';
+    document.head.appendChild(function() {
+      var s = document.createElement('script');
+      s.src = 'https://eugo.io/eugo.js';
+      s.async = 1;
+      return s;
+    }());
+  </script>
    </body>
 </html>

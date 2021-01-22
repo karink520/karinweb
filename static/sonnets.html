@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style>
+    body { 
+        font-family: 'Palatino', Times, serif
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #sonnet-left{
+        float: left;
+        width: 35%;
+    }
+
+    #sonnet, #sonnet2 {
+        padding: 2%;
+        white-space: pre-wrap;
+        line-height: 1.5em;
+        font-size: 1.2rem;
+        font-family: 'Palatino', Times, serif;
+    }
+
+
+    #choose-a-sonnet, #choose-a-sonnet2 {
+        display: inline-block;
+        margin-left: 3%;
+        border-radius: 10px 10px 10px 10px;
+        border: 2px solid gray;
+    }
+
+    #choose-a-sonnet label, #choose-a-sonnet input, #choose-a-sonnet button{
+        display: block;
+    }
+
+    #choose-a-sonnet2 label, #choose-a-sonnet2 input, #choose-a-sonnet2 button{
+        display: block;
+    }
+
+    #choose-a-sonnet, #choose-a-sonnet2 {
+        margin-top: 2%;
+        padding-left: 2%;
+        padding-right: 2%;
+        padding-top: 1%;
+        padding-bottom: 1%;
+        float: clear;
+    }
+
+    .node circle {
+	  fill: #eee;
+	  stroke: seagreen;
+	  stroke-width: 2px;
+	}
+
+	.node text { 
+        font: 12px sans-serif;}
+
+	.link {
+	  fill: none;
+	  stroke: #bbb;
+	  stroke-width: 2px;
+	}
+
+    #tree {
+        height: 2200px;
+        width: 300px;
+        float: left;
+    }
+
+    p {
+        clear: both;
+    }
+    #wip {
+        color: red;
+    }
+
+   
+</style>
+<body>
+    <h1>Visualizing Sonnets by Sound</h1>
+    <p id="wip">WORK IN PROGRESS</p>
+<div id="sonnet-left">
+    <div id="choose-a-sonnet">
+    <label for="sonnet_number">Choose a sonnet number (1-154):</label>
+    <input type="number" id="sonnet_number" name="sonnet_number"
+        min="1" max="154" value="2">
+    <button id="display-sonnet">Display Sonnet</button>
+    </div>
+    <div id="sonnet">
+    </div>
+
+    <div id="choose-a-sonnet2">
+        <label for="sonnet_number2">Choose another sonnet number (1-154):</label>
+        <input type="number" id="sonnet_number2" name="sonnet_number2"
+            min="1" max="154" value="2">
+        <button id="display-sonnet2">Display Sonnet</button>
+        </div>
+        <div id="sonnet2">
+        </div>
+</div>
+
+<div id="tree"></div>
+<p>Tree generated approximately as in: Holdsworth, T. L. (2019). A phonemic analysis of shakespeare’s sonnets [Thesis]. University of San Diego.</p>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+   
+
+
+<script>
+    var sonnet_idx = document.getElementById("sonnet_number").value - 1;
+    var sonnet_idx2 = 1;
+    var sonnets = [];
+
+    $.getJSON( "data/sonnets.json", function( data ) {
+        parsed_data = JSON.parse(data);
+        var sonnet_text = ""
+        for (i=0; i < 154; i++){
+            sonnet_text = parsed_data[String(i)]
+            sonnets.push(sonnet_text);
+        }
+        $("#sonnet").html(sonnets[sonnet_idx])
+    });
+
+    function set_sonnet() {
+        sonnet_idx = document.getElementById("sonnet_number").value - 1;
+        $("#sonnet").html(sonnets[sonnet_idx]);
+        update(root);
+    }
+
+    function set_sonnet2() {
+        console.log("setting sonnet2")
+        sonnet_idx2 = document.getElementById("sonnet_number2").value - 1;
+        $("#sonnet2").html(sonnets[sonnet_idx2]);
+        update(root);
+    }
+
+    $("#display-sonnet").click(set_sonnet);
+    $("#display-sonnet2").click(set_sonnet2);
+
+    var margin = {top: 20, right: 120, bottom: 20, left: 120},
+        width = 700- margin.right - margin.left,
+        height = 2100 - margin.top - margin.bottom;
+        
+    var i = 0,
+        duration = 750,
+        root;
+
+    var tree = d3.layout.tree()
+        .size([height, width]);
+
+    var diagonal = d3.svg.diagonal()
+        .projection(function(d) { return [d.y, d.x]; });
+
+    var svg = d3.select("#tree").append("svg")
+        .attr("width", width + margin.right + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    var nodes, links
+    $.getJSON( "data/sonnet_tree.json", function( treeData ) {
+        // Compute the new tree layout.
+        root = treeData;//['children'][1];
+        root.x0 = height / 2;
+        root.y0 = 0;
+        nodes = tree.nodes(root)//.reverse();
+        links = tree.links(nodes);
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function(d) { d.y = d.depth * 30; });
+        nodes.forEach(function(d) { d.name = d.id; });
+        nodes.forEach(function(d, n) { d.id = n; });
+        update(root);
+    });
+
+
+
+
+function update(source) {
+    console.log("updating tree diagram");
+    console.log(sonnet_idx);
+
+// Update the nodes…
+var node = svg.selectAll("g.node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+// Enter any new nodes at the parent's previous position.
+var nodeEnter = node.enter().append("g")
+    .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+    //.on("click", click);
+
+
+nodeEnter.append("circle")
+    .attr("r", 8)
+    .style("stroke", function(d) { 
+        //console.log(d.name)
+        if ( d.name== sonnet_idx + 1 || d.name== sonnet_idx2 + 1) {
+            console.log("a match!")
+            console.log(sonnet_idx);
+            return d._children ? "red" : "red";
+        } else {
+        return d._children ? "lightsteelblue" : "lightsteelblue";}
+     });
+
+nodeEnter.append("text")
+    .attr("x", function(d) { return d.children || d._children ? -15 : 15; })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+    .text(function(d) { return d.name; })
+    .style("fill-opacity", 1e-6);
+
+// Transition nodes to their new position.
+var nodeUpdate = node.transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+nodeUpdate.select("circle")
+    .attr("r", 8)
+    .style("stroke", function(d) { 
+        //console.log(d.name)
+        if (d.name==sonnet_idx + 1 || d.name== sonnet_idx2 + 1) {
+            console.log("a match!")
+            console.log(sonnet_idx);
+            console.log(d.name)
+            return d._children ? "red" : "red";
+        } else {
+        return d._children ? "lightsteelblue" : "lightsteelblue";}
+     });
+
+nodeUpdate.select("text")
+    .style("fill-opacity", 1);
+
+// Transition exiting nodes to the parent's new position.
+var nodeExit = node.exit().transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+    .remove();
+
+nodeExit.select("circle")
+    .attr("r", 1e-6);
+
+nodeExit.select("text")
+    .style("fill-opacity", 1e-6);
+
+// Update the links…
+var link = svg.selectAll("path.link")
+    .data(links, function(d) { return d.target.id; });
+
+// Enter any new links at the parent's previous position.
+link.enter().insert("path", "g")
+    .attr("class", "link")
+    .attr("d", function(d) {
+      var o = {x: source.x0, y: source.y0};
+      return diagonal({source: o, target: o});
+    });
+
+// Transition links to their new position.
+link.transition()
+    .duration(duration)
+    .attr("d", diagonal);
+
+// Transition exiting nodes to the parent's new position.
+link.exit().transition()
+    .duration(duration)
+    .attr("d", function(d) {
+      var o = {x: source.x, y: source.y};
+      return diagonal({source: o, target: o});
+    })
+    .remove();
+
+// Stash the old positions for transition.
+// nodes.forEach(function(d) {
+//   d.x0 = d.x;
+//   d.y0 = d.y;
+// });
+}
+
+// // Toggle children on click.
+// function click(d) {
+// if (d.children) {
+//   d._children = d.children;
+//   d.children = null;
+// } else {
+//   d.children = d._children;
+//   d._children = null;
+// }
+// update(d);
+// }
+
+</script>
+</html>
+

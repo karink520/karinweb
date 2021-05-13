@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,23 +17,26 @@
         width: 35%;
     }
 
-    #sonnet, #sonnet2 {
+    #sonnet, #sonnet2, #user-sonnet-div, textarea{
         padding: 2%;
-        white-space: pre-wrap;
-        line-height: 1.5em;
-        font-size: 1.2rem;
+        line-height: 1.2em;
+        font-size: 1.1rem;
         font-family: 'Palatino', Times, serif;
     }
 
+    #sonnet, #sonnet2 {
+        white-space: pre-wrap;
+    }
 
-    #choose-a-sonnet, #choose-a-sonnet2 {
+
+    #choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
         display: inline-block;
         margin-left: 3%;
         border-radius: 10px 10px 10px 10px;
         border: 2px solid gray;
     }
 
-    #choose-a-sonnet label, #choose-a-sonnet input, #choose-a-sonnet button{
+    #choose-a-sonnet label, #choose-a-sonnet input, #choose-a-sonnet button, #write-a-sonnet label, #write-a-sonnet button{
         display: block;
     }
 
@@ -41,7 +44,7 @@
         display: block;
     }
 
-    #choose-a-sonnet, #choose-a-sonnet2 {
+    #choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
         margin-top: 2%;
         padding-left: 2%;
         padding-right: 2%;
@@ -98,9 +101,18 @@
         <input type="number" id="sonnet_number2" name="sonnet_number2"
             min="1" max="154" value="2">
         <button id="display-sonnet2">Display Sonnet</button>
-        </div>
-        <div id="sonnet2">
-        </div>
+    </div>
+    <div id="sonnet2">
+    </div>
+
+    <div id="write-a-sonnet">
+        <label for="user-sonnet">Write a sonnet below</label>
+        <button id="compare-user-sonnet">Add my sonnet to the tree! </button>
+    </div>
+    <div id="user-sonnet-div">
+            <textarea name="user-sonnet" rows="14" cols="50">Shall I compare thee to a summer’s day?...</textarea>
+        <!-- <textarea name="user_sonnet" form="usrform">Enter text here...</textarea> -->
+    </div>
 </div>
 
 <div id="tree"></div>
@@ -108,7 +120,7 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
    
 
 
@@ -116,6 +128,7 @@
     var sonnet_idx = document.getElementById("sonnet_number").value - 1;
     var sonnet_idx2 = 1;
     var sonnets = [];
+    var setSonnet1Next = false;
 
     $.getJSON( "data/sonnets.json", function( data ) {
         parsed_data = JSON.parse(data);
@@ -142,41 +155,33 @@
 
     $("#display-sonnet").click(set_sonnet);
     $("#display-sonnet2").click(set_sonnet2);
+    $("#compare-user-sonnet").click(function(){
+        
+    })
 
-    var margin = {top: 20, right: 120, bottom: 20, left: 120},
-        width = 700- margin.right - margin.left,
-        height = 2100 - margin.top - margin.bottom;
+    var margin = {top: 20, right: 120, bottom: 20, left: 60},
+        width = 1100 - margin.right - margin.left,
+        height = 2100 - margin.top - margin.bottom,
+        radius = width / 2;
         
     var i = 0,
         duration = 750,
         root;
 
-    var tree = d3.layout.tree()
-        .size([height, width]);
-
-    var diagonal = d3.svg.diagonal()
-        .projection(function(d) { return [d.y, d.x]; });
+    var tree =  d3.cluster()
+        .size([2 * Math.PI, radius - 100])
 
     var svg = d3.select("#tree").append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+     .append("g")
+         .attr("transform", "translate(" + radius + "," + radius+ ")");
 
-
-    var nodes, links
+    //var nodes, links
     $.getJSON( "data/sonnet_tree.json", function( treeData ) {
         // Compute the new tree layout.
-        root = treeData;//['children'][1];
-        root.x0 = height / 2;
-        root.y0 = 0;
-        nodes = tree.nodes(root)//.reverse();
-        links = tree.links(nodes);
-
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 30; });
-        nodes.forEach(function(d) { d.name = d.id; });
-        nodes.forEach(function(d, n) { d.id = n; });
+        root = tree(d3.hierarchy(treeData));
+        console.log(root)
         update(root);
     });
 
@@ -187,113 +192,104 @@ function update(source) {
     console.log("updating tree diagram");
     console.log(sonnet_idx);
 
-// Update the nodes…
-var node = svg.selectAll("g.node")
-    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+    var sonnetLeaf, sonnetLeaf2;
+    for (i=0;i < source.leaves().length; i++){
+        if (source.leaves()[i].data.id == sonnet_idx + 1){
+            sonnetLeaf = source.leaves()[i];
+        }
+        if (source.leaves()[i].data.id == sonnet_idx2 + 1){
+            sonnetLeaf2 = source.leaves()[i];
+        }
+    }
 
-// Enter any new nodes at the parent's previous position.
-var nodeEnter = node.enter().append("g")
-    .attr("class", "node")
-    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-    //.on("click", click);
+   var sonnetToSonnetPath = sonnetLeaf.path(sonnetLeaf2);
+   console.log(sonnetToSonnetPath);
+   for (i=0; i < sonnetToSonnetPath.length - 1; i++){
+        sourceNode = sonnetToSonnetPath[i];
+        targetNode = sonnetToSonnetPath[i+1];
+   }
 
+    svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 1)
+      .attr("stroke-width", 1.5)
+    .selectAll("path")
+    .data(source.links())
+    .join("path")
+      .attr("d", d3.linkRadial()
+          .angle(d => d.x)
+          .radius(d => d.y))
+          .attr("stroke", function(d){
+            for (i=1; i < sonnetToSonnetPath.length ; i++){
+                sourceNode = sonnetToSonnetPath[i];
+                targetNode = sonnetToSonnetPath[i-1];
+                if(d.source === sourceNode && d.target === targetNode || d.source === targetNode && d.target === sourceNode){
+                    return "#111";
+                }
+            } 
+            return "#999";
+       });
 
-nodeEnter.append("circle")
-    .attr("r", 8)
-    .style("stroke", function(d) { 
-        //console.log(d.name)
-        if ( d.name== sonnet_idx + 1 || d.name== sonnet_idx2 + 1) {
-            console.log("a match!")
-            console.log(sonnet_idx);
-            return d._children ? "red" : "red";
+    svg.append("g")
+    .selectAll("circle")
+    .data(root.descendants())
+    .join("circle")
+      .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90})
+        translate(${d.y},0)
+      `)
+      .attr("fill", d => d.children ? "#555" : "#999")
+      .attr("r", 3.5)
+      .style("fill", function(d) { 
+        if ( d.data.id== sonnet_idx + 1 || d.data.id == sonnet_idx2 + 1) {
+            return d.children ? "red" : "red";
         } else {
-        return d._children ? "lightsteelblue" : "lightsteelblue";}
-     });
+            return d.children ? "lightsteelblue" : "lightsteelblue";}
+        });
 
-nodeEnter.append("text")
-    .attr("x", function(d) { return d.children || d._children ? -15 : 15; })
-    .attr("dy", ".35em")
-    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-    .text(function(d) { return d.name; })
-    .style("fill-opacity", 1e-6);
 
-// Transition nodes to their new position.
-var nodeUpdate = node.transition()
-    .duration(duration)
-    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+  svg.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 10)
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+    .selectAll("text")
+    .data(root.descendants())
+    .join("text")
+      .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90}) 
+        translate(${d.y},0) 
+        rotate(${d.x >= Math.PI ? 180 : 0})
+      `)
+      .attr("dy", "0.31em")
+      .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+      .text(d => d.data.id)
+    .clone(true).lower()
+      .attr("stroke", "white");
 
-nodeUpdate.select("circle")
-    .attr("r", 8)
-    .style("stroke", function(d) { 
-        //console.log(d.name)
-        if (d.name==sonnet_idx + 1 || d.name== sonnet_idx2 + 1) {
-            console.log("a match!")
-            console.log(sonnet_idx);
-            console.log(d.name)
-            return d._children ? "red" : "red";
-        } else {
-        return d._children ? "lightsteelblue" : "lightsteelblue";}
-     });
-
-nodeUpdate.select("text")
-    .style("fill-opacity", 1);
-
-// Transition exiting nodes to the parent's new position.
-var nodeExit = node.exit().transition()
-    .duration(duration)
-    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-    .remove();
-
-nodeExit.select("circle")
-    .attr("r", 1e-6);
-
-nodeExit.select("text")
-    .style("fill-opacity", 1e-6);
-
-// Update the links…
-var link = svg.selectAll("path.link")
-    .data(links, function(d) { return d.target.id; });
-
-// Enter any new links at the parent's previous position.
-link.enter().insert("path", "g")
-    .attr("class", "link")
-    .attr("d", function(d) {
-      var o = {x: source.x0, y: source.y0};
-      return diagonal({source: o, target: o});
-    });
-
-// Transition links to their new position.
-link.transition()
-    .duration(duration)
-    .attr("d", diagonal);
-
-// Transition exiting nodes to the parent's new position.
-link.exit().transition()
-    .duration(duration)
-    .attr("d", function(d) {
-      var o = {x: source.x, y: source.y};
-      return diagonal({source: o, target: o});
-    })
-    .remove();
-
-// Stash the old positions for transition.
-// nodes.forEach(function(d) {
-//   d.x0 = d.x;
-//   d.y0 = d.y;
-// });
+    d3.selectAll('circle').on('click', clickCircle);
 }
 
-// // Toggle children on click.
-// function click(d) {
-// if (d.children) {
-//   d._children = d.children;
-//   d.children = null;
-// } else {
-//   d.children = d._children;
-//   d._children = null;
-// }
-// update(d);
-// }
+function clickCircle(d, i){
+    var thisSonnetNumber = i.data.id;
+    console.log(thisSonnetNumber);
+    if (thisSonnetNumber == "Your sonnet!") {
+        
+    }
+    else if (setSonnet1Next) {
+        document.getElementById("sonnet_number").value = thisSonnetNumber;
+        set_sonnet();
+    } else {
+        document.getElementById("sonnet_number2").value = thisSonnetNumber
+        set_sonnet2();
+    }
+    
+    setSonnet1Next = !setSonnet1Next;
+    update(root);
+}
+
 
 </script>
 </html>

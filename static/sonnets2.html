@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="css/sonnets.css">
+</head>
+<body>
+    <h1>Visualizing Sonnets by Sound</h1>
+    <div class="centered tab-heading-container">
+        <span id="pick-tree" class="tab-heading">
+            Tree visualization
+        </span>
+        <span id="pick-2d-projection" class="tab-heading tab-heading-selected">
+            Two dimensional projection
+        </span>
+    </div>
+    <!-- <p id="wip">WORK IN PROGRESS</p> -->
+    <div id = "options" class="rounded-border">
+    <div id="choose-authors" >
+        <input type="checkbox" value="Shakespeare"checked="checked" class="authorCheckbox"/>Shakespeare <span class="legend-Shakespeare legend">&#8226;</span> <br>
+        <input type="checkbox" value="Spenser" checked="checked" class="authorCheckbox" />Spenser <span class="legend-Spenser legend">&#8226;</span> <br>
+        <input type="checkbox" value="Sidney" checked="checked" class="authorCheckbox" />Sidney <span class="legend-Sidney legend">&#8226;</span> <br>
+    </div>
+    <div id="choose-projection">
+        <form name="choose-projection-form">
+        Projection: <br>
+        <input type="radio" id="LDA" class="projection"
+        name="projection" value="lda" checked="True">
+       <label for="LDA">LDA</label><br>
+   
+       <input type="radio" id="PCA" class="projection"
+        name="projection" value="pca">
+       <label for="PCA">PCA</label>
+    </form>
+    </div>
+    <div id="features">
+    <form>
+        <br>
+        <input type="radio" id="phonemes"
+        name="contact" value="phonemes" checked="True">
+       <label for="phonemes">Phoneme Count</label><br>
+   
+       <input type="radio" id="style"
+        name="contact" value="style">
+       <label for="style">Other</label>
+    </form>
+    </div>
+    <div id="choose-features">
+
+    </div>
+    </div>
+    <div id="tree"></div>
+<div id="sonnet-left">
+    <div id="choose-a-sonnet" class="rounded-border">
+ 
+    <label for="sonnet_number">Highlight a Sonnet (Shakespeare 1-154, Spenser 1-89, or Sidney 1-108)</label>
+   <br>
+    <input type="radio" value="Shakespeare" checked="True" name="poet">
+    <label for="Shakespeare">Shakespeare</label><br>
+    <input type="radio" value="Spenser" name="poet"/>
+    <label for="Spenser">Spenser</label><br>
+    <input type="radio" value="Sidney"name="poet"/>
+    <label for="Sidney">Sidney</label><br>
+    <input type="number" id="sonnet_number" name="sonnet_number"
+        min="1" max="154" value="">
+    <button id="display-sonnet">Highlight a Sonnet</button>
+    <button id="unhighlight-sonnet">Remove Highlight</button>
+    </div>
+    <div id="sonnet">
+    </div>
+
+    <!-- <div id="choose-a-sonnet2" class="rounded-border">
+        <label for="sonnet_number2">Choose another sonnet number (1-154):</label>
+        <input type="number" id="sonnet_number2" name="sonnet_number2"
+            min="1" max="154" value="2">
+        <button id="display-sonnet2">Display Sonnet</button>
+    </div>
+    <div id="sonnet2">
+    </div> -->
+
+    <!-- <div id="write-a-sonnet" class="rounded-border">
+        <label for="user-sonnet">Write a sonnet below</label>
+        <button id="compare-user-sonnet">Add my sonnet to the tree! </button>
+    </div>
+    <div id="user-sonnet-div">
+            <textarea name="user-sonnet" rows="14" cols="50">Shall I compare thee to a summer’s day?...</textarea>
+    </div> -->
+</div>
+<p>Tree generated approximately as in: Holdsworth, T. L. (2019). A phonemic analysis of shakespeare’s sonnets [Thesis]. University of San Diego.</p>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="js/sonnets.js"></script>
+
+</html>
+

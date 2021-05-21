@@ -68,7 +68,7 @@ function replot_with_position_data_from_file(filename){
 }
 
 function draw_plot(sonnetData){
-    d3.select("#tree").html("");
+    d3.select("#scatter-container").html("");
 
     var margin = {top: 20, right: 120, bottom: 20, left: 60},
         // width = 800 - margin.right - margin.left,
@@ -82,7 +82,7 @@ function draw_plot(sonnetData){
         // .extent([[0, 0], [width, height]])
         .on("zoom", zoomed);
 
-    var svg = d3.select("#tree")
+    var svg = d3.select("#scatter-container")
         .append("svg")
             // //.attr("preserveAspectRatio", "xMinYMin meet")
             // .attr("viewBox", "0 0 800 400")

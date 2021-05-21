@@ -1,0 +1,166 @@
+body { 
+    font-family: 'Palatino', Times, serif
+}
+
+h1 {
+    text-align: center;
+}
+
+#sonnet-left{
+    float: left;
+    width: 45%;
+}
+
+#sonnet-chooser-2d-viz{
+    width: 45%;
+}
+
+#sonnet, #sonnet2, #user-sonnet-div, textarea{
+    padding: 2%;
+    line-height: 1.2em;
+    font-size: 1.1rem;
+    font-family: 'Palatino', Times, serif;
+    display: inline-block;
+}
+
+#sonnet, #sonnet2 {
+    white-space: pre-wrap;
+}
+
+.rounded-border{ 
+    border-radius: 10px 10px 10px 10px;
+    border: 2px solid gray;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+#choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
+    display: inline-block;
+}
+
+/* #choose-a-sonnet label, #choose-a-sonnet input, #choose-a-sonnet button, #write-a-sonnet label, #write-a-sonnet button{
+    display: block;
+} */
+
+#choose-a-sonnet2 label, #choose-a-sonnet2 input, #choose-a-sonnet2 button{
+    display: block;
+}
+
+#choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
+    margin-top: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    /* float: clear; */
+}
+
+.node circle {
+  fill: #eee;
+  stroke: seagreen;
+  stroke-width: 2px;
+}
+
+.node text { 
+    font: 12px sans-serif;}
+
+.link {
+  fill: none;
+  stroke: #bbb;
+  stroke-width: 2px;
+}
+
+.hidden {
+    display:none;
+}
+
+#tree {
+    /* display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width:100%;
+    padding-bottom: 100%; /* aspect ratio */
+    /* vertical-align: top;
+    overflow: hidden; */ 
+}
+
+
+p {
+    clear: both;
+}
+#wip {
+    color: red;
+}
+
+.legend {
+    font-size: 1.5em;
+}
+
+.ui-tooltip{
+    white-space: pre-line;
+    background:white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    color: black;
+    border-radius: 20px;
+    font: bold 14px;
+    box-shadow: 0 0 7px black;
+    max-width: 600px;
+    line-height: 1.4;
+    position: absolute;
+}
+
+.ui-tooltip::first-line{
+    text-align: center;
+    font-size: 1.1em;
+}
+
+#options div {
+    display: inline-block;
+    width: 30%;
+}
+
+/* .svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  } */
+
+  /*Style for tab selection */
+.tab-heading {
+    display : block;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top: 3px solid rgb(255, 240, 189);
+    background-color:rgb(255, 240, 189);
+    height: 100%;
+  }
+  
+  .tab-heading-selected {
+    background-color: white;
+    border-bottom: 3px solid rgb(255, 240, 189);;
+  }
+  
+  .tab-heading-container{
+      background-color:rgb(255, 240, 189);;
+      margin-top:3px;
+      margin-bottom:10px;
+  }
+
+  @media screen and (min-width: 700px){
+    .tab-heading {
+      display : inline-block;
+      width: 45%;
+      padding: 1em;
+    }
+    .tab-heading-selected {
+        background-color: white;
+        border-bottom: 0px;
+    }
+
+}

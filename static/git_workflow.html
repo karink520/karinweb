@@ -31,7 +31,7 @@
                 <li>
                     <h4>Make sure your local respository is up to date with the remote repository.</h4>
                     <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                  
                 </li>
                 <li>
@@ -54,9 +54,9 @@
                     <h4>Make and commit more changes, repeating step 4 and 5, as desired.</h4>
                 </li>
                 <li>
-                    <h4>Get any changes from the master branch in the remote repository that were made by other people while you were working.</h4>
+                    <h4>Get any changes from the main branch in the remote repository that were made by other people while you were working.</h4>
                     <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                 </li>
                 <li>
                     <h4>Resolve any conflicts that occurred during the merge.</h4>
@@ -73,16 +73,16 @@
                     <h4>Make sure your code passes all quality control checks that you've included on GitHub.</h4>
                 </li>
                 <li>
-                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
+                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the main branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
                 </li>
                 <li>
-                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the master branch and delete the old branch locally. </h4>
-                    <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the main branch and delete the old branch locally. </h4>
+                    <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>main</span></code></div>
                     <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
                     
-                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely and merging them into to your local master branch. </h4>
+                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely and merging them into to your local main branch. </h4>
                     <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                    <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
              
                 </li>
             </ol>
@@ -110,7 +110,7 @@
                     <li>
                         <h4>Do the fetch and merge and/or branch checkout that you meant to do before you started.</h4>
                         <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                        <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                        <div><code><span class='highlight-on-hover git-merge'>git merge</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                      <p>and/or</p>
                     <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover bflag'>-b</span>  <span class='highlight-on-hover mybranchname'>mybranchname</span> </code>
                     <span> or </span> <code><span class='highlight-on-hover git-checkout-branch'>git checkout mybranchname</span> </code></div>
@@ -126,7 +126,7 @@
                 
                 <button class="accordion alternative-accordion">I'm working mostly by myself or on a small team and I want a simpler flow.</button>
                 <div class="panel">
-                    <p>Omitting the branching and pull request portions of the flow described above, and working only on the master branch, will simplify the process. 
+                    <p>Omitting the branching and pull request portions of the flow described above, and working only on the main branch, will simplify the process. 
                         The simpler process below might be sufficient for your needs, at least for a while.  If you find that 
                         quality control and resolving conflicts is becoming unwieldy, especially as your project grows, you might
                         find the extra steps of the branching model above are worth it.
@@ -134,7 +134,7 @@
                         <ol>
                             <li>
                                 <h4>Make sure your local respository is up to date with the remote repository.</h4>
-                                <div><code><span class='highlight-on-hover git-pull'>git pull</span>  <span class='highlight-on-hover rebase-with-git-pull'>--rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                <div><code><span class='highlight-on-hover git-pull'>git pull</span>  <span class='highlight-on-hover rebase-with-git-pull'>--rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                             
                             </li>
                             <li>
@@ -151,12 +151,12 @@
                             </li>
                             <li>
                                 <h4>Make sure you're up to date with any changes anyone else has pushed to the remote repository while you were working (if necessary/applicable).</h4>
-                                <div><code><span class='highlight-on-hover git-pull'>git pull</span>  <span class='highlight-on-hover rebase-with-git-pull'>--rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                <div><code><span class='highlight-on-hover git-pull'>git pull</span>  <span class='highlight-on-hover rebase-with-git-pull'>--rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                             
                             </li>
                             <li>
                                 <h4>Push your changes back to the remote repository.</h4>
-                                <div><code><span class='highlight-on-hover git-push'>git push</span> <span class='highlight-on-hover origin'>origin</span> <span class='highlight-on-hover master'>master</span></code></div>
+                                <div><code><span class='highlight-on-hover git-push'>git push</span> <span class='highlight-on-hover origin'>origin</span> <span class='highlight-on-hover master'>main</span></code></div>
                     
                             </li>
                         </ol>
@@ -172,7 +172,7 @@
                                 <li>
                                     <h4>Make sure your local respository is up to date with the remote repository.</h4>
                                     <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                                    <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                    <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                                     <p></p>
                                 </li>
                                 <li>
@@ -195,9 +195,9 @@
                                     <h4>Make and commit more changes, repeating step 4 and 5, as desired.</h4>
                                 </li>
                                 <li>
-                                    <h4>Get any changes from the master branch in the remote repository that were made by other people while you were working.</h4>
+                                    <h4>Get any changes from the main branch in the remote repository that were made by other people while you were working.</h4>
                                     <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                                    <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                    <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                                 </li>
                                 <li>
                                     <h4>Resolve any conflicts that occurred during the merge.</h4>
@@ -214,15 +214,15 @@
                                     <h4>Make sure your code passes all quality control checks that you've included on GitHub.</h4>
                                 </li>
                                 <li>
-                                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the master branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
+                                    <h4>Wait for another member of your team to go to GitHub, review your changes, approve merging them into the main branch, and delete the remote branch once this process is complete and the branch is no longer needed.</h4>
                                 </li>
                                 <li>
-                                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the master branch and delete the old branch locally. </h4>
-                                        <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                                    <h4>If your changes were successfully merged, and you're all done with this branch, you can move back to the main branch and delete the old branch locally. </h4>
+                                        <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>main</span></code></div>
                                         <div><code><span class='highlight-on-hover git-branch-d'>git branch -d mybranchname</span> </code></div>
-                                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely, and merging them into to your local master branch. </h4>
+                                    <h4>To finish cleaning up, repeat step 1, taking the changes you pushed and merged remotely, and merging them into to your local main branch. </h4>
                                         <div><code><span class='highlight-on-hover git-fetch'>git fetch</span> <span class='highlight-on-hover origin'>origin</span></code></div>
-                                        <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>master</span></code></div>
+                                        <div><code><span class='highlight-on-hover git-rebase'>git rebase</span> <span class='highlight-on-hover origin'>origin</span>/<span class='highlight-on-hover master'>main</span></code></div>
                                     
                                 </li>
                             </ol>
@@ -260,8 +260,8 @@
                             
                             </li>
                             <li>
-                                <h4>If desired, move back to the master branch, or whatever branch you want to work on next.</h4>
-                                <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>master</span></code></div>
+                                <h4>If desired, move back to the main branch, or whatever branch you want to work on next.</h4>
+                                <div><code><span class='highlight-on-hover git-checkout'>git checkout</span> <span class='highlight-on-hover master'>main</span></code></div>
 
                     
                             </li>

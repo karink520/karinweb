@@ -2,9 +2,9 @@ var bFlagExplanation = "-b is a flag that makes git construct a new branch.  Omi
 var mFlagExplanation = "-m is a flag for attaching a message to your commit.  Always include a message.";
 var uFlagExplanation = "-u is a flag that adds the branch as a remote tracking branch, so that the remote repository has \
 a branch connected with your branch.  This is called setting the upstream remote branch. You only need to use `-u` once, and the association will be set up for future uses of `git push` and `git pull` without parameters."
-var masterExplanation = "`master` is the name of a branch.  We assume that it is the branch that contains the best and most stable version of the code. \
-We want to avoid changing the master branch until we have something worthwhile to add, which is why we check out a separate branch to work on, and combine that work back in later. \
-The default name is `master`, but you might have changed the name of this special branch to something else.";
+var mainExplanation = "`main` is the name of a branch.  We assume that it is the branch that contains the best and most stable version of the code. \
+We want to avoid changing the main branch until we have something worthwhile to add, which is why we check out a separate branch to work on, and combine that work back in later. \
+On GitHub, the default name is `main`, but you can also use a different name for this special default branch.";
 var originExplanation = "`origin` is the short name for the remote repository.  \
 The name `origin` is conventional and so it is what we'll use as an example throughout. We'll also assume you only have one remote repository for the code at hand. \
 However, you could name the remote repository something besides `origin`, or have more than one remote repository, each with a different name. \
@@ -69,7 +69,7 @@ $('.add-filename').attr('title',filenameExplanation);
 $('.bflag').attr('title', bFlagExplanation);
 $('.mflag').attr('title', mFlagExplanation);
 $('.uflag').attr('title', uFlagExplanation);
-$('.master').attr('title', masterExplanation);
+$('.master').attr('title', mainExplanation);
 $('.origin').attr('title', originExplanation);
 $('.mybranchname').attr('title', mybranchnameExplanation);
 $('.commit-message').attr('title', commitMessageExplanation);

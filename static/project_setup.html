@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Karin Knudson </title>
+        <meta charset=UTF-8>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/kck.css">
+        <link rel="stylesheet" href="css/blogpost.css">
+        <link rel="stylesheet" href="css/code-annotation.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <style>
+            #proj-setup, .code-gray {
+                background-color: #ddd;
+                display: inline-block;
+                margin-right: 1em;
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+            }
+            #proj-setup-info{
+                display: inline-block;
+                vertical-align:top;
+                width: 64%;
+            }
+
+            .highlight-yellow{
+                background-color: yellow;
+            }
+
+            #proj-setup-explanation{
+                margin-top: 18px;
+                border: 2px solid #ddd;
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+            }
+
+            #proj-setup-example, .yamlexample {
+                background-color: #eee;
+            }
+
+            .has-explanation:hover{
+                cursor:help
+            }
+
+            .code-simple {
+                font-family: monospace; 
+            }
+
+            .example, .yamlexample {
+                font-size: small;
+            }
+
+        </style>
+    </head>
+    <body>
+    <header>
+        <div></div>
+        <nav>
+            <ul>
+                  <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+                  <li> <a href="blog.html">Blog</a> </li>
+                  <li> <a href="projects.html">Projects</a></li>
+                  <li> <a href="Knudson-Resume.pdf">Resume</a><li>
+            </ul>
+            </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+        <h3 class="blogdate">February 22, 2021</h3>
+        <span class="blogtopic">My Python project setup basics (with tests and linting)</span>
+        <p>
+        I have this problem that when I go to start a new Python project, I often realize that I've... forgotten
+        some basic things about how I like to set up a Python project. And if, as I get more practice, I'm getting better at remembering those things,
+        I'm also having more occasion to explain to someone <em>else</em> how I like to set up a project.
+        </p>
+        <p>
+        So, I put together this post for the dual purpose of 1) replacing (or at least complementing!) the digging around in an old project for templates for myself and trying to remember things I 
+        <em>totally used to know how to do</em> and 2) serving as a resource or explainer that I can share with others.
+        </p>
+
+        <button class="accordion alternative-accordion"> Organization of the project folder and files.</button>
+        <div class="panel">
+            Here's how the project tree is organized. Click an element for more information and/or an example file.
+        <pre id="proj-setup">
+ myproject
+    <span id="setup" class="has-explanation">setup.py</span>
+    <span id="readme" class="has-explanation">README.md </span>
+    <span id="requirements" class="has-explanation">requirements.txt</span>
+    <span id="requirements-dev" class="has-explanation">requirements-dev.txt </span>
+    myproject
+        <span id="init" class="has-explanation">__init__.py</span>
+        <span id="example_code" class="has-explanation">example_code.py</span>
+    test
+        <span id="test_example_code" class="has-explanation">test_example_code.py</span>
+    <span id="scripts" class="has-explanation">scripts</span>
+        <span id="lint" class="has-explanation">lint.sh</span>
+        <span id="lint_and_test" class="has-explanation">lint_and_test.sh</span>
+        <span id="test" class="has-explanation">test.sh</span>
+        </pre>
+        <div id="proj-setup-info">
+        <div id="proj-setup-explanation">
+            <p class="explanation setup-info">This file contains information and instructions that help your project be installed as a package, for example with pip.
+                If you don't expect to distribute your project as a package and don't need it to be easily installable in this way, you likely don't need this file.
+            </p>
+            <p class="explanation readme-info">The readme gives basic information about the project, including information about installation, usage, how to contribute, and licensing.</p>
+            <p class="explanation requirements-info">
+                Lists that packages users will need to run the project. You can pin your requirements to specific releases of those libraries as well, by specifying the version as in the example below.
+            </p>
+            <p class="explanation requirements-dev-info">
+            Lists packages that developers on the project (but not users) would need, such as linting and testing packages.
+            </p>
+            <p class="explanation init-info">
+                You used to need an <span class="code-simple">__init__.py</span> file to mark a directory as a module. But now you don't need it for that. However, you can still use <span class="code-simple">__init__.py</span> to add things to the namespace.
+                Note that my example <span class="code-simple">setup.py</span> file looks for a version number within <span class="code-simple">__init__.py</span>.
+            </p>
+            <p class="explanation example_code-info">
+                Probably you'll have more than just this one file with code, unless it's a very small project. In this example,
+                the line <span class="simple-code">__all__ = ["greet", "say_farewell"]</span> controls what gets imported in an <span class="simple-code">import *
+                </span> statement.
+            </p>
+            <p class="explanation test_example_code-info">
+                Test(s).
+            </p>
+            <p class="explanation scripts-info">
+               This folder can hold scripts related to the project that you and other developers might like to use. 
+               For example, it could include scripts for linting and testing (as in this example), or building documentation, and/or for building a release.
+            </p>
+            <p class="explanation lint-info">
+                This example runs formatting with <span class="code-simple">black</span>, type checking with <span class="code-simple">mypy</span>,
+                and style checking with <span class="code-simple">pylint</span>. You might like these this setup or not. For example,
+                the formatter <span class="code-simple">black</span> calls itself "uncompromising" &mdash; you might like that it
+                takes formatting decisions (and differences of opinion about formatting) out of the equation for you and your collaborators,
+                or you might find you'd prefer not to use it because you'd like a little compromise thank-you-very-much.
+            </p>
+            <p class="explanation lint_and_test-info">
+               This script just runs the lint and test scripts in sequence.
+            </p>
+            <p class="explanation test-info">
+                This script runs tests with <span class="code-simple">pytest</span>.
+            </p>
+        </div>
+
+        <div id="proj-setup-example">
+        <pre class="example setup-info">
+import codecs
+import os
+import re
+
+import setuptools
+from setuptools import setup, find_packages
+from setuptools.command.install import install
+from setuptools.command.develop import develop
+
+
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+REQUIREMENTS_FILE = os.path.join(PROJECT_ROOT, "requirements.txt")
+README_FILE = os.path.join(PROJECT_ROOT, "README.md")
+VERSION_FILE = os.path.join(PROJECT_ROOT, "myproject", "__init__.py")
+
+
+def get_requirements():
+    with codecs.open(REQUIREMENTS_FILE) as buff:
+        return buff.read().splitlines()
+
+
+def get_long_description():
+    with codecs.open(README_FILE, "rt") as buff:
+        return buff.read()
+
+
+def get_version():
+    lines = open(VERSION_FILE, "rt").readlines()
+    version_regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
+    for line in lines:
+        mo = re.search(version_regex, line, re.M)
+        if mo:
+            return mo.group(1)
+    raise RuntimeError("Unable to find version in %s." % (VERSION_FILE,))
+
+
+setup(
+    name="myproject",
+    version=get_version(),
+    description="",
+    author="Me",
+    url="https://github.com/karink520/myproject",
+    packages=find_packages(),
+    install_requires=get_requirements(),
+    long_description=get_long_description(),
+    long_description_content_type="text/markdown",
+    include_package_data=True,
+)    
+        </pre>
+            <pre class="example requirements-info">
+scipy
+numpy
+pymc3==3.9.3
+</pre>
+            <pre class="example requirements-dev-info">
+black
+mypy
+pytest
+pytest-cov
+pylint
+            </pre>
+            <pre class="example init-info">
+"""My project that does a thing"""
+__version__ = "0.0.1"
+from .example_code import *
+            </pre>
+            <pre class="example example_code-info">
+"""An example code file"""
+
+__all__ = ["greet", "say_farewell"]
+
+
+def greet(person):
+    greeting = "hello, " + person + "!"
+
+
+def say_farewell():
+    return "goodbye for now!"
+            </pre>
+            <pre class="example test_example_code-info">
+"""Tests for example_code.py"""
+from myproject.example_code import *
+
+
+def test_greet():
+    assert greet("world") == "hello, world!"
+
+
+def test_say_farewell():
+    assert say_farewell() == "goodbye for now!"
+            </pre>
+            <pre class="example lint-info">
+#! /bin/bash
+
+set -ex # fail on first error, print commands
+
+SRC_DIR=${SRC_DIR:-$(pwd)}
+
+echo "Checking code style with black..."
+python -m black --line-length 100 --check "${SRC_DIR}"
+echo "Success!"
+
+echo "Type checking with mypy..."
+mypy --ignore-missing-imports myproject
+echo "Success!"
+
+echo "Checking code style with pylint..."
+python -m pylint "${SRC_DIR}"/myproject/ "${SRC_DIR}"/test/*.py
+echo "Success!"
+            </pre>
+            <pre class="example lint_and_test-info">
+#! /bin/bash
+
+set -ex # fail on first error, print commands
+
+SRC_DIR=${SRC_DIR:-$(pwd)}
+
+./scripts/lint.sh
+./scripts/test.sh
+            </pre>
+            <pre class="example test-info">
+#! /bin/bash
+
+set -ex # fail on first error, print commands
+
+SRC_DIR=${SRC_DIR:-$(pwd)}
+
+pytest -vx --cov myproject
+            </pre>
+        </div>
+    </div>
+   </div>
+
+        <button class="accordion alternative-accordion"> Set up (and/or update) a conda environment for development</button>
+        <div class="panel">
+
+            If you haven't yet created your conda environment for development, you can create it, activate it, and install pip in it:
+                <div><pre class="code-gray">conda env create --name myenvname 
+conda activate env myenvname
+conda install pip</pre></div>
+
+            Next, with that conda environment activated, install and/or update libraries that your library and development depend on:
+                <div><pre class="code-gray">pip install --upgrade -r requirements.txt
+pip install --upgrade -r requirements-dev.txt </pre></div>
+
+            Make sure you have your own module installed in the conda environment, by navigating to the directory containing <span class="code-simple">setup.py</span> and entering:
+                <div><pre class="code-gray">pip install -e . </pre></div>
+            Note that here the . is here as a path to where pip should look for the relevant <span class="code-simple">setup.py</span> file (i.e. in the same directory you are already in).
+        </div>
+
+        <button class="accordion alternative-accordion"> Lint and test locally</button>
+        <div class="panel">
+            If you've set up scripts to run linting and testing as in the example file tree above, you can run them from within your top-level directory with:
+            <div class="code-gray"><pre>
+bash scripts/lint_and_test.sh</pre></div>
+        </div>
+
+        <button class="accordion alternative-accordion">Inspect test coverage</button>
+        <div class="panel">
+            <p>1. Make sure you have <span class="code-simple">pytest</span> and <span class="code-simple">pytest-cov</span> installed in your conda environment 
+            (you can install them one by one, but to stay organized and make things easier for your collaborators to use the same tools,
+            just make sure they're listed inside <span class="code-simple">requirements-dev.txt</span> as in the example above.)
+            </p><p>
+            2. Run
+            <div class="code-gray"><pre>pytest -vx --cov-report=html --cov myproject</pre></div>
+            </p>
+            <p>
+            3. Once the tests have run, notice that a new directory <span class="code-simple">htmlcov</span> has been created. Open the <span class="code-simple">index.html</span> file
+            within this new directory in a browser to get a nice html-based report on your coverage.
+        </p>
+        </div>
+        <button class="accordion alternative-accordion">CI with GitHub</button>
+        <div class="panel">
+            For this step, assuming you have a repository set up on GitHub, you'll add a file to <span class="code-simple">myproject/.github/workflows</span>.
+            For example, the following file, which we might name <span class="code-simple">python-package.yaml</span>, would install the necessary
+            python dependencies and run the lint and test scripts <span class="code-simple">lint.sh</span> and <span class="code-simple">test.sh</span>, located in the <span class="code-simple">scripts</span> directory
+            as in the example file tree above, any time a contributor pushes or makes a pull request.
+
+<pre class="yamlexample">
+name: Python package
+
+on: [push, pull_request]
+
+jobs:
+    build:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+        python-version: [3.7, 3.8]
+
+    steps:
+        - uses: actions/checkout@v2
+        - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+        - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -e .
+            pip install -r requirements-dev.txt
+        - name: Run linters
+        run: |
+            ./scripts/lint.sh
+        - name: Test with pytest
+        run: |
+            ./scripts/test.sh
+</pre>
+    For more about GitHub Actions, check out the <a href="https://docs.github.com/en/actions/quickstart"> GitHub Actions Quickstart</a>.
+        </div>
+        <button class="accordion alternative-accordion">Conclusion and Acknowledgements</button>
+        <div class="panel">
+            Much gratitude to Colin Carroll, who taught me a whole bunch about how to set up a Python project in a reasonable way, and answered many questions.
+          </div>
+        </div>
+    </main>
+    <footer>
+        <div></div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="js/blogpost.js"></script>
+    <script src='js/project_setup.js'></script>
+    </body>
+
+</html>

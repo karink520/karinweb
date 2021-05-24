@@ -4,12 +4,18 @@ var sonnet_idx_2d_proj;
 var sonnets = [];
 var setSonnet1Next = false;
 var sonnetPositionData;
+var points; //points in 2d visualization
 const numSonnets = 351;
 
-var points;
+// Tooltips throughout
+$( document ).tooltip({});
+
+// Color scale for authors
 var z = d3.scaleOrdinal()
     .domain(["Shakespeare", "Spenser", "Sidney"])
     .range(d3.schemeSet2)
+
+// Highlighting and displaying sonnets
 
 function set_sonnet_2d() {
     console.log("setting_sonnet")
@@ -57,10 +63,9 @@ $("#display-sonnet-2d").click(set_sonnet_2d);
 $("#unhighlight-sonnet").click(unset_sonnet);
 $("#display-sonnet").click(set_sonnet);
 $("#display-sonnet2").click(set_sonnet2);
-// $("#compare-user-sonnet").click(function(){
-    
-// })
+// END: highlighting and displaying sonnets
 
+// Get sonnet text from file and initial tree data from file
 $.getJSON( "data/sonnets_shakespeare_spenser_sidney.json", function( data ) {
     replot_with_position_data_from_file("data/sonnets_position_shakespeare_spenser_sidney.json")
     var sonnet_text = ""
@@ -117,23 +122,19 @@ function draw_plot(sonnetData){
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         .call(zoom);
 
-    
+    // x and y axes and scale
     var xScale = d3.scaleLinear()
         .domain(d3.extent(sonnetData, function(d) { return d.x }))
         .range([0, width])
     var xAxis = d3.axisBottom(xScale);
-
     var yScale = d3.scaleLinear()
         .domain(d3.extent(sonnetData, function(d) {return d.y}))
         .range([0, height])
-
     var yAxis = d3.axisLeft(yScale);
-
     var gX = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + (margin.top + height) + ')')
         .classed("hidden", true)
         .call(xAxis);
-
     var gY = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         .classed("hidden", true)
@@ -165,7 +166,7 @@ function draw_plot(sonnetData){
             return d.author + " " + sonnetNum + ": \n" + sonnets[d.sonnet_id]
         })
     
-
+    
     $('.legend').css("color", function() {
         var author = $(this).attr("class").split(/\s+/)[0].substring(7)
         return z(author);
@@ -192,7 +193,7 @@ d3.selectAll('#choose-authors .authorCheckbox').on('click', function () {
         d3.selectAll('.' + author).classed('hidden', !checked);
 });
 
-$('.projection').on('click', function() {
+$('.projection-radio').on('click', function() {
     replot();
 });
 
@@ -205,7 +206,6 @@ function replot(){
     }
 }
 
-$( document ).tooltip({});
 
 
 
@@ -213,8 +213,7 @@ $( document ).tooltip({});
 
 
 
-
-
+// TREE
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20};
 var width = 1200 - margin.right - margin.left;
@@ -251,9 +250,6 @@ function update_tree_from_file(filename){
 
 function update(source) {
     d3.selectAll('#choose-authors-tree .authorCheckbox').on('click', function(){
-        // var author = this.value,
-        // checked = this.checked;
-        // //ADD CODE HERE
         var authors = document.querySelectorAll('#choose-authors-tree input:checked');
 
         console.log(authors[0]);
@@ -409,6 +405,12 @@ function clickCircle(d, i){
 
 
 
+
+
+
+
+
+// Set up tree vs. 2d selector
 
 d3.select("#pick-tree").on("click", function(){
     // Adjust displays, visibility, and opacity

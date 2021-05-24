@@ -85,13 +85,16 @@ function replot_with_position_data_from_file(filename){
 }
 
 function draw_plot(sonnetData){
-    d3.select("#scatter-container").html("");
+    scatterContainer =  d3.select("#scatter-container");
+    scatterContainer.html("")
+    var width = parseInt(scatterContainer.style('width'), 10);
+    //var height = parseInt(scatterContainer.style('height'), 10);
 
-    var margin = {top: 10, right: 120, bottom: 10, left: 60},
-        // width = 800 - margin.right - margin.left,
+    var margin = {top: 10, right: 10, bottom: 10, left: 10},
+        width = width - margin.right - margin.left,
         // height = 500 - margin.top - margin.bottom;
-        width = 800,
-        height = 600;
+        // width = 800,
+        height = width / 2;
 
     // Pan and zoom
     var zoom = d3.zoom()
@@ -102,7 +105,7 @@ function draw_plot(sonnetData){
     var svg = d3.select("#scatter-container")
         .append("svg")
             // //.attr("preserveAspectRatio", "xMinYMin meet")
-            // .attr("viewBox", "0 0 800 400")
+            .attr("viewBox", "0 0 ${width} ${height}")
             // .classed("svg-content-responsive", true)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -216,8 +219,11 @@ function replot(){
 // TREE
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20};
-var width = 1200 - margin.right - margin.left;
-var height = 1200 - margin.top - margin.bottom;
+var treeContainer =  d3.select("#tree");
+var width = parseInt(treeContainer.style('width'), 10);
+var height = width;
+//var width = 1200 - margin.right - margin.left;
+//var height = 1200 - margin.top - margin.bottom;
 var radius = width / 2;
 var i = 0,
     duration = 750,
@@ -229,6 +235,7 @@ var tree =  d3.cluster()
 var svg = d3.select("#tree").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("viewBox", "0 0 ${width} ${height}")
     .append("g")
         .attr("transform", "translate(" + radius + "," + radius+ ")");
 
@@ -326,7 +333,6 @@ function update(source) {
         if (d.data.id <= 154 && d.data.id >= 0) {
             d.data.author = "Shakespeare";
         } else if (d.data.id <= 243) {
-            console.log("found a spenser!")
             d.data.author = "Spenser";
         } else {
             d.data.author = "Sidney";

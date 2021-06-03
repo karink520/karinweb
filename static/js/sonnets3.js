@@ -31,18 +31,37 @@ function set_sonnet_2d() {
     }
     
     $("#sonnet-2d").html(sonnets[sonnet_idx_2d_proj]);
-    
-    d3.selectAll("circle").style("fill", function(d){ 
-        if (d.sonnet_id == sonnet_idx_2d_proj){
-            return "red";
-        } else {
+
+    d3.selectAll("circle")
+        .style("fill", function(d){ 
             return z(d.author);
-        }
-    })
+            // if (d.sonnet_id == sonnet_idx_2d_proj){
+            //     //return "red";
+            // } else {
+            //     return z(d.author);
+            // }
+        })
+        .attr("r", function(d){ 
+            if (d.sonnet_id == sonnet_idx_2d_proj){
+                return 8;
+            } else {
+                return 4;
+            }
+        })
+        .attr("stroke-width", function(d){ 
+            if (d.sonnet_id == sonnet_idx_2d_proj){
+                return 1;
+            } else {
+                return 0;
+            }
+        })
 }
 
 function unset_sonnet(){
-    d3.selectAll("circle").style("fill", function(d){ return z(d.author);})
+    d3.selectAll("circle")
+        .style("fill", function(d){ return z(d.author);})
+        .attr("r", 4)
+        .attr("stroke-width", 0)
     $("#sonnet-2d").html("")
 }
 
@@ -155,6 +174,8 @@ function draw_plot(sonnetData){
         .attr('cx', function(d) {return xScale(d.x)})
         .attr('cy', function(d) {return yScale(d.y)})
         .attr("r", 4)
+        .attr("stroke-width", 0)
+        .attr("stroke", "black")
         .attr("class", function(d) { return d.author})
         .style("fill",  d => z(d.author))
         .attr("title", function(d) {
@@ -324,6 +345,7 @@ function update(source) {
         translate(${d.y},0)
       `)
       .attr("fill", d => d.children ? "#555" : "#999")
+      .attr("stroke", "black")
       .style("fill", function(d) { 
         //add author data
         if (d.data.id == ""){
@@ -340,7 +362,8 @@ function update(source) {
         };
         //set color
         if ( d.data.id== sonnet_idx + 1 || d.data.id == sonnet_idx2 + 1) {
-            return d.children ? "red" : "red";
+            //return d.children ? "red" : "red";
+            return z(d.data.author);
         } else {
             return z(d.data.author);
         };
@@ -348,7 +371,14 @@ function update(source) {
         .attr("r", function(d){
             if (d.data.author != "None"){
                 return 3
-            } else { return 1}
+            } else { return 1 }
+        })
+        .attr("stroke-width", function(d){ 
+            if ( d.data.id== sonnet_idx + 1 || d.data.id == sonnet_idx2 + 1) {
+                return 1;
+            } else {
+                return 0;
+            }
         })
         .attr("title", function(d) {
             if (d.data.author=="None"){
@@ -366,7 +396,6 @@ function update(source) {
             return d.data.author + " " + sonnetNum + ": \n" + sonnets[d.data.id]
         })
     ;
-
 
   svg.append("g")
       .attr("font-family", "sans-serif")

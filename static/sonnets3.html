@@ -85,7 +85,37 @@
         <input type="radio" name="distance-tree" value="othere">
         <label for="other">Other</label>
         </div>
-    </div>
+
+        <div class="sonnet-choosing-div tree-viz">
+                Highlight a Sonnet:
+                <br>
+                <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-1">
+                <label for="Shakespeare">Shakespeare (1-154)</label><br>
+                <input type="radio" value="Spenser" name="tree-viz-poet-1"/>
+                <label for="Spenser">Spenser (1-89)</label><br>
+                <input type="radio" value="Sidney"name="tree-viz-poet-1"/>
+                <label for="Sidney">Sidney (1-108)</label><br>
+                <input type="number" id="sonnet_number" name="sonnet_number"
+                    min="1" max="154" value="">
+                <button id="display-sonnet">Highlight</button>
+            <div id="sonnet"></div>
+        </div>
+        <div class="sonnet-choosing-div tree-viz">
+                Highlight Another Sonnet:
+                <br>
+                <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-2">
+                <label for="Shakespeare">Shakespeare (1-154)</label><br>
+                <input type="radio" value="Spenser" name="tree-viz-poet-2"/>
+                <label for="Spenser">Spenser (1-89)</label><br>
+                <input type="radio" value="Sidney"name="tree-viz-poet-2"/>
+                <label for="Sidney">Sidney (1-108)</label><br>
+                <input type="number" id="sonnet_number2" name="sonnet_number2"
+                    min="1" max="154" value="">
+                <button id="display-sonnet2">Highlight</button>
+            <div id="sonnet2"></div>
+        </div>
+            
+        </div>
 
     <div id="scatter-container" class="twod-projection-viz"></div>
     <div id="tree" class="tree-viz"></div>
@@ -99,28 +129,6 @@
             <textarea name="user-sonnet" rows="14" cols="50">Shall I compare thee to a summer’s day?...</textarea>
     </div> -->
 
-    <div id="sonnet-left" class="tree-viz">
-        <div class="sonnet-choosing-div tree-viz">
-            <div id="choose-a-sonnet" class="rounded-border">
-                <label for="sonnet_number">Choose a sonnet number (1-154):</label>
-                <input type="number" id="sonnet_number" name="sonnet_number"
-                    min="1" max="154" value="2">
-                <button id="display-sonnet">Display Sonnet</button>
-            </div>
-            <div id="sonnet">
-            </div>
-        </div>
-        <div class="sonnet-choosing-div tree-viz">
-            <div id="choose-a-sonnet2" class="rounded-border">
-                <label for="sonnet_number2">Choose another sonnet number (1-154):</label>
-                <input type="number" id="sonnet_number2" name="sonnet_number2"
-                    min="1" max="154" value="2">
-                <button id="display-sonnet2">Display Sonnet</button>
-            </div>
-            <div id="sonnet2">
-            </div>
-        </div>
-    </div>
 
 <p>Tree generated approximately as in: Holdsworth, T. L. (2019). A phonemic analysis of shakespeare’s sonnets [Thesis]. University of San Diego.</p>
 </body>

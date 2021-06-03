@@ -21,8 +21,12 @@ h1 {
 
 @media screen and (min-width: 700px){
     .rounded-border {
-        margin-left: 3%;
-        margin-right: 3%;
+        margin-left: 2%;
+        margin-right: 2%;
+        padding-left: 1%;
+        padding-right: 1%;
+        padding-top: 1%;
+        padding-bottom: 1%;   
     }
 }
 
@@ -37,17 +41,35 @@ h1 {
     width: 45%;
 }
 
+.legend {
+    font-size: 1.5em;
+}
+
+#plot-and-options{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#options, #tree-options {
+    /* display: inline-block; */
+    width: 100%
+}
+
+#options > div::first-line, #tree-options > div::first-line {
+    font-weight:bold;
+} 
+
 #sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
     padding: 2%;
-    line-height: 1.2em;
-    font-size: 1.1rem;
+    line-height: 1.1em;
+    font-size: 0.9rem;
 }
 
 #sonnet, #sonnet2, #sonnet-2d {
     white-space: pre-wrap;
 }
 
-#choose-a-sonnet-2d, #choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
+#choose-a-sonnet, #choose-a-sonnet2, #write-a-sonnet {
     display: inline-block;
     margin-top: 2%;
     padding-left: 2%;
@@ -56,13 +78,8 @@ h1 {
     padding-bottom: 1%;
 }
 
-.legend {
-    font-size: 1.5em;
-}
-
-#options div, #tree-options div {
-    display: inline-block;
-    width: 30%;
+#sonnet-chooser-2d-viz{
+    order:5;
 }
 
 /* Scatter container */
@@ -71,8 +88,31 @@ h1 {
 }
 
 @media screen and (min-width: 700px) {
-    #scatter-container{
-        width: 75%;
+    #div-plot-and-options{
+        flex-wrap: nowrap;
+    }
+
+    #scatter-container, #tree{
+        width: 70%;
+        order: 3;
+    }
+
+    #options, #tree-options {
+        order: 4;
+        flex-grow:0;
+        width: 23%;
+    }
+
+
+    #options div, #tree-options div{
+        width: 100%;
+        margin-top: 1em;
+    }
+
+    #sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
+        padding: 2%;
+        line-height: 1.1em;
+        font-size: 1rem;
     }
 }
 

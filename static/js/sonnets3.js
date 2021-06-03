@@ -31,6 +31,7 @@ function set_sonnet_2d() {
     }
     
     $("#sonnet-2d").html(sonnets[sonnet_idx_2d_proj]);
+    
     d3.selectAll("circle").style("fill", function(d){ 
         if (d.sonnet_id == sonnet_idx_2d_proj){
             return "red";
@@ -220,7 +221,7 @@ function replot(){
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20};
 var treeContainer =  d3.select("#tree");
-var width = parseInt(treeContainer.style('width'), 10);
+var width = Math.min(parseInt(treeContainer.style('width'), 10), 1200);
 var height = width;
 //var width = 1200 - margin.right - margin.left;
 //var height = 1200 - margin.top - margin.bottom;
@@ -230,7 +231,7 @@ var i = 0,
     root;
 
 var tree =  d3.cluster()
-    .size([2 * Math.PI, radius - 100])
+    .size([2 * Math.PI, radius - margin.right - margin.left])
 
 var svg = d3.select("#tree").append("svg")
     .attr("width", width + margin.right + margin.left)

@@ -275,24 +275,16 @@ d3.selectAll('#choose-authors .authorCheckbox').on('click', function () {
         d3.selectAll('.' + author).classed('hidden', !checked);
 });
 
-$('.projection-radio').on('click', function() {
-    replot();
-});
-
-$('.features-radio').on('click', function() {
+$('.projection-radio, .features-radio').on('click', function() {
     replot();
 });
 
 function replot(){
+    /* Set filename for data source based on selected options and re-plot */
     var value = document.querySelector('input[name="projection"]:checked').value;
     var featureValue = document.querySelector('input[name="feature"]:checked').value;
     var filename = "data/"+ value + "_" + featureValue + "_sonnets_position_shakespeare_spenser_sidney.json"
     replot_with_position_data_from_file(filename);
-    //     if (value == "pca"){
-//         replot_with_position_data_from_file("data/pca_sonnets_position_shakespeare_spenser_sidney.json")
-//     } else if (value == "lda"){
-//         replot_with_position_data_from_file("data/lda_sonnets_position_shakespeare_spenser_sidney.json")
-//     }
  }
 
 
@@ -308,14 +300,15 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20};
 var treeContainer =  d3.select("#tree");
 var width = Math.min(parseInt(treeContainer.style('width'), 10), 1200);
 var height = width;
-//var width = 1200 - margin.right - margin.left;
-//var height = 1200 - margin.top - margin.bottom;
 var radius = width / 2;
 var i = 0,
-    duration = 750,
     root;
 
-    // Pan and zoom
+function radialPoint(x, y) {
+    return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
+}
+
+// Pan and zoom
 var zoomTree = d3.zoom()
     .scaleExtent([.5, 16])
     .on("zoom", zoomedTree);
@@ -368,18 +361,16 @@ function update(source) {
             counts_or_embedding = "embedding"
         }
         
+        /* Set filename based on selected options */
         var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
         for (i= 0; i < authors.length; i++) {
             author = String(authors[i].value).toLowerCase();
             filename = filename + "_" + author
         }
         filename = filename + ".json"
-        console.log("filename: " + filename);
 
         update_tree_from_file(filename);
     }
-
-    console.log("updating tree diagram");
 
     var sonnetLeaf, sonnetLeaf2;
     for (i=0;i < source.leaves().length; i++){
@@ -407,11 +398,17 @@ function update(source) {
       .attr("stroke-opacity", 1)
       .attr("stroke-width", 1.5)
     .selectAll("path")
-    .data(source.links())
-    .join("path")
-      .attr("d", d3.linkRadial()
-          .angle(d => d.x)
-          .radius(d => d.y))
+    .data(source.links()) 
+    .enter().append("line") /*For straight line segments */
+       .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0]; })
+       .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
+       .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
+       .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; })
+      //.curve(d3.curveNatural)
+      // .join("path") /*for curved segments*/
+    //   .attr("d", d3.linkRadial()
+    //       .angle(d => d.x)
+    //       .radius(d => d.y))
           .attr("stroke", function(d){
             if (shouldSetPath){ 
             for (i=1; i < sonnetToSonnetPath.length ; i++){
@@ -441,7 +438,11 @@ function update(source) {
             return "gray";
         }
         d.data.id = Number(d.data.id);
-        if (d.data.id < 154 && d.data.id >= 0) {
+        if (d.data.id == 0){
+            console.log("found 0!")
+        }
+        //if (d.data.id < 154 && d.data.id >= 0) {
+        if (d.data.id < 154) {
             d.data.author = "Shakespeare";
         } else if (d.data.id < 243) {
             d.data.author = "Spenser";
@@ -449,12 +450,7 @@ function update(source) {
             d.data.author = "Sidney";
         };
         //set color
-        if ( d.data.id== sonnet_idx || d.data.id == sonnet_idx2 ) {
-            //return d.children ? "red" : "red";
-            return z(d.data.author);
-        } else {
-            return z(d.data.author);
-        };
+        return z(d.data.author);
     })   
         .attr("r", function(d){
             if (d.data.author != "None"){
@@ -473,10 +469,10 @@ function update(source) {
                 return;
             }
             if (d.data.author == "Spenser"){
-                var sonnetNum = d.data.id - 154 + 1
+                var sonnetNum =  Number(d.data.id) - 154 + 1
             }
             if (d.data.author == "Sidney"){
-                var sonnetNum = d.data.id - (154 + 89) + 1;
+                var sonnetNum =  Number(d.data.id) - (154 + 89) + 1;
             }
             if (d.data.author == "Shakespeare"){
                 var sonnetNum = Number(d.data.id)+1;
@@ -522,7 +518,7 @@ function zoomedTree({transform}){
 }
 
 function clickCircle(d, i){
-    var thisSonnetNumber = i.data.id + 1;
+    var thisSonnetNumber = Number(i.data.id) + 1;
     // console.log(thisSonnetNumber);
     if (thisSonnetNumber == "Your sonnet!") {    
     }
@@ -546,24 +542,24 @@ function clickCircle(d, i){
 
 
 
+
+
 // Set up tree vs. 2d selector
 
 d3.select("#pick-tree").on("click", function(){
-    // Adjust displays, visibility, and opacity
+    // Adjust displays, visibility
     d3.selectAll(".twod-projection-viz").classed("hidden",true);
     d3.selectAll(".tree-viz").classed("hidden",false);
     d3.selectAll(".tab-heading").classed("tab-heading-selected", false);
-    //d3.selectAll('.tooltip').style("opacity", 0); 
     d3.select("#pick-tree").classed("tab-heading-selected", true);
     update(root);
 });
 
 d3.select("#pick-2d-projection").on("click", function(){
-    // Adjust displays, visibility, and opacity
+    // Adjust displays, visibility
     d3.selectAll(".tree-viz").classed("hidden",true);
     d3.selectAll(".twod-projection-viz").classed("hidden",false);
     d3.selectAll(".tab-heading").classed("tab-heading-selected", false);
-    //d3.selectAll('.tooltip').style("opacity", 0); 
     d3.select("#pick-2d-projection").classed("tab-heading-selected", true)
     replot();
 });

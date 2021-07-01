@@ -1,16 +1,16 @@
-var sonnet_idx = 1;
-var sonnet_idx2 = 1;
-var sonnet_idx_2d_proj;
-var sonnets = [];
+var sonnet_idx = 1; // sonnet to highlight (tree)
+var sonnet_idx2 = 1; // second sonnet to hightlight (tree)
+var sonnet_idx_2d_proj; // sonnet to highlight (scatter)
+var sonnets = []; // array of sonnet text (each elt is a sonnet)
 var setSonnet1Next = false;
-var sonnetPositionData;
+var sonnetPositionData; // coordinates of points for scatterplot
 var points; //points in 2d visualization
-const numSonnets = 351;
+const numSonnets = 351; // number of sonnets (shksr + spenser + sidney)
 
 // Tooltips throughout
 $( document ).tooltip({});
 
-//Show more about
+// Handle show more/less buttons in 'about' section
 $('#show-more').on('click', function(){
     $('#about-more').toggleClass("hidden")
     if ($('#about-more').hasClass("hidden")){
@@ -27,30 +27,26 @@ var z = d3.scaleOrdinal()
 
 // Highlighting and displaying sonnets
 
-function set_sonnet_2d(id_for_entered_number, name_for_poet_field, id_for_displaying_text, sonnet_idx_to_match, clicked_circle_directly, author_radio_classname) {
-    console.log("setting_sonnet")
+function set_sonnet(id_for_entered_number, name_for_poet_field, id_for_displaying_text, sonnet_idx_to_match, clicked_circle_directly, author_radio_classname) {
     var entered_number;
     var author;
     var poetQuery = 'input[name="' + name_for_poet_field + '"]:checked';
     if (clicked_circle_directly) {
-        console.log("setting based on click");
         if (sonnet_idx_to_match < 154){
             entered_number = sonnet_idx_to_match + 1;
             author = "Shakespeare";
         } else if (sonnet_idx_to_match < 243){
             entered_number = sonnet_idx_to_match - 153;
             author = "Spenser";
-        } else{
+        } else {
             entered_number = sonnet_idx_to_match - 242;
             author = "Sidney";
         }
         var author_class = '.' + author.toLowerCase() + author_radio_classname;
         $(author_class).prop('checked', true)     
         document.getElementById(id_for_entered_number).value = String(entered_number);
-        //document.querySelector(poetQuery).value = author;
     }
     else {
-        console.log("setting based on form");
         entered_number = document.getElementById(id_for_entered_number).value;
         author = document.querySelector(poetQuery).value;
         if (author == "Shakespeare"){
@@ -70,9 +66,6 @@ function set_sonnet_2d(id_for_entered_number, name_for_poet_field, id_for_displa
             sonnet_idx_to_match = Number(entered_number) + 242;
         }
         document.getElementById(id_for_entered_number).value = String(entered_number);
-        console.log("author: " + author);
-        console.log("entered_number: " + entered_number);
-        console.log("sonnet_idx_to_match: " + sonnet_idx_to_match)
         if (id_for_displaying_text == "#sonnet"){
             sonnet_idx = sonnet_idx_to_match;
         } else if (id_for_displaying_text == "#sonnet2"){
@@ -83,16 +76,8 @@ function set_sonnet_2d(id_for_entered_number, name_for_poet_field, id_for_displa
     $(id_for_displaying_text).html(sonnets[sonnet_idx_to_match]);
 
     d3.selectAll("circle")
-        .style("fill", function(d){ 
-            return z(d.author);
-            // if (d.sonnet_id == sonnet_idx_2d_proj){
-            //     //return "red";
-            // } else {
-            //     return z(d.author);
-            // }
-        })
-        .attr("r", function(d){ 
-            //console.log(d.sonnet_id)
+        .style("fill", function(d){ return z(d.author);}) // color based on author
+        .attr("r", function(d){  
             if (d.sonnet_id == sonnet_idx_to_match){
                 return 8;
             } else if (typeof d.author == "undefined"){
@@ -102,14 +87,11 @@ function set_sonnet_2d(id_for_entered_number, name_for_poet_field, id_for_displa
             }
         })
         .attr("stroke-width", function(d){ 
-            if (d.sonnet_id == sonnet_idx_to_match){
-                return 1;
-            } else {
-                return 0;
-            }
+            return (d.sonnet_id == sonnet_idx_to_match ? 1 : 0)
         })
 }
 
+/* Set all circle sizes to default, circle stroke-widths to 0, scatter sonnet text to empty */
 function unset_sonnet(){
     d3.selectAll("circle")
         .style("fill", function(d){ return z(d.author);})
@@ -118,24 +100,24 @@ function unset_sonnet(){
     $("#sonnet-2d").html("")
 }
 
-function set_sonnet(clicked_circle_directly) {
+function set_sonnet1_tree(clicked_circle_directly) {
     console.log("setting sonnet")
     sonnet_idx = document.getElementById("sonnet_number").value - 1;
-    set_sonnet_2d("sonnet_number", "tree-viz-poet-1", "#sonnet", sonnet_idx, clicked_circle_directly, "-radio-tree")
+    set_sonnet("sonnet_number", "tree-viz-poet-1", "#sonnet", sonnet_idx, clicked_circle_directly, "-radio-tree")
     update(root);
 }
 
-function set_sonnet2(clicked_circle_directly) {
+function set_sonnet2_tree(clicked_circle_directly) {
     console.log("setting sonnet2")
     sonnet_idx2 = document.getElementById("sonnet_number2").value - 1;
-    set_sonnet_2d("sonnet_number2", "tree-viz-poet-2", "#sonnet2", sonnet_idx2, clicked_circle_directly,"-radio-tree2")
+    set_sonnet("sonnet_number2", "tree-viz-poet-2", "#sonnet2", sonnet_idx2, clicked_circle_directly,"-radio-tree2")
     update(root);
 }
 
-$("#display-sonnet-2d").click(function(){set_sonnet_2d("sonnet_number-2d", "poet", "#sonnet-2d", sonnet_idx_2d_proj, false) });
+$("#display-sonnet-2d").click(function(){set_sonnet("sonnet_number-2d", "poet", "#sonnet-2d", sonnet_idx_2d_proj, false) });
 $("#unhighlight-sonnet").click(unset_sonnet);
-$("#display-sonnet").click(function(){ set_sonnet(false)} );
-$("#display-sonnet2").click(function(){ set_sonnet2(false)} );
+$("#display-sonnet").click(function(){ set_sonnet1_tree(false)} );
+$("#display-sonnet2").click(function(){ set_sonnet2_tree(false)} );
 // END: highlighting and displaying sonnets
 
 // Get sonnet text from file and initial tree data from file
@@ -163,8 +145,6 @@ function draw_plot(sonnetData){
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10},
         width = width - margin.right - margin.left,
-        // height = 500 - margin.top - margin.bottom;
-        // width = 800,
         height = width / 2;
 
     // Pan and zoom
@@ -246,14 +226,13 @@ function draw_plot(sonnetData){
             return d.author + " " + sonnetNum + ": \n" + sonnets[d.sonnet_id]
         })
         .on('click', function(i, d){
-            set_sonnet_2d("sonnet_number-2d", "poet", "#sonnet-2d", d.sonnet_id, true, "-radio")
+            set_sonnet("sonnet_number-2d", "poet", "#sonnet-2d", d.sonnet_id, true, "-radio")
         });
 
     $('.legend').css("color", function() {
         var author = $(this).attr("class").split(/\s+/)[0].substring(7)
         return z(author);
     });
-
 
     function zoomed({transform}){
         // create new scale ojects based on event
@@ -269,18 +248,18 @@ function draw_plot(sonnetData){
 
 }
 
+/* Make scatterplot respond to changing author checkbox */
 d3.selectAll('#choose-authors .authorCheckbox').on('click', function () {
     var author = this.value,
         checked = this.checked;
         d3.selectAll('.' + author).classed('hidden', !checked);
 });
 
-$('.projection-radio, .features-radio').on('click', function() {
-    replot();
-});
+/* Replot scatter in response to changing feature or projection selection*/
+$('.projection-radio, .features-radio').on('click', replot);
 
 function replot(){
-    /* Set filename for data source based on selected options and re-plot */
+    /* Set filename for data source based on selected options and re-plot lda/pca scatter */
     var value = document.querySelector('input[name="projection"]:checked').value;
     var featureValue = document.querySelector('input[name="feature"]:checked').value;
     var filename = "data/"+ value + "_" + featureValue + "_sonnets_position_shakespeare_spenser_sidney.json"
@@ -308,15 +287,15 @@ function radialPoint(x, y) {
     return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
 }
 
-// Pan and zoom
-var zoomTree = d3.zoom()
-    .scaleExtent([.5, 16])
-    .on("zoom", zoomedTree);
+// // Pan and zoom
+// var zoomTree = d3.zoom()
+//     .scaleExtent([.5, 16])
+//     .on("zoom", zoomedTree);
 
 var tree =  d3.cluster()
     .size([2 * Math.PI, radius - margin.right - margin.left])
 
-var svg = d3.select("#tree").append("svg")
+var svg = treeContainer.append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
     .attr("viewBox", "0 0 ${width} ${height}") // ZOOM NEW
@@ -332,7 +311,7 @@ svg.append("rect") //ZOOM NEW
     //.call(zoomTree);
 
 function update_tree_from_file(filename){
-    d3.select('#tree').html('');
+    treeContainer.html('');
     svg = d3.select("#tree").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
@@ -351,17 +330,16 @@ function update(source) {
     d3.selectAll('#choose-authors-tree .authorCheckbox').on('click', update_with_new_options);
     d3.selectAll('#choose-features-tree input').on('click', update_with_new_options);
 
-
     function update_with_new_options(){
         var authors = document.querySelectorAll('#choose-authors-tree input:checked');
-        var counts_or_embedding;
+        var counts_or_embedding; /* which feature set to use */
         if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
             counts_or_embedding = "counts"
         } else {
             counts_or_embedding = "embedding"
         }
         
-        /* Set filename based on selected options */
+        /* Set filename based on selected options (author and which features*/
         var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
         for (i= 0; i < authors.length; i++) {
             author = String(authors[i].value).toLowerCase();
@@ -373,7 +351,7 @@ function update(source) {
     }
 
     var sonnetLeaf, sonnetLeaf2;
-    for (i=0;i < source.leaves().length; i++){
+    for (i=0; i < source.leaves().length; i++){
         if (source.leaves()[i].data.id == sonnet_idx){
             sonnetLeaf = source.leaves()[i];
         }
@@ -392,6 +370,7 @@ function update(source) {
         }
     }
 
+    svg.html('');
     svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#999")
@@ -404,21 +383,16 @@ function update(source) {
        .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
        .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
        .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; })
-      //.curve(d3.curveNatural)
-      // .join("path") /*for curved segments*/
-    //   .attr("d", d3.linkRadial()
-    //       .angle(d => d.x)
-    //       .radius(d => d.y))
-          .attr("stroke", function(d){
-            if (shouldSetPath){ 
-            for (i=1; i < sonnetToSonnetPath.length ; i++){
-                sourceNode = sonnetToSonnetPath[i];
-                targetNode = sonnetToSonnetPath[i-1];
-                if(d.source === sourceNode && d.target === targetNode || d.source === targetNode && d.target === sourceNode){
-                    return "#111";
-                }
-            }};
-            return "#bbb";
+       .attr("stroke", function(d){
+        if (shouldSetPath){ 
+        for (i=1; i < sonnetToSonnetPath.length ; i++){
+            sourceNode = sonnetToSonnetPath[i];
+            targetNode = sonnetToSonnetPath[i-1];
+            if( (d.source === sourceNode && d.target === targetNode) || (d.source === targetNode && d.target === sourceNode)){
+                return "#111";
+            }
+        }};
+        return "#bbb";
        });
 
     svg.append("g")
@@ -429,26 +403,24 @@ function update(source) {
         rotate(${d.x * 180 / Math.PI - 90})
         translate(${d.y},0)
       `)
-      .attr("fill", d => d.children ? "#555" : "#999")
+      //.attr("fill", d => d.children ? "#555" : "#999")
       .attr("stroke", "black")
       .style("fill", function(d) {
         //add author data
+        if (d.data.id == '0'){
+            d.data.author = "Shakespeare";
+        }
+        if (Number(d.data.id) < 154 && Number(d.data.id) > 0) {
+            d.data.author = "Shakespeare";
+        } else if (Number(d.data.id) < 243 && Number(d.data.id) > 0) {
+            d.data.author = "Spenser";
+        } else if (Number(d.data.id) > 0) {
+            d.data.author = "Sidney";
+        };
         if (d.data.id == ""){
             d.data.author = "None"
             return "gray";
         }
-        d.data.id = Number(d.data.id);
-        if (d.data.id == 0){
-            console.log("found 0!")
-        }
-        //if (d.data.id < 154 && d.data.id >= 0) {
-        if (d.data.id < 154) {
-            d.data.author = "Shakespeare";
-        } else if (d.data.id < 243) {
-            d.data.author = "Spenser";
-        } else {
-            d.data.author = "Sidney";
-        };
         //set color
         return z(d.data.author);
     })   
@@ -458,7 +430,12 @@ function update(source) {
             } else { return 1 }
         })
         .attr("stroke-width", function(d){ 
-            if ( d.data.id== sonnet_idx  || d.data.id == sonnet_idx2 ) {
+            if ( (sonnet_idx == 0 || sonnet_idx2 == 0) & d.data.id == '0' ){
+                return 1;
+            } else if ( d.data.id == 0 ){
+                return 0;
+            }
+            else if (( d.data.id == sonnet_idx  || d.data.id == sonnet_idx2) ) {
                 return 1;
             } else {
                 return 0;
@@ -499,35 +476,22 @@ function update(source) {
       .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
       //.text("")
       //.text(d => d.data.id)
-    .clone(true).lower()
-      .attr("stroke", "white");
+    // .clone(true).lower()
+    //   .attr("stroke", "white");
 
     d3.selectAll('#tree circle').on('click', clickCircle);
 }
 
-function zoomedTree({transform}){
-    // // create new scale ojects based on event
-    // var new_xScale = transform.rescaleX(xScale);
-    // var new_yScale = transform.rescaleY(yScale);
-    // // update axes
-    // gX.call(xAxis.scale(new_xScale));
-    // gY.call(yAxis.scale(new_yScale));
-    // points.data(sonnetData)
-    //     .attr('cx', function(d) {return new_xScale(d.x)})
-       // .attr('cy', function(d) {return new_yScale(d.y)});
-}
-
 function clickCircle(d, i){
     var thisSonnetNumber = Number(i.data.id) + 1;
-    // console.log(thisSonnetNumber);
     if (thisSonnetNumber == "Your sonnet!") {    
     }
     else if (setSonnet1Next) {
         document.getElementById("sonnet_number").value = thisSonnetNumber;
-        set_sonnet(true);
+        set_sonnet1_tree(true);
     } else {
         document.getElementById("sonnet_number2").value = thisSonnetNumber
-        set_sonnet2(true);
+        set_sonnet2_tree(true);
     }
     
     setSonnet1Next = !setSonnet1Next;
@@ -568,4 +532,4 @@ d3.selectAll(".tree-viz").classed("hidden", true);
 d3.selectAll(".twod-projection-viz").classed("hidden",false);
 d3.selectAll(".tab-heading").classed("tab-heading-selected", false);
 d3.select("#pick-2d-projection").classed("tab-heading-selected", true);
-replot();
+replot(); /* Replot lda/pca scatterplot */

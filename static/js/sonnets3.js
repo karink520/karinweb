@@ -20,6 +20,22 @@ $('#show-more').on('click', function(){
     }
 })
 
+// Convert sonnet index (0-350) to sonnet number for display
+function convertSonnetIdxToDisplayNumber(sonnetIdx) {
+    //if (author == "Spenser"){
+    if (sonnetIdx >= 154 && sonnetIdx < 243) {
+        return sonnetIdx - 154 + 1;
+    }
+    //else if (author == "Sidney"){
+    else if (sonnetIdx >= 243) {
+        return sonnetIdx - (154 + 89) + 1;
+    }
+    //else if (author == "Shakespeare"){
+    else if (sonnetIdx < 154 ){
+        return sonnetIdx+1;
+    }
+}
+
 // Color scale for authors
 var z = d3.scaleOrdinal()
     .domain(["Shakespeare", "Spenser", "Sidney"])
@@ -214,20 +230,23 @@ function draw_plot(sonnetData){
         .attr("class", function(d) { return d.author})
         .style("fill",  d => z(d.author))
         .attr("title", function(d) {
-            if (d.author == "Spenser"){
-                var sonnetNum = d.sonnet_id - (154 - 1)
-            }
-            if (d.author == "Sidney"){
-                var sonnetNum = d.sonnet_id - (154 + 89 - 1);
-            }
-            if (d.author == "Shakespeare"){
-                var sonnetNum = d.sonnet_id + 1 ;
-            }
+            var sonnetNum = convertSonnetIdxToDisplayNumber(d.sonnet_id)
             return d.author + " " + sonnetNum + ": \n" + sonnets[d.sonnet_id]
         })
         .on('click', function(i, d){
             set_sonnet("sonnet_number-2d", "poet", "#sonnet-2d", d.sonnet_id, true, "-radio")
         });
+
+     text_labels = points_g.selectAll("text")  
+        .data(sonnetData)
+        .join("text")
+        .text(function(d) {return convertSonnetIdxToDisplayNumber(d.sonnet_id)})
+        .attr("x", function(d) {return xScale(d.x)}) 
+        .attr("y", function(d) {return yScale(d.y)})
+        .style("font-size", "0.8em")
+        .classed('sonnet-number-text',true)
+        .classed('hidden',!document.getElementById('showSonnetNumbersCheckbox').checked);
+ 
 
     $('.legend').css("color", function() {
         var author = $(this).attr("class").split(/\s+/)[0].substring(7)
@@ -241,11 +260,16 @@ function draw_plot(sonnetData){
         // update axes
         gX.call(xAxis.scale(new_xScale));
         gY.call(yAxis.scale(new_yScale));
+
+        // update point and text positionsxs
         points.data(sonnetData)
             .attr('cx', function(d) {return new_xScale(d.x)})
             .attr('cy', function(d) {return new_yScale(d.y)});
+        text_labels.data(sonnetData)
+            .attr('x', function(d) {return new_xScale(d.x)})
+            .attr('y', function(d) {return new_yScale(d.y)});
+        
     }
-
 }
 
 /* Make scatterplot respond to changing author checkbox */
@@ -257,6 +281,12 @@ d3.selectAll('#choose-authors .authorCheckbox').on('click', function () {
 
 /* Replot scatter in response to changing feature or projection selection*/
 $('.projection-radio, .features-radio').on('click', replot);
+
+/* */
+$('#showSonnetNumbersCheckbox').on('click', function(){
+    console.log("clicked!")
+        d3.selectAll('#scatter-container .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckbox').checked);
+});
 
 function replot(){
     /* Set filename for data source based on selected options and re-plot lda/pca scatter */
@@ -329,6 +359,9 @@ function update_tree_from_file(filename){
 function update(source) {
     d3.selectAll('#choose-authors-tree .authorCheckbox').on('click', update_with_new_options);
     d3.selectAll('#choose-features-tree input').on('click', update_with_new_options);
+    d3.select('#showSonnetNumbersCheckboxTree').on('click', function(){
+        d3.selectAll('#tree .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckboxTree').checked);
+    });
 
     function update_with_new_options(){
         var authors = document.querySelectorAll('#choose-authors-tree input:checked');
@@ -403,7 +436,6 @@ function update(source) {
         rotate(${d.x * 180 / Math.PI - 90})
         translate(${d.y},0)
       `)
-      //.attr("fill", d => d.children ? "#555" : "#999")
       .attr("stroke", "black")
       .style("fill", function(d) {
         //add author data
@@ -442,18 +474,10 @@ function update(source) {
             }
         })
         .attr("title", function(d) {
-            if (d.data.author=="None"){
+            if (d.data.author == "None"){
                 return;
             }
-            if (d.data.author == "Spenser"){
-                var sonnetNum =  Number(d.data.id) - 154 + 1
-            }
-            if (d.data.author == "Sidney"){
-                var sonnetNum =  Number(d.data.id) - (154 + 89) + 1;
-            }
-            if (d.data.author == "Shakespeare"){
-                var sonnetNum = Number(d.data.id)+1;
-            }
+            var sonnetNum = convertSonnetIdxToDisplayNumber(Number(d.data.id))
             return d.data.author + " " + sonnetNum + ": \n" + sonnets[d.data.id]
         })
     ;
@@ -474,16 +498,24 @@ function update(source) {
       .attr("dy", "0.31em")
       .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
       .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
-      //.text("")
-      //.text(d => d.data.id)
-    // .clone(true).lower()
-    //   .attr("stroke", "white");
+      .text(function(d){ 
+        if (d.data.author == "None"){ 
+              return "";
+        } else { 
+          return convertSonnetIdxToDisplayNumber(Number(d.data.id));
+        } 
+        })
+      .classed('sonnet-number-text',true)
+      .classed('hidden',!document.getElementById('showSonnetNumbersCheckboxTree').checked);
+     //.clone(true).lower()
+       //.attr("stroke", "white");
 
     d3.selectAll('#tree circle').on('click', clickCircle);
 }
 
 function clickCircle(d, i){
     var thisSonnetNumber = Number(i.data.id) + 1;
+    d3.selectAll('.ui-tooltip').style('display', 'none');
     if (thisSonnetNumber == "Your sonnet!") {    
     }
     else if (setSonnet1Next) {

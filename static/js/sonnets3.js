@@ -301,10 +301,11 @@ function replot(){
 
 // TREE
 
-var margin = {top: 20, right: 12, bottom: 20, left: 12};
+var margin = {top: 20, right: 20, bottom: 20, left: 12};
 var treeContainer =  d3.select("#tree");
-var width = Math.min(parseInt(d3.select('body').style('width'),10)- parseInt(d3.select('#tree-options').style('width'),10), 1200) ;
-console.log('treewidth '+ width )
+var width = Math.max(parseInt(treeContainer.style('width'), 10), parseInt(d3.select('#plot-and-options').style('width'),10)- parseInt(d3.select('#tree-options').style('width'),10));
+width = Math.min(width, 1200);
+// console.log("width " + width);
 var height = width;
 var radius = width / 2;
 var i = 0;

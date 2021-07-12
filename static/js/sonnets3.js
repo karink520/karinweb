@@ -22,22 +22,21 @@ $('#show-more').on('click', function(){
 
 // Convert sonnet index (0-350) to sonnet number for display
 function convertSonnetIdxToDisplayNumber(sonnetIdx) {
-    //if (author == "Spenser"){
-    if (sonnetIdx >= 154 && sonnetIdx < 243) {
+    if (sonnetIdx >= 154 && sonnetIdx < 243) { //if (author == "Spenser"){
         return sonnetIdx - 154 + 1;
     }
-    //else if (author == "Sidney"){
-    else if (sonnetIdx >= 243) {
+    else if (sonnetIdx >= 243) { //else if (author == "Sidney"){
         return sonnetIdx - (154 + 89) + 1;
     }
-    //else if (author == "Shakespeare"){
-    else if (sonnetIdx < 154 ){
-        return sonnetIdx+1;
+    else if (sonnetIdx < 154 ){ //else if (author == "Shakespeare"){
+        return sonnetIdx + 1;
     }
 }
 
+// Return author for a given sonnet index (0-350)
+
 // Color scale for authors
-var z = d3.scaleOrdinal()
+var authorColorScale = d3.scaleOrdinal()
     .domain(["Shakespeare", "Spenser", "Sidney"])
     .range(d3.schemeSet2)
 
@@ -92,7 +91,7 @@ function set_sonnet(id_for_entered_number, name_for_poet_field, id_for_displayin
     $(id_for_displaying_text).html(sonnets[sonnet_idx_to_match]);
 
     d3.selectAll("circle")
-        .style("fill", function(d){ return z(d.author);}) // color based on author
+        .style("fill", function(d){ return authorColorScale(d.author);}) // color based on author
         .attr("r", function(d){  
             if (d.sonnet_id == sonnet_idx_to_match){
                 return 8;
@@ -110,21 +109,19 @@ function set_sonnet(id_for_entered_number, name_for_poet_field, id_for_displayin
 /* Set all circle sizes to default, circle stroke-widths to 0, scatter sonnet text to empty */
 function unset_sonnet(){
     d3.selectAll("circle")
-        .style("fill", function(d){ return z(d.author);})
+        .style("fill", function(d){ return authorColorScale(d.author);})
         .attr("r", 4)
         .attr("stroke-width", 0)
     $("#sonnet-2d").html("")
 }
 
 function set_sonnet1_tree(clicked_circle_directly) {
-    console.log("setting sonnet")
     sonnet_idx = document.getElementById("sonnet_number").value - 1;
     set_sonnet("sonnet_number", "tree-viz-poet-1", "#sonnet", sonnet_idx, clicked_circle_directly, "-radio-tree")
     update(root);
 }
 
 function set_sonnet2_tree(clicked_circle_directly) {
-    console.log("setting sonnet2")
     sonnet_idx2 = document.getElementById("sonnet_number2").value - 1;
     set_sonnet("sonnet_number2", "tree-viz-poet-2", "#sonnet2", sonnet_idx2, clicked_circle_directly,"-radio-tree2")
     update(root);
@@ -155,34 +152,25 @@ function replot_with_position_data_from_file(filename){
 }
 
 function draw_plot(sonnetData){
-    scatterContainer =  d3.select("#scatter-container");
-    scatterContainer.html("")
+    scatterContainer =  d3.select("#scatter-container")
+        .html("");
+
     var width = parseInt(scatterContainer.style('width'), 10);
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10},
         width = width - margin.right - margin.left,
-        height = width / 2;
+        height = width * 0.6; // can change if want to make this square
 
     // Pan and zoom
     var zoom = d3.zoom()
         .scaleExtent([.5, 16])
-        // .extent([[0, 0], [width, height]])
         .on("zoom", zoomed);
 
     var svg = d3.select("#scatter-container")
         .append("svg")
-            // //.attr("preserveAspectRatio", "xMinYMin meet")
             .attr("viewBox", "0 0 ${width} ${height}")
-            // .classed("svg-content-responsive", true)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-
-    // clipping region 
-    // svg.append("defs").append("clipPath")
-    //     .attr("id", "clip")
-    // .append("rect")
-    //     .attr("width", width)
-    //     .attr("height", height);
 
     svg.append("rect")
         .attr("width", width)
@@ -216,19 +204,17 @@ function draw_plot(sonnetData){
         .attr("clip-path", "url(#clip)")
         .classed("points_g", true);
 
-    points = points_g.selectAll("circle").data(sonnetData)
-        .on('click', function(d){
-        console.log('clicking 1')
-        console.log(d);});
-
-    points = points.enter().append("circle")
+    points = points_g.selectAll("circle")
+        .data(sonnetData)
+        .enter()
+        .append("circle")
         .attr('cx', function(d) {return xScale(d.x)})
         .attr('cy', function(d) {return yScale(d.y)})
         .attr("r", 4)
         .attr("stroke-width", 0)
         .attr("stroke", "black")
         .attr("class", function(d) { return d.author})
-        .style("fill",  d => z(d.author))
+        .style("fill",  d => authorColorScale(d.author))
         .attr("title", function(d) {
             var sonnetNum = convertSonnetIdxToDisplayNumber(d.sonnet_id)
             return d.author + " " + sonnetNum + ": \n" + sonnets[d.sonnet_id]
@@ -244,31 +230,31 @@ function draw_plot(sonnetData){
         .attr("x", function(d) {return xScale(d.x)}) 
         .attr("y", function(d) {return yScale(d.y)})
         .style("font-size", "0.8em")
+        .attr("class", function(d) {return d.author}) // Will use this class to show and hide numbers for selected authors appropriately
         .classed('sonnet-number-text',true)
         .classed('hidden',!document.getElementById('showSonnetNumbersCheckbox').checked);
  
-
     $('.legend').css("color", function() {
         var author = $(this).attr("class").split(/\s+/)[0].substring(7)
-        return z(author);
+        return authorColorScale(author);
     });
 
     function zoomed({transform}){
         // create new scale ojects based on event
         var new_xScale = transform.rescaleX(xScale);
         var new_yScale = transform.rescaleY(yScale);
+
         // update axes
         gX.call(xAxis.scale(new_xScale));
         gY.call(yAxis.scale(new_yScale));
 
-        // update point and text positionsxs
+        // update point and text positions
         points.data(sonnetData)
             .attr('cx', function(d) {return new_xScale(d.x)})
             .attr('cy', function(d) {return new_yScale(d.y)});
         text_labels.data(sonnetData)
             .attr('x', function(d) {return new_xScale(d.x)})
-            .attr('y', function(d) {return new_yScale(d.y)});
-        
+            .attr('y', function(d) {return new_yScale(d.y)});     
     }
 }
 
@@ -276,16 +262,26 @@ function draw_plot(sonnetData){
 d3.selectAll('#choose-authors .authorCheckbox').on('click', function () {
     var author = this.value,
         checked = this.checked;
-        d3.selectAll('.' + author).classed('hidden', !checked);
+        d3.selectAll('.points_g' + ' .' + author).classed('hidden', !checked);
+        d3.selectAll('text' + '.' + author).classed('hidden', !checked || !document.getElementById('showSonnetNumbersCheckbox').checked)
 });
 
 /* Replot scatter in response to changing feature or projection selection*/
 $('.projection-radio, .features-radio').on('click', replot);
 
-/* */
+/* Show/hide sonnet numbers in response to checkbox click*/
 $('#showSonnetNumbersCheckbox').on('click', function(){
-    console.log("clicked!")
-        d3.selectAll('#scatter-container .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckbox').checked);
+    d3.selectAll('#scatter-container .sonnet-number-text').classed('hidden', function(){
+        var showSonnetNums = document.getElementById('showSonnetNumbersCheckbox').checked;
+        var authorCheckboxes = d3.selectAll('#choose-authors .authorCheckbox')._groups[0];
+        var authorIsSelected;
+        for( i = 0; i< authorCheckboxes.length; i++) {
+            var authorIsSelected = authorCheckboxes[i].checked;
+            if (this.classList.contains(authorCheckboxes[i].value)) {
+                return !(showSonnetNums && authorIsSelected);
+            }
+        }
+    })
 });
 
 function replot(){
@@ -305,65 +301,44 @@ function replot(){
 
 // TREE
 
-var margin = {top: 20, right: 20, bottom: 20, left: 20};
+var margin = {top: 20, right: 12, bottom: 20, left: 12};
 var treeContainer =  d3.select("#tree");
-var width = Math.min(parseInt(treeContainer.style('width'), 10), 1200);
+var width = Math.min(parseInt(d3.select('body').style('width'),10)- parseInt(d3.select('#tree-options').style('width'),10), 1200) ;
+console.log('treewidth '+ width )
 var height = width;
 var radius = width / 2;
-var i = 0,
-    root;
+var i = 0;
+var root;
+var currentZoomTransform;
 
 function radialPoint(x, y) {
     return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
 }
 
-// // Pan and zoom
-// var zoomTree = d3.zoom()
-//     .scaleExtent([.5, 16])
-//     .on("zoom", zoomedTree);
-
 var tree =  d3.cluster()
-    .size([2 * Math.PI, radius - margin.right - margin.left])
-
-var svg = treeContainer.append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-    .attr("viewBox", "0 0 ${width} ${height}") // ZOOM NEW
-    .append("g")
-        .attr("transform", "translate(" + radius + "," + radius+ ")");
-
-svg.append("rect") //ZOOM NEW
-    .attr("width", width) //ZOOM NEW
-    .attr("height", height) //ZOOM NEW
-    .style("fill", "none") //ZOOM NEW
-    .style("pointer-events", "all") //ZOOM NEW
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') //ZOOM NEW
-    //.call(zoomTree);
+    .size([2 * Math.PI, radius - margin.right - margin.left]);
 
 function update_tree_from_file(filename){
-    treeContainer.html('');
-    svg = d3.select("#tree").append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform", "translate(" + radius + "," + radius+ ")");
-
+    console.log("updating from file")
     $.getJSON(filename, function( treeData ) {
         // Compute the new tree layout.
         root = tree(d3.hierarchy(treeData));
-        console.log(root)
+        //console.log(root)
         update(root);
     });
 }
 
 function update(source) {
+   console.log("updating")
     d3.selectAll('#choose-authors-tree .authorCheckbox').on('click', update_with_new_options);
     d3.selectAll('#choose-features-tree input').on('click', update_with_new_options);
     d3.select('#showSonnetNumbersCheckboxTree').on('click', function(){
         d3.selectAll('#tree .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckboxTree').checked);
     });
 
+
     function update_with_new_options(){
+        console.log("updating with new options")
         var authors = document.querySelectorAll('#choose-authors-tree input:checked');
         var counts_or_embedding; /* which feature set to use */
         if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
@@ -403,8 +378,19 @@ function update(source) {
         }
     }
 
-    svg.html('');
-    svg.append("g")
+    treeContainer.html('');
+    svg = treeContainer.append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .call(d3.zoom().on("zoom", function ({transform}) {
+        currentZoomTransform = transform;
+        svg.attr("transform", currentZoomTransform)
+     }))
+    .append("g")
+        .attr("transform", "translate(" + radius + "," + radius+ ")") 
+    .append("g")
+
+    var lines_g = svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#999")
       .attr("stroke-opacity", 1)
@@ -428,7 +414,7 @@ function update(source) {
         return "#bbb";
        });
 
-    svg.append("g")
+    var circle_g = svg.append("g")
     .selectAll("circle")
     .data(root.descendants())
     .join("circle")
@@ -454,12 +440,14 @@ function update(source) {
             return "gray";
         }
         //set color
-        return z(d.data.author);
+        return authorColorScale(d.data.author);
     })   
         .attr("r", function(d){
-            if (d.data.author != "None"){
-                return 3
-            } else { return 1 }
+            if (width < 700){
+                return (d.data.author != "None" ? 2 : 1);
+            } else {
+                return (d.data.author != "None" ? 3 : 1);
+            }
         })
         .attr("stroke-width", function(d){ 
             if ( (sonnet_idx == 0 || sonnet_idx2 == 0) & d.data.id == '0' ){
@@ -482,9 +470,11 @@ function update(source) {
         })
     ;
 
-  svg.append("g")
+  var totalNumNodes = root.descendants().length;
+  console.log(totalNumNodes)
+
+  var text_g = svg.append("g")
       .attr("font-family", "sans-serif")
-      .attr("font-size", 10)
       .attr("stroke-linejoin", "round")
       .attr("stroke-width", 3)
     .selectAll("text")
@@ -495,6 +485,15 @@ function update(source) {
         translate(${d.y},0) 
         rotate(${d.x >= Math.PI ? 180 : 0})
       `)
+      .attr("font-size", function(d){ // TODO: set based on num child nodes
+          if (totalNumNodes > 500){
+              return 4.5
+          } else if (totalNumNodes < 500 && totalNumNodes > 350) {
+              return 7
+          } else {
+              return 10
+          }
+      })
       .attr("dy", "0.31em")
       .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
       .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
@@ -507,18 +506,16 @@ function update(source) {
         })
       .classed('sonnet-number-text',true)
       .classed('hidden',!document.getElementById('showSonnetNumbersCheckboxTree').checked);
-     //.clone(true).lower()
-       //.attr("stroke", "white");
 
     d3.selectAll('#tree circle').on('click', clickCircle);
+
+
 }
 
 function clickCircle(d, i){
     var thisSonnetNumber = Number(i.data.id) + 1;
     d3.selectAll('.ui-tooltip').style('display', 'none');
-    if (thisSonnetNumber == "Your sonnet!") {    
-    }
-    else if (setSonnet1Next) {
+    if (setSonnet1Next) {
         document.getElementById("sonnet_number").value = thisSonnetNumber;
         set_sonnet1_tree(true);
     } else {
@@ -529,9 +526,6 @@ function clickCircle(d, i){
     setSonnet1Next = !setSonnet1Next;
     update(root);
 }
-
-
-
 
 
 
@@ -560,6 +554,7 @@ d3.select("#pick-2d-projection").on("click", function(){
     replot();
 });
 
+d3.selectAll('.ui-tooltip').style('display', 'none');
 d3.selectAll(".tree-viz").classed("hidden", true);
 d3.selectAll(".twod-projection-viz").classed("hidden",false);
 d3.selectAll(".tab-heading").classed("tab-heading-selected", false);

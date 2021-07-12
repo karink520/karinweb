@@ -28,6 +28,13 @@
             </form>
         </div>
 
+        <div id="show-sonnet-numbers" >
+            <form name="show-sonnet-numbers-form">
+            Sonnet numbers:<br>
+            <input type="checkbox" value="Show" id="showSonnetNumbersCheckbox"/>Show<br>
+            </form>
+        </div>
+
         <div id="features">
             <form>
                 Features: <br>
@@ -54,16 +61,9 @@
         </form>
         </div>
 
-        <div id="show-sonnet-numbers" >
-            <form name="show-sonnet-numbers-form">
-            Sonnet numbers:<br>
-            <input type="checkbox" value="Show" id="showSonnetNumbersCheckbox"/>Show<br>
-            </form>
-        </div>
-
         <div id="sonnet-chooser-2d-viz"  class="twod-projection-viz">
             <div id="choose-a-sonnet-2d">
-                <label for="sonnet_number">Highlight a Sonnet:</label>
+                <label for="sonnet_number">Highlight a sonnet:</label>
                 <br>
                 <input type="radio" value="Shakespeare" checked="True" name="poet" class="shakespeare-radio">
                 <label for="Shakespeare">Shakespeare (1-154)</label><br>
@@ -88,6 +88,14 @@
             <input type="checkbox" value="Spenser" checked="false" class="authorCheckbox" />Edmund Spenser <span class="legend-Spenser legend">&#8226;</span> <br>
             <input type="checkbox" value="Sidney" checked="false" class="authorCheckbox" />Philip Sidney <span class="legend-Sidney legend">&#8226;</span> <br>
         </div>
+
+        <div id="show-sonnet-numbers-tree" >
+            <form name="show-sonnet-numbers-form-tree">
+            Sonnet numbers:<br>
+            <input type="checkbox" value="Show" id="showSonnetNumbersCheckboxTree"/>Show<br>
+            </form>
+        </div>
+
         <div id="choose-features-tree">
         Features:<br>
         <input type="radio" name="distance-tree" value="phonemes" checked="True">
@@ -97,15 +105,8 @@
         <label for="other">Sound Similarity</label>
         </div>
 
-        <div id="show-sonnet-numbers-tree" >
-            <form name="show-sonnet-numbers-form-tree">
-            Sonnet numbers:<br>
-            <input type="checkbox" value="Show" id="showSonnetNumbersCheckboxTree"/>Show<br>
-            </form>
-        </div>
-
         <div class="sonnet-choosing-div tree-viz">
-                Highlight a Sonnet:
+                Highlight a sonnet:
                 <br>
                 <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-1" class="shakespeare-radio-tree">
                 <label for="Shakespeare">Shakespeare (1-154)</label><br>
@@ -119,7 +120,7 @@
             <div id="sonnet"></div>
         </div>
         <div class="sonnet-choosing-div tree-viz">
-                Highlight Another Sonnet:
+                Highlight another sonnet:
                 <br>
                 <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-2" class="shakespeare-radio-tree2">
                 <label for="Shakespeare">Shakespeare (1-154)</label><br>
@@ -203,6 +204,7 @@
             Code for this project is available <a href="https://github.com/karink520/sonnets">on GitHub</a>.
         </p>
         <h4>References:</h4>
+        <ul>
         <li>Holdsworth, T. L. (2019). A phonemic analysis of Shakespeare’s sonnets [Thesis]. University of San Diego.</li>
         <li>Parrish, A. (2017). Poetic sound similarity vectors using phonetic features. AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment, North America, Sep. 2017.</li>
         </ul>

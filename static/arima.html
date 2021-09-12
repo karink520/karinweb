@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/arima.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+    
+</head>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="Knudson-Resume.pdf">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate">August 27, 2021 </h3>
+            <span class="blogtopic" class="include-in-wordcloud">A little bit of ARIMA (AutoRegressive Integrated Moving Average models)</span>
+            <p>
+                The goal of this post is to give basic background about how ARIMA models for time series work.
+                Why? 1) For fun, and 2) because ARIMA models are useful&mdash;
+                both on their own and as building blocks that show up in larger or fancier models.
+            </p>
+            <p>We'll start with the picture this time. You can play around
+                and see what kinds of time series you can get by generating from ARIMA
+                models of various sorts and with various parameters.
+            </p>
+
+            <div id="ar-plot-options">
+                
+                Autoregressive order:
+                <select id="choose-AR-order">
+                    <option value="0">0</option>
+                    <option value="1">1 </option>
+                    <option value="2" selected="selected">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                Integration order:
+                <select id="choose-I-order">
+                    <option value="0" selected="selected">0</option>
+                    <option value="1">1 </option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                Moving average order:
+                <select id="choose-MA-order">
+                    <option value="0" selected="selected">0</option>
+                    <option value="1">1 </option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                
+                <div id="AR-equation">\(y_t = \epsilon_t + \) <input type='number' class='equation-blank AR-parameter' value="0.5"> </input>\(y_{t-1} + \) <input type='number' class='equation-blank AR-parameter' value="-0.6"> </input>\(y_{t-2}\)
+                </div>
+
+                <div id="AR-error-equation">\(\epsilon_t \sim N(0, \sigma =\) <input type='number' class='equation-blank error-std' value="0.5">\( ) \)</div>
+
+                <button id="more-options-button">Change initial values from default</button>
+                <span id="more-options-div">
+                </span>
+                <br>
+                <button id="makeplot-button">Simulate</button>
+            
+              </div>
+
+              <div id="AR-plot">
+              </div>
+ 
+
+            <button class="accordion">Give me an AR! ("AR!")</button>
+            <div class="panel">
+                <p>We'll look at each piece of the ARIMA model in turn: the AR part, the I part, and the MA part.</p>
+              <p> 
+                  The <b>autoregressive</b> (AR) part of ARIMA involves modeling each value in the time series 
+                  as a linear combination of some of its previous values, plus some random noise (or "error" or "random shocks" in other terminology).
+                  An AR model of order p, which for short we call an AR(p) model, is given by:
+                  \[y_t = \epsilon_t + a_1 y_{t-1} + a_2 y_{t-2} + ... + a_p y_{t-p}\]
+                  Sometimes you'll see a constant tacked onto the sum as well.
+              </p>
+              <p> The noise term \(\epsilon_t\) most often is assumed to be normally distributed with mean zero, but other choices are possible.</p>
+              <p> An ARIMA model has an order for each of its three parts (AR, I, and MA),
+                  and we write these as an ordered triple as in the title of the graph above, e.g. ARIMA(2,1,0). 
+                  So, an AR(p) model is an ARIMA(p, 0, 0) model.
+              </p>
+              <p>We can write the equation for an AR process in a slightly different way if we define the lag operator L (a.k.a. the backshift operator) that maps an element of a time series to the previous element:
+                  \(L^i y_t = y_{t-i}\)
+                  We rearrange the previous equation to get 
+                  \(y_t - a_1 y_{t-1} - a_2 y_{t-2} - ... - a_p y_{t-p} = \epsilon_t\), and then rewrite with L as:
+                  \[(1-\sum_{i=1}^pa_iL^i)y_t = \epsilon_t\]
+                  This new form with L may seem opaque, but it actually has some advantages.
+                  The \(1-\sum_{i=1}^pa_iL^i\) term that appears on the left hand side looks like a polynomial in L (one that's so important it's called the <b>characteristic polynomial</b> of the AR process)
+                  and if we treat it that way, we can say some nifty things. For instance, we can say that the AR process is only
+                  <a href="https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity">wide-sense stationary</a> if all of the real and complex roots of the polynomial have modulus greater than 1.
+                  (This fact is easiest to convince yourself in the case of an AR(1) process, where the characteristic polynomial is
+             \(1-a_1L\), which has a root of \(1/a_1\). Consider what the model does when \(|a_1| > 1\)).  It 
+             might be interesting to experiment with what kinds of AR(2) processes you can make in the plot above. If you want to keep the characteristic
+             polynomial having roots of modulus less than 1, you'll need \( |a_2| \lt 1 \) and \(a_2 - 1 \lt  a_1 \lt 1 - a_2\). 
+             Check out the different behavior between coefficients that give the characteristic polynomial two real roots, when \(a_1^2 + 4a_2 \gt 0 \),
+             versus coefficients that give it two complex roots, when \(a_1^2 + 4a_2 \lt 0\).
+              </p>
+            
+            </div> <!--closes blog section-->   
+
+            <button class="accordion">Give me an I! ("I!")</button>
+            <div class="panel">
+              <p> Confession: I ignored the I part of ARIMA models for a pretty long time, assuming that it must 
+                  be something complicated and a long leap from friendly old ARMA models. Turns out it's actually the simplest
+                  part of the model.
+            </p>
+            <p>
+                The idea is that sometimes it happens that an ARMA model isn't a suitable model for the sequence \(\{y_t\}\), but
+                    <em>is</em> a suitable model for the differences between subsequent values of \(y_t\). That is, it may make 
+                    more sense to fit an ARMA model to the sequence \(\{y_t' := y_t - y_{t-1} \}\) than to \(\{y_t\}\). If 
+                    we fit an ARMA model to this sequence of \(\{y'_t\}\), we can say that we're fitting an ARIMA(p, 1, q) model to
+                    the original data  \(\{y_t\}\).
+            </p>
+            <p>If taking the differences doesn't get us something that is well described by an ARMA model (e.g., it has a consistent trend), then
+                sometimes it might help to take the differences <em>of the differences</em> &mdash; \(\{y_t''= y'_t - y'_{t-1} \}\)&mdash; and in doing so fit an ARIMA(p,2,q) model.
+                The number of times we take differences is the I order of the ARIMA model.
+            </p>
+
+            <p>If you enjoyed the lag operator from the previous section, you might note that we can use it to write
+                \(y_t' = y_t - y_{t-1} = (1-L)y_t\). Similarly, \(y_t'' = (1-L)^2 y_t \). So, we can rewrite
+                the equation for ARIMA(p, d, q) process as: \[(1-\sum_{i=1}^pa_iL^i)(1-L)^d y_t = (1+\sum_{i=1}^q L^i) \epsilon_t\]
+                Considering the left hand side of this equation helps us see that we could consider this ARIMA(p, d, q) model an ARMA(p+d, q) model 
+                (we have a polynomial in L of degree \(p+d\) on the left hand side.
+                
+            </p>
+            <p><b>Note 1: </b>Why is it I for <em>integrated</em> when I've been talking about <em>differencing</em>? Well,
+                if we take differences to get from our original data to something we can model well with an ARMA process, then 
+                we'd integrate (sum) to get from the quantities we model (the differences) back to the quanitites of interest.
+                Hence autoregressive <em>integrated</em> moving average model.
+            </p>
+
+            <p><b>Note 2: </b> Differencing certainly doesn't always yield something that you can model with an ARIMA process.
+                For example, if you have a sequence where the variance is changing in time, that's an obstacle to ARIMA being a good fit, and differencing won't change that.
+                (Although it's possible that some other transformation, such as taking the logarithm of each term, might help.)
+            
+            </p>
+            <p> <b> Note 3: </b> <b>Seasonal differencing</b> is another kind of differencing that works differently from the I part of the ARIMA model. Many time series that we care about show seasonal effects, e.g. where weather or production or people's behavior
+                may consistently vary at different times of the year, or some other periodic behavior. An ARIMA model on its own 
+                can't handle that seasonality, but if it might be appropriate to take the seasonal differences and then fit an ARIMA model to those differences.
+                For instance, if each time point is one month apart and we have a pattern in the data \(y_t\)that repeats every twelve months, we can try
+                using an ARIMA process to model not \(y_t\) itself but another sequence \(z_t := y_t - y_{t-12} = (1-L^{12})y_t \).
+
+            </p>
+            </div> <!--closes blog section-->  
+
+            <button class="accordion">Give me a MA! ("MA!)</button>
+            <div class="panel">
+              <p> An MA model of order \(q\) involves modeling the <em>error</em> as a linear 
+            combination of the previous \(q\) error terms &mdash; a bit of a different idea than the dependence on previous time series values in AR models, particularly since the error terms \( \epsilon_t \)are unobserved.
+            You might imagine that the \(\epsilon_t\), as "random shocks", have a direct influence beyond the current time point, and MA models allow you to incorporate that influence in a linear way. 
+            Concretely, an MA(q) process is given by:
+            \[y_t = \epsilon_t + b_1 \epsilon_{t-1}...+b_q \epsilon_{t-q}\]
+            </p>
+            <p>
+            The ARMA(p, q) model is given by:
+            \[y_t = a_1 y_{t-1} +.... + a_p y_{t-p} + \epsilon_t + b_1 \epsilon_{t-1}...+b_q \epsilon_{t-q}\]
+            We can write the full ARIMA(p,d,q) process, using the lag operator, as:
+            \[(1-\sum_{i=1}^pa_iL^i)(1-L)^d y_t = (1+\sum_{i=1}^q b_i L^i) \epsilon_t\]
+        </p>
+        <p><b>Note: </b> Don't let the name fool you into thinking the coefficients \(b_1,..., b_q\) need to sum to one; they don't.
+        Also, don't let the name make you think this is the same thing as smoothing with a moving average; it's not.</p>
+            </div> <!--closes blog section-->  
+
+            <button class="accordion">"When am I ever going to use this in real life?"&#42;</button>
+            <div class="panel">
+            <p>
+            Time series themselves are everywhere (the news is really backing me up on this right now...). 
+            And, when the model is appropriate for the situation and data, fitting ARIMA models to data can help you on a couple of fronts.
+            The first is <b>forecasting</b>. We <em>so, so</em> often want to know what's going to happen next, and a fitted ARIMA model
+            gives a relationship between past and future events that can help us predict. 
+            The second is <b>understanding the structure of the underlying system</b>. Having a better idea 
+            about the influence that past values (or error terms) have on future ones might lead us
+            to understand something about whatever real thing in the world is generating the data. 
+            </p>
+            <p> So, we're after prediction and/or discovering meaningful structure. I'd argue that or both of these is pretty much always the goal when you're modeling <em>anything</em>.</p>
+            <p> ARIMA models are a bit of a time series workhorse &mdash; simple enough to deal with, but adaptable to 
+                a reasonable range of situations. We can also use ARIMA models as components of larger models. 
+                I find Markov switching models an interesting and useful example of this. Markov switching models involve time series that alternately
+                evolve according to one of several models. One place where I personally have found such a model useful is in 
+                <a href="https://arxiv.org/abs/2108.08975">working with wearable sensor data in the context of neurodegenerative diseases</a>.
+                 We can arrive at a useful description of certain kinds of motion if we allow it to be described by different sets AR parameters at different times; <em>which</em> sets of of AR parameters tend to fit the submovements relates to
+                 the movement someone is making, and the status/severity of their neurodegenerative disease).
+            </p>
+            <!-- <p>So, what are we after? Prediction and/or discovering meaningful structure &mdash; one or both of these is pretty much always the goal when you're modeling <em>anything</em>.
+                Why ARIMA? They can offer a helpful balance of simplicity and adaptability, and so are worth knowing about if you work with time series data.
+            <p> -->
+                (&#42;Yes, I've taught high school)
+            </p>
+            </div>
+
+            <button class="accordion">Conclusion and References</button>
+            <div class="panel">
+                <p>There's plenty more to be said that isn't in this post, from how to choose the orders \(p, d \) and \(q\)
+                    of the ARIMA process, to fitting the coefficients, to more about what coefficients yield what kind of behavior.
+                    We also have not touched on the idea of <b>invertibility</b> (roughly speaking, when you can write and AR process as an infinite-order MA process or vice versa),
+                    or the somewhat related notion of <b>causality</b>.
+                    Hopefully this post has given you some basic information about ARIMA models if they were new to you. References where you can read more are below.
+                </p>
+                <p>
+                I'm partial to the Prado and West time series text, perhaps because it's what I encountered first, and because its overall Bayesian approach fits my interests.
+                If you want a readable, practically-oriented (and light on theory) introduction to time series and/or ARIMA, you might enjoy the Hyndman and Athanasopoulos.
+                And, for tons and tons on ARIMA and the classic (but still relatively recently updated) source, check out Box, Jenkins Reinsel and Ljung.
+                </p>
+                <ul>
+                    <li class="reflist">Prado, R. and West, M., 2010. Time series: modeling, computation, and inference. Chapman and Hall/CRC.
+                    </li>
+                    <li class="reflist"><a href="https://otexts.com/fpp3/arima.html">Hyndman, R.J. and Athanasopoulos, G., 2018. Forecasting: principles and practice. OTexts.</a></li>
+                    <li class="reflist">Box, G.E., Jenkins, G.M., Reinsel, G.C. and Ljung, G.M., 2015. Time series analysis: forecasting and control. John Wiley & Sons.</li>
+                </ul>
+                
+              <p> 
+               </p>
+            </div> <!--closes blog section-->  
+             
+        </div>  <!--closes blog post-->      
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/arima.js"></script>
+   <script src="js/blogpost.js"></script>
+   </body>
+</html>

@@ -1,0 +1,15 @@
+#more-options-button {
+    background-color: rgb(232, 232, 232);
+}
+
+.equation-blank {
+    background-color: #96c35a88;
+    display:inline-block;
+    width: 3em;
+  }
+
+  @media screen and (min-width: 650px) {
+    circle {
+        r: 5;
+    }    
+}

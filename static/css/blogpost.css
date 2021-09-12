@@ -47,7 +47,7 @@ p a, p a:visited {
   font-weight: bold;
   border: 2px solid lightgray;
 }
-
+;
 .alternative-accordion:hover, .active-alternative-accordion{
   background-color :#74a8306c;
   font-weight: bold;
@@ -58,6 +58,7 @@ p a, p a:visited {
   background-color: white;
   overflow: hidden;
 }
+
 
 .resultsDisplay {
   margin: 1em auto;

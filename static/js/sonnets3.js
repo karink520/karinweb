@@ -305,7 +305,7 @@ var margin = {top: 20, right: 20, bottom: 20, left: 12};
 var treeContainer =  d3.select("#tree");
 var width = Math.max(parseInt(treeContainer.style('width'), 10), parseInt(d3.select('#plot-and-options').style('width'),10)- parseInt(d3.select('#tree-options').style('width'),10));
 width = Math.min(width, 1200);
-// console.log("width " + width);
+console.log("width " + width);
 var height = width;
 var radius = width / 2;
 var i = 0;
@@ -381,8 +381,10 @@ function update(source) {
 
     treeContainer.html('');
     svg = treeContainer.append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
+    // .attr("width", width + margin.right + margin.left)
+    // .attr("height", height + margin.top + margin.bottom)
+     .attr("width", width)
+    .attr("height", height)
     .call(d3.zoom().on("zoom", function ({transform}) {
         currentZoomTransform = transform;
         svg.attr("transform", currentZoomTransform)

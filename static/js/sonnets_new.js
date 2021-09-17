@@ -20,18 +20,23 @@ $(document).ready(function(){
         });
     }
 
+    function get_height(margin){
+        return parseInt(d3.select("#options").style('height'), 10) + parseInt(d3.select("#options").style('padding-top'), 10)
+        + parseInt(d3.select("#options").style('padding-bottom'), 10) - margin.top - margin.bottom;
+    }
+
 
     function create_scatter_plot(positionData){
         var dotRadius = 4;
         var margin = {top: 5, right: 25, bottom: 5, left: 10},
         width = parseInt(d3.select(".tab-heading-container").style('width'), 10) - margin.left - margin.right - 3,
-        height = parseInt(d3.select("#options").style('height'), 10) + parseInt(d3.select("#options").style('padding-top'), 10)
-        + parseInt(d3.select("#options").style('padding-bottom'), 10) - margin.top - margin.bottom;
+        height =  get_height(margin)
 
         var svg = d3.select("#scatter-container")
         .append("svg")
             .attr("width", width)// + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
+            .classed('white-background', true)
         .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");

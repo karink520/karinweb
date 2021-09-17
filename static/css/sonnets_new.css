@@ -1,0 +1,281 @@
+/* General */
+
+body { 
+    font-family: 'Palatino', Times, serif
+}
+
+h1, h3 {
+    text-align: center;
+}
+
+h3 {
+    font-weight: normal;
+}
+
+h3 a:hover { /* author names*/
+   color: black;
+   text-decoration: underline;
+   
+}
+
+h3 a { /* author names*/
+    color: #444;
+    text-decoration: none;
+ }
+
+.hidden {
+    display: none;
+}
+
+li {
+    font-size: 1rem;
+}
+
+.color-background {
+    background-color: rgb(255, 240, 189);
+    padding-bottom: 10px;
+}
+
+.white-background {
+    background-color: white;
+}
+
+.rounded-border { 
+    border-radius: 10px 10px 10px 10px;
+    border: 2px solid gray;
+    margin-left: 1%;
+    margin-right: 1%;
+    padding-left: 1%;
+    padding-right: 0.5%;
+    padding-top: 1%;
+    padding-bottom: 1%;   
+}
+
+#about {
+    margin: 2%;
+    padding: 2%;
+    font-size: 1.2rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#about p, #about li { 
+    max-width: 1200px;
+}
+
+#show-more {
+    font-weight: bold;
+    cursor: pointer;
+    background: lightgray;
+    display: inline-block;
+}
+
+@media screen and (min-width: 700px){
+
+    #about{
+        margin:2%;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+}
+
+/* Sonnet choosing and options */
+
+#sonnet-left{
+    display: flex;
+}
+
+.legend {
+    font-size: 1.5em;
+}
+
+#plot-and-options{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#options, #tree-options {
+    width: 100%;
+    background-color: white;
+}
+
+#options > div::first-line, #tree-options > div::first-line {
+    font-weight:bold;
+} 
+
+#sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
+    padding: 2%;
+    line-height: 1.1em;
+    font-size: 0.9rem;
+}
+
+#sonnet, #sonnet2, #sonnet-2d {
+    white-space: pre-wrap;
+}
+
+#sonnet-chooser-2d-viz{
+    order:5;
+}
+
+/* Scatter container, tree*/
+#scatter-container, #tree {
+    width: 100%;
+    margin: 5px;
+}
+
+@media screen and (min-width: 700px) {
+
+    #scatter-container, #tree{
+        /* width: 68%; */
+        /* flex-grow: 1; */
+        order: 3;
+        max-width: 68%;
+        background-color: white;
+        margin:0px;
+    }
+
+    #plot-and-options {
+        flex-wrap: nowrap;
+        background-color: rgb(255, 240, 189);
+        margin-left: 10px;
+    }
+
+    #options, #tree-options {
+        order: 4;
+        flex-grow: 0;
+        width: 27%;
+    }
+
+    #options > div, #tree-options > div{
+        width: 100%;
+        margin-top: 1em;
+    }
+
+    #sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
+        padding-top: 2%;
+        padding-bottom: 2%;
+        padding-left: 0%;
+        padding-right: 0%;
+        line-height: 1.1em;
+        font-size: 0.85rem;
+    }
+
+}
+
+/* @media screen and (max-width: 1220px) and (min-width:1050px) { */
+@media screen and (max-width: 1220px) {
+    #options, #tree-options {
+        min-width: 300px;
+    }
+}
+
+@media screen and (max-width: 1220px) and (min-width:700px) {
+    #sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (min-width:1400px) {
+    #sonnet, #sonnet2, #sonnet-2d, #user-sonnet-div, textarea {
+        font-size: 1rem;
+    }
+}
+
+
+/* Tree styling */
+
+.node circle {
+  fill: #eee;
+  stroke: seagreen;
+  stroke-width: 2px;
+}
+
+.node text { 
+    font: 12px sans-serif;}
+
+.link {
+  fill: none;
+  stroke: #bbb;
+  stroke-width: 2px;
+}
+
+/* Tooltip Styling */
+
+.ui-tooltip{
+    white-space: pre-line;
+    background:white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    color: black;
+    border-radius: 20px;
+    font: bold 14px;
+    box-shadow: 0 0 7px black;
+    max-width: 600px;
+    line-height: 1.4;
+    position: absolute;
+}
+
+.ui-tooltip-content::first-line{
+    font-weight:bold;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.ui-helper-hidden-accessible div{
+    display: none;
+}
+
+/* .svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  } */
+
+  /*Style for tab selection */
+
+.tab-heading {
+    cursor: pointer;
+    display : block;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top: 3px solid rgb(255, 240, 189);
+    background-color:rgb(255, 240, 189);
+    height: 100%;
+  }
+  
+  .tab-heading-selected {
+    /* background-color:rgb(255, 240, 189);
+    border-bottom: 3px solid white; */
+    background-color: white;
+    border-bottom: 3px solid rgb(255, 240, 189);
+  }
+  
+  .tab-heading-container{
+      background-color:rgb(255, 240, 189);;
+      /* background-color: white; */
+      margin-top:3px;
+      /* margin-bottom:10px; */
+  }
+
+
+@media screen and (min-width: 700px) {
+    .tab-heading {
+      display : inline-block;
+      width: 32%;
+    }
+
+    .tab-heading-selected {
+        background-color: white;
+        /* background-color:rgb(255, 240, 189); */
+        border-bottom: 0px;
+    }
+
+    .tab-heading-container {
+        padding-left: 10px;
+        width: 70%;
+    }
+}

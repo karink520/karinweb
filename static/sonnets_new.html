@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="css/sonnets_new.css">
+</head>
+<body>
+    <h1>Visualizing Sonnets by Sound</h1>
+    <h3><a href="https://karinknudson.com" target="_blank" rel="noreferrer noopener">Karin Knudson</a>, <a href="https://people.csail.mit.edu/smirnov/" target="_blank" rel="noreferrer noopener">Dima Smirnov</a>, <a href="https://satyandevadoss.org/" target="_blank" rel="noreferrer noopener">Satyan Devadoss</a></h3>
+    <div class="color-background">
+    <div class="centered tab-heading-container">
+        <span id="pick-tree" class="tab-heading">
+            TREE
+        </span>
+        <span id="pick-pca" class="tab-heading tab-heading-selected">
+            PCA
+        </span>
+        <span id="pick-pca" class="tab-heading">
+            LDA
+        </span>
+    </div>
+
+    <div id="plot-and-options">
+    <div id = "options" class="rounded-border twod-projection-viz white-background">
+        <div id="choose-authors" >
+            <form name="choose-authors-form">
+            Author(s):<br>
+            <input type="checkbox" value="Shakespeare"checked="checked" class="authorCheckbox"/>William Shakespeare <span class="legend-Shakespeare legend">&#8226;</span> <br>
+            <input type="checkbox" value="Spenser" checked="checked" class="authorCheckbox" />Edmund Spenser <span class="legend-Spenser legend">&#8226;</span> <br>
+            <input type="checkbox" value="Sidney" checked="checked" class="authorCheckbox" />Philip Sidney <span class="legend-Sidney legend">&#8226;</span> <br>
+            </form>
+        </div>
+
+        <div id="show-sonnet-numbers" >
+            <form name="show-sonnet-numbers-form">
+            Sonnet numbers:<br>
+            <input type="checkbox" value="Show" id="showSonnetNumbersCheckbox"/>Show<br>
+            </form>
+        </div>
+
+        <div id="features">
+            <form>
+                Features: <br>
+                <input type="radio" id="phonemes" class="features-radio"
+                name="feature" value="counts" checked="True">
+            <label for="phonemes">Phoneme Count</label><br>
+
+            <input type="radio" id="style" class="features-radio"
+                name="feature" value="embedding">
+            <label for="style">Sound Similarity</label>
+            </form>
+        </div>
+
+        <!-- <div id="choose-projection">
+            <form name="choose-projection-form">
+            Projection: <br>
+            <input type="radio" id="LDA" class="projection-radio"
+            name="projection" value="lda" checked="True">
+        <label for="LDA">Linear Discriminant Analysis (LDA)</label><br>
+    
+        <input type="radio" id="PCA" class="projection-radio"
+            name="projection" value="pca">
+        <label for="PCA">Principal Component Analysis (PCA)</label>
+        </form>
+        </div> -->
+
+        <div id="sonnet-chooser-2d-viz"  class="twod-projection-viz">
+            <div id="choose-a-sonnet-2d">
+                <label for="sonnet_number">Highlight a sonnet:</label>
+                <br>
+                <input type="radio" value="Shakespeare" checked="True" name="poet" class="shakespeare-radio">
+                <label for="Shakespeare">Shakespeare (1-154)</label><br>
+                <input type="radio" value="Spenser" name="poet" class="spenser-radio"/>
+                <label for="Spenser">Spenser (1-89)</label><br>
+                <input type="radio" value="Sidney" name="poet" class="sidney-radio"/>
+                <label for="Sidney">Sidney (1-108)</label><br>
+                <input type="number" id="sonnet_number-2d" name="sonnet_number-2d"
+                    min="1" max="154" value="">
+                <button id="display-sonnet-2d">Highlight</button>
+                <button id="unhighlight-sonnet">Remove Highlight</button>
+            </div>
+            <div id="sonnet-2d"></div>
+        </div>
+
+    </div>
+
+    <div id = "tree-options" class="rounded-border tree-viz">
+        <div id="choose-authors-tree" >
+            Author(s):<br>
+            <input type="checkbox" value="Shakespeare"checked="checked" class="authorCheckbox"/>William Shakespeare <span class="legend-Shakespeare legend">&#8226;</span> <br>
+            <input type="checkbox" value="Spenser" checked="false" class="authorCheckbox" />Edmund Spenser <span class="legend-Spenser legend">&#8226;</span> <br>
+            <input type="checkbox" value="Sidney" checked="false" class="authorCheckbox" />Philip Sidney <span class="legend-Sidney legend">&#8226;</span> <br>
+        </div>
+
+        <div id="show-sonnet-numbers-tree" >
+            <form name="show-sonnet-numbers-form-tree">
+            Sonnet numbers:<br>
+            <input type="checkbox" value="Show" id="showSonnetNumbersCheckboxTree"/>Show<br>
+            </form>
+        </div>
+
+        <div id="choose-features-tree">
+        Features:<br>
+        <input type="radio" name="distance-tree" value="phonemes" checked="True">
+        <label for="phonemes">Phoneme Count</label><br>
+
+        <input type="radio" name="distance-tree" value="other">
+        <label for="other">Sound Similarity</label>
+        </div>
+
+        <div class="sonnet-choosing-div tree-viz">
+                Highlight a sonnet:
+                <br>
+                <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-1" class="shakespeare-radio-tree">
+                <label for="Shakespeare">Shakespeare (1-154)</label><br>
+                <input type="radio" value="Spenser" name="tree-viz-poet-1" class="spenser-radio-tree"/>
+                <label for="Spenser">Spenser (1-89)</label><br>
+                <input type="radio" value="Sidney" name="tree-viz-poet-1" class="sidney-radio-tree"/>
+                <label for="Sidney">Sidney (1-108)</label><br>
+                <input type="number" id="sonnet_number" name="sonnet_number"
+                    min="1" max="154" value="">
+                <button id="display-sonnet">Highlight</button>
+            <div id="sonnet"></div>
+        </div>
+        <div class="sonnet-choosing-div tree-viz">
+                Highlight another sonnet:
+                <br>
+                <input type="radio" value="Shakespeare" checked="True" name="tree-viz-poet-2" class="shakespeare-radio-tree2">
+                <label for="Shakespeare">Shakespeare (1-154)</label><br>
+                <input type="radio" value="Spenser" name="tree-viz-poet-2" class="spenser-radio-tree2"/>
+                <label for="Spenser">Spenser (1-89)</label><br>
+                <input type="radio" value="Sidney"name="tree-viz-poet-2" class="sidney-radio-tree2"/>
+                <label for="Sidney">Sidney (1-108)</label><br>
+                <input type="number" id="sonnet_number2" name="sonnet_number2"
+                    min="1" max="154" value="">
+                <button id="display-sonnet2">Highlight</button>
+            <div id="sonnet2"></div>
+        </div>
+            
+        </div>
+
+    <div id="scatter-container" class="twod-projection-viz white-background"></div>
+    <div id="tree" class="tree-viz">.</div>
+
+    
+</div>
+    <div class="rounded-border white-background" id="about">
+        <h2>About:</h2>
+        <p>
+            We visualize simple, phonetically-based representations of the sonnets of William Shakespeare (1564-1616), and
+            those of two of his contemporaries, Sir Philip Sidney (1554-1586) and Edmund Spenser (1553-1599).
+            
+        </p>
+        <div id="about-more" class="hidden">
+        <p>
+            Initial features are based on either counts of phonemes within each sonnet ("Phoneme Count"), or
+            the sound similarity vectors from 
+            <a href="https://aaai.org/ocs/index.php/AIIDE/AIIDE17/paper/view/15879">Parrish, A., 2017</a> ("Sound Similarity"),
+            which make use of interleaved phonetic feature bigrams. 
+            To obtain the phoneme-count based features, we count the occurance of phonemes within each sonnet using the <a href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict?in=">CMU pronunciation dictionary</a>,
+            to extract phonemes from words and divide the counts of a phoneme within each sonnet by the total counts of the phoneme across all sonnets in the dataset,
+            as in Holdsworth, T. L., 2019.
+            The sound similarity features for a sonnet are calculated by taking the mean across all words in the sonnets
+            of the 50-dimensional sound similarity vectors of each word, which we accessed via
+            <a href="https://github.com/aparrish/phonetic-similarity-vectors">this dictionary</a> from A. Parrish..
+        </p>
+        <p>
+            We visualize these features in two dimensions by using linear discriminant analysis (LDA), principal components analysis (PCA), or a tree. 
+        </p>
+        <p>
+            In linear discriminant analysis, we project linearly onto two dimensions in a way that,
+            roughly speaking, maximizes the separation between the poems by different authors.
+            We see that the simple phonetic features used here do allow for some separation between sonnets by different authors.
+            Although our intent was to provide a simple visualization, rather than explore classification by author,
+            we note that classification based on these models is possible. (Leaving one sonnet out and training
+            LDA on the others gives a 74% accuracy in classifying Shakespeare vs. not Shakespeare using the phoneme
+            count features, and 73% using the sound similarity features).
+        </p>
+        <p>
+            We can also use LDA to look at the phonemic properties of sonnets by specific poets. If we run 
+            LDA on the two class case of Shakespeare vs. the other poets, thus projecting onto a one-dimensional space,
+            it is interesting to inspect the direction of that one-dimensional subspace within phoneme space. 
+            We see that the phonemes whose presence and frequency most contribute to a classification of Shakespeare as the author
+            under this model are 'L', 'OY', 'S', 'HH', and 'CH', while the phonemes that contribute most towards
+            a classification of not Shakespeare are 'DH', 'AH', 'IH', 'Y' and 'AE'. The sonnet with the highest score 
+            in the Shakespeare direction under this discrimative model is Shakespeare's sonnet LXIX, "Those parts of thee that the world's eye doth view..."
+        </p>
+        <p>
+            Principal component analysis does not take into account the authors of the poems, but rather
+            projects linearly onto the orthogonal directions along which the data is varying the most.
+            Because PCA does not use the author information, it interesting to note from the visualization
+            that in the projection onto the first two principal components we can nevertheless observe
+            some clustering by author.
+        </p>
+        <p> Lastly, to construct the tree, we first construct a matrix of pairwise distances between the sonnets,
+            using either cosine distance between the normalized phoneme count features, or the euclidean distance
+            between the mean similarity vectors. A neighbor-joining algorithm is used to construct the
+            tree from these pairwise distances, as in Holdsworth, T. L., 2019.
+        </p>
+        <p>
+            Code for this project is available <a href="https://github.com/karink520/sonnets">on GitHub</a>.
+        </p>
+        <h4>References:</h4>
+        <ul>
+        <li>Holdsworth, T. L. (2019). A phonemic analysis of Shakespeare’s sonnets [Thesis]. University of San Diego.</li>
+        <li>Parrish, A. (2017). Poetic sound similarity vectors using phonetic features. AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment, North America, Sep. 2017.</li>
+        </ul>
+    </div>
+    <p id="show-more">(show more)</p>
+    </div><!-- ends about -->
+</div>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="js/sonnets_new2.js"></script>
+<script src="js/sonnets_new.js"></script>
+
+</html>
+

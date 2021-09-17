@@ -264,7 +264,7 @@ li {
 @media screen and (min-width: 700px) {
     .tab-heading {
       display : inline-block;
-      width: 32%;
+      width: 28%;
     }
 
     .tab-heading-selected {

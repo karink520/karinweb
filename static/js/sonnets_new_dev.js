@@ -14,7 +14,6 @@ function set_tree_dimensions(){
     width = Math.min(width, 1200);
     height = width;
     radius = width / 2;
-    console.log("tree width" + width);
 }
 //set_tree_dimensions();
 
@@ -26,6 +25,7 @@ var tree =  d3.cluster()
     .size([2 * Math.PI, radius - margin.right - margin.left]);
 
 function update_tree_from_file(filename){
+    set_tree_dimensions()
     $.getJSON(filename, function( treeData ) {
         // Compute the new tree layout.
         treeDataFromFile = treeData;
@@ -34,33 +34,34 @@ function update_tree_from_file(filename){
     });
 }
 
+function update_tree_with_new_options(){
+    console.log("updating with new options")
+    var authors = document.querySelectorAll('#choose-authors-tree input:checked');
+    var counts_or_embedding; /* which feature set to use */
+    if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
+        counts_or_embedding = "counts"
+    } else {
+        counts_or_embedding = "embedding"
+    }
+    
+    /* Set filename based on selected options (author and which features*/
+    var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
+    for (i= 0; i < authors.length; i++) {
+        author = String(authors[i].value).toLowerCase();
+        filename = filename + "_" + author
+    }
+    filename = filename + ".json"
+    update_tree_from_file(filename);
+}
+
 function update(source) {
     set_tree_dimensions();
     /* Respond to authors and numbers settings*/
-    d3.selectAll('#choose-authors-tree .authorCheckbox, #choose-features-tree input').on('click', update_with_new_options);
+    d3.selectAll('#choose-authors-tree .authorCheckbox, #choose-features-tree input').on('click', update_tree_with_new_options);
     d3.select('#showSonnetNumbersCheckboxTree').on('click', function(){
         d3.selectAll('#tree .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckboxTree').checked);
     });
     
-    function update_with_new_options(){
-        console.log("updating with new options")
-        var authors = document.querySelectorAll('#choose-authors-tree input:checked');
-        var counts_or_embedding; /* which feature set to use */
-        if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
-            counts_or_embedding = "counts"
-        } else {
-            counts_or_embedding = "embedding"
-        }
-        
-        /* Set filename based on selected options (author and which features*/
-        var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
-        for (i= 0; i < authors.length; i++) {
-            author = String(authors[i].value).toLowerCase();
-            filename = filename + "_" + author
-        }
-        filename = filename + ".json"
-        update_tree_from_file(filename);
-    }
 
     var sonnetLeaf, sonnetLeaf2;
     for (i=0; i < source.leaves().length; i++){
@@ -284,8 +285,8 @@ $("#display-sonnet2").click(function(){ set_sonnet2_tree(false)} );
         set_tree_dimensions();
         tree
             .size([2 * Math.PI, radius - margin.right - margin.left]);
-        root = tree(d3.hierarchy(treeDataFromFile));
-        update(root);
+       // root = tree(d3.hierarchy(treeDataFromFile));
+        //update(root);
     });
 
     function make_scatterplot_with_position_data_from_file(filename){
@@ -463,7 +464,8 @@ $("#display-sonnet2").click(function(){ set_sonnet2_tree(false)} );
         d3.selectAll(".tree-viz").classed("hidden",false);
         d3.selectAll(".tab-heading").classed("tab-heading-selected", false);
         d3.select("#pick-tree").classed("tab-heading-selected", true);
-        update(root);
+        update_tree_with_new_options();
+        //update(root);
     });
     
     d3.select("#pick-pca").on("click", function(){

@@ -1,7 +1,275 @@
 $(document).ready(function(){
+var margin = {top: 20, right: 20, bottom: 20, left: 12};
+var treeContainer =  d3.select("#tree");
+var i = 0;
+var root;
+var sonnet_idx = 1
+var sonnet_idx2 = 1;
+var setSonnet1Next = false;
+var treeDataFromFile;
+var width, height, radius;
+
+function set_tree_dimensions(){
+    width = parseInt(d3.select('#plot-and-picker').style('width'),10);
+    width = Math.min(width, 1200);
+    height = width;
+    radius = width / 2;
+    console.log("tree width" + width);
+}
+//set_tree_dimensions();
+
+function radialPoint(x, y) {
+    return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
+}
+
+var tree =  d3.cluster()
+    .size([2 * Math.PI, radius - margin.right - margin.left]);
+
+function update_tree_from_file(filename){
+    $.getJSON(filename, function( treeData ) {
+        // Compute the new tree layout.
+        treeDataFromFile = treeData;
+        root = tree(d3.hierarchy(treeData));
+        update(root);
+    });
+}
+
+function update(source) {
+    set_tree_dimensions();
+    /* Respond to authors and numbers settings*/
+    d3.selectAll('#choose-authors-tree .authorCheckbox, #choose-features-tree input').on('click', update_with_new_options);
+    d3.select('#showSonnetNumbersCheckboxTree').on('click', function(){
+        d3.selectAll('#tree .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckboxTree').checked);
+    });
+    
+    function update_with_new_options(){
+        console.log("updating with new options")
+        var authors = document.querySelectorAll('#choose-authors-tree input:checked');
+        var counts_or_embedding; /* which feature set to use */
+        if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
+            counts_or_embedding = "counts"
+        } else {
+            counts_or_embedding = "embedding"
+        }
+        
+        /* Set filename based on selected options (author and which features*/
+        var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
+        for (i= 0; i < authors.length; i++) {
+            author = String(authors[i].value).toLowerCase();
+            filename = filename + "_" + author
+        }
+        filename = filename + ".json"
+        update_tree_from_file(filename);
+    }
+
+    var sonnetLeaf, sonnetLeaf2;
+    for (i=0; i < source.leaves().length; i++){
+        if (source.leaves()[i].data.id == sonnet_idx){
+            sonnetLeaf = source.leaves()[i];
+        }
+        if (source.leaves()[i].data.id == sonnet_idx2){
+            sonnetLeaf2 = source.leaves()[i];
+        }
+    }
+
+   var shouldSetPath = (typeof sonnetLeaf !=="undefined" && typeof sonnetLeaf2 !=="undefined");
+   
+   if (shouldSetPath) {
+        var sonnetToSonnetPath = sonnetLeaf.path(sonnetLeaf2);
+        for (i=0; i < sonnetToSonnetPath.length - 1; i++){
+                sourceNode = sonnetToSonnetPath[i];
+                targetNode = sonnetToSonnetPath[i+1];
+        }
+    }
+
+    treeContainer.html('');
+    svg = treeContainer.append("svg")
+    // .attr("width", width + margin.right + margin.left)
+    // .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.zoom().on("zoom", function(){
+        svg.attr("transform", d3.event.transform)
+    }))
+    // .call(d3.zoom().on("zoom", function ({transform}) {
+    //     currentZoomTransform = transform;
+    //     svg.attr("transform", currentZoomTransform)
+    //  }))
+    .append("g")
+        .attr("transform", "translate(" + radius + "," + radius+ ")") 
+     .append("g")
+     
+
+    var lines_g = svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 1)
+      .attr("stroke-width", 1.5)
+    .selectAll("path")
+    .data(source.links()) 
+    .enter().append("line") /*For straight line segments */
+       .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0]; })
+       .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
+       .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
+       .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; })
+       .attr("stroke", function(d){
+        if (shouldSetPath){ 
+        for (i=1; i < sonnetToSonnetPath.length ; i++){
+            sourceNode = sonnetToSonnetPath[i];
+            targetNode = sonnetToSonnetPath[i-1];
+            if( (d.source === sourceNode && d.target === targetNode) || (d.source === targetNode && d.target === sourceNode)){
+                return "#111";
+            }
+        }};
+        return "#bbb";
+       });
+
+    var circle_g = svg.append("g")
+    .selectAll("circle")
+    .data(root.descendants())
+    .join("circle")
+      .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90})
+        translate(${d.y},0)
+      `)
+      .attr("stroke", "black")
+      .style("fill", function(d) {
+        //add author data
+        if (d.data.id == '0'){
+            d.data.author = "Shakespeare";
+        }
+        if (Number(d.data.id) < 154 && Number(d.data.id) > 0) {
+            d.data.author = "Shakespeare";
+        } else if (Number(d.data.id) < 243 && Number(d.data.id) > 0) {
+            d.data.author = "Spenser";
+        } else if (Number(d.data.id) > 0) {
+            d.data.author = "Sidney";
+        };
+        if (d.data.id == ""){
+            d.data.author = "None"
+            return "gray";
+        }
+        //set color
+        return authorColorScale(d.data.author);
+    })   
+        .attr("r", function(d){
+            if (width < 700){
+                return (d.data.author != "None" ? 2 : 1);
+            } else {
+                return (d.data.author != "None" ? 3 : 1);
+            }
+        })
+        .attr("stroke-width", function(d){ 
+            if ( (sonnet_idx == 0 || sonnet_idx2 == 0) & d.data.id == '0' ){
+                return 1;
+            } else if ( d.data.id == 0 ){
+                return 0;
+            }
+            else if (( d.data.id == sonnet_idx  || d.data.id == sonnet_idx2) ) {
+                return 1;
+            } else {
+                return 0;
+            }
+        })
+        .attr("title", function(d) {
+            if (d.data.author == "None"){
+                return;
+            }
+            var sonnetNum = convertSonnetIdxToDisplayNumber(Number(d.data.id))
+            return d.data.author + " " + sonnetNum + ": \n" + sonnets[d.data.id]
+        })
+    ;
+
+    window.addEventListener("resize", function(){
+        set_tree_dimensions();
+        tree
+            .size([2 * Math.PI, radius - margin.right - margin.left]);
+        root = tree(d3.hierarchy(treeDataFromFile));
+        update(root);
+
+    });
+
+  var totalNumNodes = root.descendants().length;
+
+  var text_g = svg.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+    .selectAll("text")
+    .data(root.descendants())
+    .join("text")
+      .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90}) 
+        translate(${d.y},0) 
+        rotate(${d.x >= Math.PI ? 180 : 0})
+      `)
+      .attr("font-size", function(d){ // TODO: set based on num child nodes
+          if (totalNumNodes > 500){
+              return 4.5
+          } else if (totalNumNodes < 500 && totalNumNodes > 350) {
+              return 7
+          } else {
+              return 10
+          }
+      })
+      .attr("dy", "0.31em")
+      .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+      .text(function(d){ 
+        if (d.data.author == "None"){ 
+              return "";
+        } else { 
+          return convertSonnetIdxToDisplayNumber(Number(d.data.id));
+        } 
+        })
+      .classed('sonnet-number-text',true)
+      .classed('hidden',!document.getElementById('showSonnetNumbersCheckboxTree').checked);
+
+    d3.selectAll('#tree circle').on('click', clickCircle);
+
+
+}
+
+function set_sonnet1_tree(clicked_circle_directly) {
+    sonnet_idx = document.getElementById("sonnet_number").value - 1;
+    set_sonnet("sonnet_number", "tree-viz-poet-1", "#sonnet", sonnet_idx, clicked_circle_directly, "-radio-tree")
+    update(root);
+}
+
+function set_sonnet2_tree(clicked_circle_directly) {
+    sonnet_idx2 = document.getElementById("sonnet_number2").value - 1;
+    set_sonnet("sonnet_number2", "tree-viz-poet-2", "#sonnet2", sonnet_idx2, clicked_circle_directly,"-radio-tree2")
+    update(root);
+}
+
+function clickCircle(d, i){
+    var thisSonnetNumber = Number(d.data.id) + 1;
+    console.log(thisSonnetNumber);
+    d3.selectAll('.ui-tooltip').style('display', 'none');
+    if (setSonnet1Next) {
+        document.getElementById("sonnet_number").value = thisSonnetNumber;
+        set_sonnet1_tree(true);
+    } else {
+        document.getElementById("sonnet_number2").value = thisSonnetNumber
+        set_sonnet2_tree(true);
+    }
+    
+    setSonnet1Next = !setSonnet1Next;
+    update(root);
+}
+
+$("#display-sonnet").click(function(){ set_sonnet1_tree(false)} );
+$("#display-sonnet2").click(function(){ set_sonnet2_tree(false)} );
+
+
+
+
+
+
     var sonnetPositionData; // coordinates of points for scatterplot
     const numSonnets = 351; // number of sonnets (shksr + spenser + sidney)
     var pca_or_lda_value = $('#pick-pca').hasClass('tab-heading-selected') ? 'pca' : 'lda';
+    
 
     // Get sonnet text from file and initial tree data from file
     $.getJSON( "data/sonnets/sonnets_shakespeare_spenser_sidney.json", function( data ) {
@@ -13,6 +281,11 @@ $(document).ready(function(){
                 sonnets.push(sonnet_text);
             } 
         update_tree_from_file("data/sonnets/sonnet_tree_counts_shakespeare_spenser_sidney.json")
+        set_tree_dimensions();
+        tree
+            .size([2 * Math.PI, radius - margin.right - margin.left]);
+        root = tree(d3.hierarchy(treeDataFromFile));
+        update(root);
     });
 
     function make_scatterplot_with_position_data_from_file(filename){
@@ -31,7 +304,7 @@ $(document).ready(function(){
     function create_scatter_plot(positionData){
         var dotRadius = 4;
         var margin = {top: 5, right: 25, bottom: 5, left: 10},
-        width = parseInt(d3.select(".tab-heading-container").style('width'), 10) - margin.left - margin.right - 3,
+        width = parseInt(d3.select("#plot-and-picker").style('width'), 10) //- margin.left - margin.right - 3,
         //height =  get_height(margin)
         height = width;
         d3.select('#scatter-container').html('');
@@ -129,7 +402,7 @@ $(document).ready(function(){
 
         window.addEventListener("resize", function(){
             console.log("redrawing")
-            width = parseInt(d3.select(".tab-heading-container").style('width'), 10) - margin.left - margin.right - 3;
+            width = parseInt(d3.select("#plot-and-picker").style('width'), 10); //- margin.left - margin.right - 3;
             d3.select("#scatter-container svg").style('width', width);
             d3.selectAll("rect").attr('width', width)
 

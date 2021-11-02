@@ -71,6 +71,10 @@ li {
 
 @media screen and (min-width: 700px){
 
+    .color-background {
+        padding-left: 10px;
+    }
+
     #about{
         margin:2%;
         padding-left: 5%;
@@ -120,6 +124,10 @@ li {
 #scatter-container, #tree {
     width: 100%;
     margin: 5px;
+}
+
+#tree {
+    background-color: white;
 }
 
 @media screen and (min-width: 700px) {

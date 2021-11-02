@@ -2,7 +2,7 @@ function plotVoltageTrace(dataset) {
     var widthOfContainer = document.getElementById('plotpane').offsetWidth;
     console.log(widthOfContainer);
 // 2. Use the margin convention practice
-  var margin = {top: 20, right: 30, bottom: 40, left: 50}
+  var margin = {top: 20, right: 30, bottom: 30, left: 50}
     , width = widthOfContainer - margin.left - margin.right// Use the window's width
     , height = 150; // Use the window's height
 
@@ -17,6 +17,7 @@ function plotVoltageTrace(dataset) {
       .range([0, width]); // output
 
   // 6. Y scale will use the randomly generate number
+  var yMax = 0.050; //max to display in volts
   var yScale = d3.scaleLinear()
       .domain([-0.080, 0.050]) // input
       .range([height, 0]); // output
@@ -24,7 +25,7 @@ function plotVoltageTrace(dataset) {
   // 7. d3's line generator
   var line = d3.line()
       .x(function(d, i) { return xScale(i/20); }) // set the x values for the line generator
-      .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
+      .y(function(d) { return yScale( Math.min(d.y, yMax)) }) // set the y values for the line generator
       .curve(d3.curveMonotoneX) // apply smoothing to the line
 
   // 1. Add the SVG to the page and employ #2

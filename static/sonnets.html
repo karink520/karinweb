@@ -3,22 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <link rel="stylesheet" href="css/sonnets3.css">
+    <link rel="stylesheet" href="css/sonnets_new_dev.css">
 </head>
 <body>
     <h1>Visualizing Sonnets by Sound</h1>
     <h3><a href="https://karinknudson.com" target="_blank" rel="noreferrer noopener">Karin Knudson</a>, <a href="https://people.csail.mit.edu/smirnov/" target="_blank" rel="noreferrer noopener">Dima Smirnov</a>, <a href="https://satyandevadoss.org/" target="_blank" rel="noreferrer noopener">Satyan Devadoss</a></h3>
-    <div class="centered tab-heading-container">
-        <span id="pick-tree" class="tab-heading">
-            Tree visualization
-        </span>
-        <span id="pick-2d-projection" class="tab-heading tab-heading-selected">
-            Two dimensional projection
-        </span>
-    </div>
-
+    <div class="color-background">
+    
     <div id="plot-and-options">
-    <div id = "options" class="rounded-border twod-projection-viz">
+        <div id="plot-and-picker"> 
+            <div class="centered tab-heading-container">
+                <span id="pick-tree" class="tab-heading">
+                    TREE
+                </span>
+                <span id="pick-lda" class="tab-heading">
+                    LDA
+                </span>
+                <span id="pick-pca" class="tab-heading tab-heading-selected">
+                    PCA
+                </span>
+            </div>
+                <div id="scatter-container" class="twod-projection-viz"></div>
+                <div id="tree" class="tree-viz">.</div>
+        </div>
+
+    <div id = "options" class="rounded-border twod-projection-viz white-background">
         <div id="choose-authors" >
             <form name="choose-authors-form">
             Author(s):<br>
@@ -48,7 +57,7 @@
             </form>
         </div>
 
-        <div id="choose-projection">
+        <!-- <div id="choose-projection">
             <form name="choose-projection-form">
             Projection: <br>
             <input type="radio" id="LDA" class="projection-radio"
@@ -59,7 +68,7 @@
             name="projection" value="pca">
         <label for="PCA">Principal Component Analysis (PCA)</label>
         </form>
-        </div>
+        </div> -->
 
         <div id="sonnet-chooser-2d-viz"  class="twod-projection-viz">
             <div id="choose-a-sonnet-2d">
@@ -98,7 +107,7 @@
 
         <div id="choose-features-tree">
         Features:<br>
-        <input type="radio" name="distance-tree" value="phonemes" checked="True">
+        <input type="radio" name="distance-tree" value="phonemes" checked="true">
         <label for="phonemes">Phoneme Count</label><br>
 
         <input type="radio" name="distance-tree" value="other">
@@ -136,19 +145,9 @@
             
         </div>
 
-    <div id="scatter-container" class="twod-projection-viz"></div>
-    <div id="tree" class="tree-viz">.</div>
-
-    </div>
-    <!-- <div id=1"write-a-sonnet" class="rounded-border">
-        <label for="user-sonnet">Write a sonnet below</label>
-        <button id="compare-user-sonnet">Add my sonnet to the tree! </button>
-    </div>
-    <div id="user-sonnet-div">
-            <textarea name="user-sonnet" rows="14" cols="50">Shall I compare thee to a summer’s day?...</textarea>
-    </div> -->
-    <div class="rounded-border" id="about">
-        <h2>About:</h2>
+    
+</div>
+    <div class="rounded-border white-background" id="about">
         <p>
             We visualize simple, phonetically-based representations of the sonnets of William Shakespeare (1564-1616), and
             those of two of his contemporaries, Sir Philip Sidney (1554-1586) and Edmund Spenser (1553-1599).
@@ -210,13 +209,16 @@
         </ul>
     </div>
     <p id="show-more">(show more)</p>
-    </div>
+    </div><!-- ends about -->
+</div>
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
-<script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="js/sonnets3.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="js/sonnets_new2_dev.js"></script>
+<!-- <script src="js/sonnets_new_tree_dev.js"></script> -->
+<script src="js/sonnets_new_dev.js"></script>
 
 </html>
 

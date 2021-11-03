@@ -84,23 +84,15 @@ function update(source) {
 
     treeContainer.html('');
     svg = treeContainer.append("svg")
-    // .attr("width", width + margin.right + margin.left)
-    // .attr("height", height + margin.top + margin.bottom)
     .attr("width", width)
     .attr("height", height)
     .call(d3.zoom().on("zoom", function(){
         svg.attr("transform", d3.event.transform) 
     }))
-    // .call(d3.zoom().on("zoom", function ({transform}) {
-    //     currentZoomTransform = transform;
-    //     svg.attr("transform", currentZoomTransform)
-    //  }))
      .append("g")
-        //.attr("transform", "translate(" + radius + "," + radius+ ")") 
-     .append("g")
+     //.append("g")
 
-   //sgv.attr(‘transform’,‘translate(‘"translate(" + radius + "," + radius+ ")
-     
+  
 
     var lines_g = svg.append("g")
       .attr("fill", "none")
@@ -181,7 +173,7 @@ function update(source) {
             var sonnetNum = convertSonnetIdxToDisplayNumber(Number(d.data.id))
             return d.data.author + " " + sonnetNum + ": \n" + sonnets[d.data.id]
         })
-        //.attr("transform", 'translate(' + radius + ', ' + radius+ ')')
+        
     ;
 
     window.addEventListener("resize", function(){

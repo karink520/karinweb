@@ -1,58 +1,58 @@
 $(document).ready(function(){
-var margin = {top: 20, right: 20, bottom: 20, left: 12};
-var treeContainer =  d3.select("#tree");
-var i = 0;
-var root;
-var sonnet_idx = 1
-var sonnet_idx2 = 1;
-var setSonnet1Next = false;
-var treeDataFromFile;
-var width, height, radius;
+    var margin = {top: 20, right: 20, bottom: 20, left: 12};
+    var treeContainer =  d3.select("#tree");
+    var i = 0;
+    var root;
+    var sonnet_idx = 1
+    var sonnet_idx2 = 1;
+    var setSonnet1Next = false;
+    var currentZoomTransform;
+    var treeDataFromFile;
+    var width, height, radius;
 
-function set_tree_dimensions(){
-    width = parseInt(d3.select('#plot-and-picker').style('width'),10);
-    width = Math.min(width, 1200);
-    height = width;
-    radius = width / 2;
-}
-//set_tree_dimensions();
-
-function radialPoint(x, y) {
-    return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
-}
-
-var tree =  d3.cluster()
-    .size([2 * Math.PI, radius - margin.right - margin.left]);
-
-function update_tree_from_file(filename){
-    set_tree_dimensions()
-    $.getJSON(filename, function( treeData ) {
-        // Compute the new tree layout.
-        treeDataFromFile = treeData;
-        root = tree(d3.hierarchy(treeData));
-        update(root);
-    });
-}
-
-function update_tree_with_new_options(){
-    console.log("updating with new options")
-    var authors = document.querySelectorAll('#choose-authors-tree input:checked');
-    var counts_or_embedding; /* which feature set to use */
-    if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
-        counts_or_embedding = "counts"
-    } else {
-        counts_or_embedding = "embedding"
+    function set_tree_dimensions(){
+        width = parseInt(d3.select('#plot-and-picker').style('width'),10);
+        width = Math.min(width, 1200);
+        height = width;
+        radius = width / 2;
     }
-    
-    /* Set filename based on selected options (author and which features*/
-    var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
-    for (i= 0; i < authors.length; i++) {
-        author = String(authors[i].value).toLowerCase();
-        filename = filename + "_" + author
+
+    function radialPoint(x, y) {
+        return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
     }
-    filename = filename + ".json"
-    update_tree_from_file(filename);
-}
+
+    var tree =  d3.cluster()
+        .size([2 * Math.PI, radius - margin.right - margin.left]);
+
+    function update_tree_from_file(filename){
+        set_tree_dimensions()
+        $.getJSON(filename, function( treeData ) {
+            // Compute the new tree layout.
+            treeDataFromFile = treeData;
+            root = tree(d3.hierarchy(treeData));
+            update(root);
+        });
+    }
+
+    function update_tree_with_new_options(){
+        console.log("updating with new options")
+        var authors = document.querySelectorAll('#choose-authors-tree input:checked');
+        var counts_or_embedding; /* which feature set to use */
+        if (document.querySelectorAll('#choose-features-tree input:checked')[0].value == "phonemes"){
+            counts_or_embedding = "counts"
+        } else {
+            counts_or_embedding = "embedding"
+        }
+        
+        /* Set filename based on selected options (author and which features*/
+        var filename = 'data/sonnets/sonnet_tree_' + counts_or_embedding;
+        for (i= 0; i < authors.length; i++) {
+            author = String(authors[i].value).toLowerCase();
+            filename = filename + "_" + author
+        }
+        filename = filename + ".json"
+        update_tree_from_file(filename);
+    }
 
 function update(source) {
     set_tree_dimensions();
@@ -60,8 +60,7 @@ function update(source) {
     d3.selectAll('#choose-authors-tree .authorCheckbox, #choose-features-tree input').on('click', update_tree_with_new_options);
     d3.select('#showSonnetNumbersCheckboxTree').on('click', function(){
         d3.selectAll('#tree .sonnet-number-text').classed('hidden', !document.getElementById('showSonnetNumbersCheckboxTree').checked);
-    });
-    
+    });  
 
     var sonnetLeaf, sonnetLeaf2;
     for (i=0; i < source.leaves().length; i++){
@@ -90,15 +89,17 @@ function update(source) {
     .attr("width", width)
     .attr("height", height)
     .call(d3.zoom().on("zoom", function(){
-        svg.attr("transform", d3.event.transform)
+        svg.attr("transform", d3.event.transform) 
     }))
     // .call(d3.zoom().on("zoom", function ({transform}) {
     //     currentZoomTransform = transform;
     //     svg.attr("transform", currentZoomTransform)
     //  }))
-    .append("g")
-        .attr("transform", "translate(" + radius + "," + radius+ ")") 
      .append("g")
+        //.attr("transform", "translate(" + radius + "," + radius+ ")") 
+     .append("g")
+
+   //sgv.attr(‘transform’,‘translate(‘"translate(" + radius + "," + radius+ ")
      
 
     var lines_g = svg.append("g")
@@ -109,10 +110,10 @@ function update(source) {
     .selectAll("path")
     .data(source.links()) 
     .enter().append("line") /*For straight line segments */
-       .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0]; })
-       .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
-       .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
-       .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; })
+       .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0] + radius; })
+       .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1] + radius; })
+       .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0] + radius; })
+       .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1] + radius; })
        .attr("stroke", function(d){
         if (shouldSetPath){ 
         for (i=1; i < sonnetToSonnetPath.length ; i++){
@@ -126,13 +127,14 @@ function update(source) {
        });
 
     var circle_g = svg.append("g")
+    .attr("transform", "translate(" + radius + "," + radius+ ")") 
     .selectAll("circle")
     .data(root.descendants())
     .join("circle")
-      .attr("transform", d => `
-        rotate(${d.x * 180 / Math.PI - 90})
-        translate(${d.y},0)
-      `)
+      .attr("transform", function(d) {
+        return `rotate(${d.x * 180 / Math.PI - 90 })
+        translate(${d.y}, 0)`
+    })
       .attr("stroke", "black")
       .style("fill", function(d) {
         //add author data
@@ -179,6 +181,7 @@ function update(source) {
             var sonnetNum = convertSonnetIdxToDisplayNumber(Number(d.data.id))
             return d.data.author + " " + sonnetNum + ": \n" + sonnets[d.data.id]
         })
+        //.attr("transform", 'translate(' + radius + ', ' + radius+ ')')
     ;
 
     window.addEventListener("resize", function(){

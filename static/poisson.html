@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
   </head>
   <body>
     <header>
@@ -153,13 +155,22 @@
             Substituting in  a Gamma (&alpha; + y , &beta; +1) distribution for p(&lambda; |y ), as derived in the previous section, a Gamma(&alpha;, &beta;) pdf for p(&lambda;),
             and a Poisson(&lambda;) distribution for p(y| &lambda;) we obtain:
             <p id="negativeBinomialEquation1"></p>
-            This distribution for <em>y</em> is another friendly neighborhood discrete distribution that is common enough to have a name: it is a <em>negative binomial</em>
-            distribution parametrized by (&alpha;, &beta;).
+            <p>This distribution for <em>y</em> is another friendly neighborhood discrete distribution that is common enough to have a name: it is a <em>negative binomial</em>
+            distribution.</p>
+
             <p>
             The prior predictive distribution is a useful concept to get your head around: it is the distribution of the data we expect to see just given our 
             model assumptions and prior, and before we have seen any data. Exploring this distribution can be helpful in checking your model.  In
             <a href="https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/rssa.12378"><b>[Gabry et al. 2019]</b></a>, for example, the authors include a discussion of the role of visualizing a prior predictive distribution within a broader Bayesian workflow.
             </p>
+
+            <p><b>Optional negative binomial note:</b> The negative binomial distribution can be characterized as the distribution for the
+              count of successes \(y\) observed before some specified number of failures \( \alpha \) is reached in a series of independent 
+              experiments each with probability of success \(p\). We can parameterize in terms of \(\alpha, p\) instead of \(\alpha, \beta\) by translating with \(p = \frac{1}{\beta + 1}\), so that 
+              $$p(y) = \binom{\alpha + y - 1}{y} (1-p)^\alpha p^y.$$
+              The negative binomial distribution has several parametrizations in common use, though, so 
+              exercise caution.</p>
+
             </div>
             <button class="accordion">(Optional) Three notes about gamma distributions</button>
             <div class="panel">

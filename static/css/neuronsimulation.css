@@ -10,13 +10,14 @@
 
 #plotpane, #modelpane {
   margin-right: 2%;
+  margin-left: 2%;
 }
 
 #modelselectionpane {
   width: 95%;
   background-color: #fff9bc;
   display: inline-block;
-  padding-right: 5%;
+/*  padding-right: 5%;*/
 }
 
 #modeladjustmentpane {
@@ -47,7 +48,8 @@
 }
 
 #plotpane {
-  background-color:#90ca44;
+background-color: rgba(144, 202, 68, 0.6);
+/*  background-color:#90ca44;*/
   width: 95%;
   display: inline-block;
   overflow: hidden;
@@ -135,12 +137,12 @@ footer {
 
 @media screen and (min-width: 650px) {
    #modelpane {
-     width: 60%;
+     width: 62%;
    }
 
    #plotpane {
     float: right;
-     width: 60%;
+     width: 62%;
    }
 
    #modeladjustmentpane {
@@ -156,8 +158,9 @@ footer {
      width: 90%;
      margin-top: 1.5em;
      margin-bottom: 1.5em;
-     margin-left:1.5em;
+/*     margin-left:1.5em;*/
      border-radius: 5px;
+     text-align: center;
    }
    
 }

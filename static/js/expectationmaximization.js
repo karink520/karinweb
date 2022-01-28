@@ -25,14 +25,14 @@ katex.render(classMembershipProbsEq, classMembershipProbs, {throwOnError:false})
 
 
 
-$('.showExplanation').click(function() {
-    $(this).next().toggle();
-}
-)
-$('.explanation').click(function() {
-    $(this).toggle();
-}
-)
+// $('.showExplanation').click(function() {
+//     $(this).next().toggle();
+// }
+// )
+// $('.explanation').click(function() {
+//     $(this).toggle();
+// }
+// )
 
 
 // Hide all example details to start and on reset
@@ -50,7 +50,7 @@ resetExamples();
 $('#select-reset').click(resetExamples);
 
 //Hide explanations to start
-$('.explanation').css("display", "none");
+//$('.explanation').css("display", "none");
 
 $('#select-gaussian-mixture').click( function(){
     resetExamples()

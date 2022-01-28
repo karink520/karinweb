@@ -1,3 +1,4 @@
+/* BUTTONS */
 button {
   background-color:#eee;
   margin: 5px 5px;
@@ -7,23 +8,27 @@ button {
   display: inline-block;
 }
 
-p a, p a:visited {
-  text-decoration: underline;
-  color:#74a830;  
+/* EXPLANATIONS */
+.showExplanation {
+  cursor: help;
 }
 
-.plotpane {
-  background-color: #fff9bc;
-  display: inline-block;
-  padding-right: 5%;
+.explanation {
+  font-size:.8em;
+  width: 90%;
+  box-shadow: 0.5px 1px #eeeeee;
+  border: solid 0.5px #eeeeee;
+  border-radius:5px;
+  padding-left: 5%;
 }
 
-.reflist {
-  margin: 2px;
-  padding: 0;
-  font-size: 18px;
+.explanation {
+  cursor:pointer;
+  overflow: scroll;
 }
 
+
+/* ACCORDION */
 .accordion {
   background-color: #eee;
   color: #444;
@@ -53,13 +58,29 @@ p a, p a:visited {
   font-weight: bold;
 }
 
+/* MISC */
 .panel {
   display: none;
   background-color: white;
   overflow: hidden;
 }
 
+p a, p a:visited {
+  text-decoration: underline;
+  color:#74a830;  
+}
 
+.plotpane {
+  background-color: #fff9bc;
+  display: inline-block;
+  padding-right: 5%;
+}
+
+.reflist {
+  margin: 2px;
+  padding: 0;
+  font-size: 18px;
+}
 .resultsDisplay {
   margin: 1em auto;
   text-align:center;
@@ -90,6 +111,12 @@ p a, p a:visited {
   margin: 10px auto;
 }
 
+.name {
+  font-weight:bold;
+  display: inline;
+}
+
+/* TABLES */
 table {
   font-size: .9rem;
   width: 100%;
@@ -98,12 +125,6 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
   border-radius: 0;
-}
-
-
-.name {
-    font-weight:bold;
-    display: inline;
 }
 
 th {
@@ -158,6 +179,7 @@ tr {
   border: 0;
 }
 
+/* SLIDERS */
 
 .slidecontainer {
   width: 100%; /* Width of the outside container */

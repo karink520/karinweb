@@ -1,3 +1,18 @@
+// Show and hide explanation classes
+
+$('.showExplanation').click(function() {
+  $(this).next().toggle();
+}
+)
+$('.explanation').click(function() {
+  $(this).toggle();
+}
+)
+//Hide explanations to start
+$('.explanation').css("display", "none");
+
+// Accordion functionality
+
 var acc = document.getElementsByClassName("accordion");
 var i;
 

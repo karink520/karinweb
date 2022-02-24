@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Karin Knudson </title>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/kck.css">
+    <link rel="stylesheet" href="css/blogpost.css">
+    <link rel="stylesheet" href="css/tdistributions.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" integrity="sha384-b/NoaeRXkMxyKcrDw2KtVtYKkVg3dA0rTRgLoV7W2df3MzeR1eHLTi+l4//4fMwk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" integrity="sha384-ern5NCRqs6nJ/a4Ik0nB9hnKVH5HwV2XRUYdQl09OB/vvd1Lmmqbg1Mh+mYUclXx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+    onload='renderMathInElement(document.body);'></script>
+    <script type="text/javascript" id="MathJax-script" async
+ src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<style>
+    #sample_mean, #scaled_sample_var{
+        display: inline-block;
+    }
+    .dot {
+      fill: steelblue;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
+</style>
+  <body>
+    <header>
+      <div></div>
+      <nav>
+        <ul>
+          <li> <a href="index.html"><i class="fas fa-home"></i></a></li>
+          <li> <a href="blog.html">Blog</a> </li>
+          <li> <a href="projects.html">Projects</a></li>
+          <li> <a href="Knudson-Resume.pdf">Resume</a><li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+        <div class=blogpost>
+            <h3 class="blogdate">January 27, 2022 </h3>
+            <span class="blogtopic" >Getting to know t-distributions</span>
+            <p>
+                This is another post in the spirit of: "get to know your friendly exponential-family distributions."
+                Today, we consider the t-distribution, also known as the Student's t-distribution.
+            </p>
+            <p>Can I interest you in a blog post on that?</p>
+            <p> 
+                Maybe you've seen t-distributions around but haven't gotten to know them? Maybe you've seen or used t-tests but don't have 
+                a great idea of what's so t-distributed about them?
+                <!-- Maybe you don't do t-tests, but you often play with probability distributions
+                and you figure that even if you never do a t-test (and/or suspect you might strongly dislike t-tests),
+                you should probably know what the fuss is about? -->
+            </p>
+            <p> 
+                Well, here we go. 
+            </p>
+            <button class="accordion">Show me some t-distributions</button>
+            <div class="panel">
+            <p>The probability density function (pdf) for a standard t-distribution 
+            is given by:</p>
+            <p>\(p(x) = \frac{\Gamma((\nu + 1)/2)}{\sqrt{\nu \pi}\Gamma(\nu/2)}(1 + \frac{1}{\nu}x^2)^{-(\nu+1)/2}\)</p>
+            <p> with parameter \(\nu\) called the <em>degree(s) of freedom</em>. (Note: \(\nu\) here looks a lot like \(v\) but is its own Greek letter "nu".)</p>
+            <p>The more general t-distribution with additional location and scale parameters \(\mu,\sigma\) is:</p>
+            <p>\(p(x) = \frac{\Gamma((\nu + 1)/2)}{\sqrt{\nu \pi \sigma^2}\Gamma(\nu/2)}(1 + \frac{1}{\nu}(x-\mu)^2/\sigma^2)^{-(\nu+1)/2}\).
+            </p>
+            <p>I'm writing both these pdfs so that you have them for reference, but you can move back and forth between them by noting that: </p>
+            <p>\(x \sim t_v(0,1) \iff (x-\mu)/\sigma \sim t_v(\mu, \sigma) \). </p>
+            <p>If you just see \(t_\nu\) without the additional two parameters, you can assume it's the standard t-distribution.</p>
+            <p>Here's a plot of the pdf in the standard case, when \(\mu=0, \sigma=1\). You can adjust the degrees of freedom, as well as compare the pdf to that of a standard normal distribution if you like. </p>
+            <select id="tdist_dof" name="tdist_dof">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="20">100</option>
+            </select> degrees of freedom
+            <input type="checkbox" id="normal_checkbox"> Include normal pdf for comparison
+            <div id="tdist_plot"></div>
+            <p>What are your first impressions?</p>
+            <p>It looks somewhat similar to the normal density function, in that it's generally <b>bell-shaped</b>.
+            Looking a little further, we might notice that 1)  <b>the higher the degrees of freedom, the closer to normal </b> it seems to be, 
+            and 2) compared to the normal distribution, the t-distribution has <b>heavier tails</b>: the distribution gives far-from-the-mean values
+            more probability than the normal distribution. 
+            </p>
+            <p>Note that even as the degrees of freedom get large, and thus the t-distribution gets more similar to a normal distribution,
+            the t-distribution will <em>still</em> have heavier tails. That is, if we go far enough from the mean, the value of the pdf of the t-distribution will 
+            be larger than that of the normal. Why? Remember that the standard normal distribution has density proportional to  \(e^{-x^2}\), so as \(x\) gets large 
+            the density approaches zero in an exponential manner. That means it will approach zero for large \(x\) faster
+            than the t-distribution density, which looks roughly like \(x\) to a negative power. In fact 
+            there are technical definitions for <em><a href="https://en.wikipedia.org/wiki/Heavy-tailed_distribution">heavy-tailed</a></em>; these definitions (confusingly) vary a bit depending on the community, but
+            one definition is having tails that are not exponentially bounded. Thus, the t-distribution is heavy-tailed in this technical sense.
+            </p>
+            </div>
+
+            <button class="accordion">Where can I see a t-distribution in in the wild?</button>
+            <div class="panel">
+            <p>Here are some ways that t-distribution show up.</p>
+            <p class="showExplanation">
+                <b>Normal divided by the square root of a \(\chi^2\):</b>
+                If \(Z\) distributed as a standard normal and \(Y\) as a \(\chi^2_\nu\), and \(X,Y\) are independent, then 
+                the random variable \(X = \frac{Z \sqrt{\nu}}{\sqrt{Y}}\) follows a t-distribution with \(\nu\) degrees of freedom.
+                <em> Click for more justification.</em>
+            </p>
+            <p class="explanation">We can show this using a few things about transforming probability distributions and remembering gamma integrals.
+                Let \(g\) be the transformation \(g(z,y) = \frac{z\sqrt{\nu}}{\sqrt{y}},y) \) Then \(g^{-1}(x,y)=(\frac{x\sqrt{y}}{\sqrt{\nu}}, y)\).
+                We'll need the determinant of the Jacobian of \(g^{-1}\), which calculate to be \(\sqrt{y/v}\).
+                We'll also use (without proving) the result that \(\int_0^\infty e^{-by}y^{a-1} \, dy = \Gamma(a)b^{-a} \) (the normalizing constant for a gamma distribution).
+                Now:
+                $$\begin{aligned}
+                p_X(x) &= \int_0^{\infty} p_{X,Y}(x,y) \, dy \\
+                &= \int_0^{\infty} p_{Z,Y}(\frac{x\sqrt{y}}{\sqrt{\nu}}, y) \sqrt{y/v} \, dy, & \text{(transforming the distribution} )\\
+                &= \int_0^{\infty} p_{Z}(\frac{x\sqrt{y}}{\sqrt{\nu}})p_Y(y) \sqrt{y/v} \, dy \, & \text{(independence of Z, Y} )\\
+                & \propto \int_0^{\infty} e^{-x^2y/2\nu} y^{\nu/2 - 1} e^{-y/2} \sqrt{y} \, dy \, & \text{(Z is normal, Y is }  \chi^2 \text{)}\\
+                & \propto \int_0^{\infty} e^{-((1 + x^2/\nu)/2)y} y^ {(\nu+1)/2 - 1} \, dy  &   \text{(combining like)} \\
+                & =  \Gamma(\frac{\nu+1}{2})((1 + x^2/\nu)/2)^{-\frac{\nu + 1}{2}}  & \text{(using gamma integral)} \\
+                \end{aligned} $$
+                We can recognize this last line as being proportional to the pdf for a t-distribution (with all proportionality constants above a function of \(\nu\)).  
+            </p>
+            <p> This fact and an analogous justification goes through even if \(Y\) merely follows a 
+                <em>scaled</em> \(\chi^2_{\nu}\) distribution &mdash; i.e. that \(cY \sim \chi^2_\nu\)  for some nonzero constant \(c\).
+            </p>
+            <p>
+                That might seem like a niche fact, but hear me out.
+                If we have a bunch of independent normal distributions then 
+                1) their mean is also normally distributed and 
+                b) the sum of their squares follows a \(\chi^2\) distribution.
+                This might make us <em>a little</em> suspicious that \(\frac{\bar{x} - \mu}{\sqrt{s^2/n}}\) where 
+                \(s^2\) is the sample variance \(s^{2}=\frac {1}{n-1}\sum _{i=1}^{n}(x_{i}-\bar {x})^{2}\)
+                looks a <em>little</em> like ratio \(\frac{Z \sqrt{\nu}}{\sqrt{Y}}\) above. That's oversimplifying - but it does turn out
+                to be possible to <a href="https://en.wikipedia.org/wiki/Cochran%27s_theorem">show</a> 
+                that the \(\sum _{i=1}^{n}(x_{i}-\bar {x})^{2}\) has a scaled \(\chi^2_{n-1}\) distribution,
+                and that the sample mean and variance are independent (which is suprising at first glance IMO!).
+                So in fact, \(\frac{\bar{x} - \mu}{\sqrt{s^2/n}} \sim t_{n-1}\).
+            </p>
+            <p><b>A certain continous mixture of normal distributions (that might arise in a posterior or posterior predictive):</b>
+                A t-distribution arises we have a mixture of normals that all have the same mean but where the variance is a random variable with scaled inverse chi-squared (equivalently, inverse-gamma) distribution</p><p> Concretely, if:
+                <br> \(x | \sigma^2 \sim N(x_0, \sigma^2/\kappa_0) \) and \(\sigma^2 \sim \text{Inv-}\chi^2(\nu_0, \sigma_0^2)\), then marginalizing over \(\sigma^2\) we have: \(x \sim t_{\nu_0}(x_0, \sigma_0^2/\kappa_0 )\)
+            </p><p class="showExplanation"><em>Click for more justification.</em>
+            </p>
+            <p class="explanation">
+                We'll use below this fact about a gamma integral: \(\int_0^\infty e^{-b/y} y^{-(a+1)} \, dy = \Gamma(a)b^{-1} \).
+                $$\begin{aligned}
+                p(x) &= \int_0^\infty p(x, \sigma^2) \, d \sigma^2 \\
+                &= \int_0^\infty p(x|\sigma^2) p(\sigma^2) \, d\sigma^2 \\
+                &= \int_0^\infty \frac{1}{\sqrt{2\pi\sigma^2/\kappa_0}} \exp{\left(-\frac{\kappa_0(x-x_0)^2}{2\sigma^2}\right)} \frac{(\nu_0/2)^{\nu_0/2}}{\Gamma(\nu_0/2)} (\sigma_0^2)^{ \nu_0} (\sigma^2)^{-(\nu_0/2+1)} \exp{\left(-\nu_0\sigma_0^2/2\sigma^2\right)} \, d \sigma^2 \\
+                &\propto \int_0^\infty (\sigma^2)^{-(\nu_0/2 + 1+1)}\exp{\left( -\frac{\kappa_0(x - x_0)^2 + \nu_0\sigma_0^2}{2\sigma^2}\right) }\, d\sigma^2\\
+                &= \Gamma(\nu_0/2 + 1)(\nu_0 \sigma_0^2 + \kappa_0(x-x_0)^2 )^{-(\nu_0/2 + 1)} \, \text{ using that gamma integral fact with } a = \nu_0/2 +1, b = (x - x_0)^2 + \nu_0 \sigma_0^2 \\
+                &\propto \left(1 + \frac{\kappa_0(x-x_0^2)}{\nu_0 \sigma_0^2}\right)^{-(\nu_0/2 + 1)} 
+                \end{aligned} $$      
+                We can recognize this last line as being proportional to the pdf for a t-distribution \(t_{\nu_n}(x_0, \sigma_0^2/\kappa_0)\)
+            </p>
+            <p>Where might this come up? The normal scaled inverse-\(\chi^2\) (or, an alternate parametrization the normal inverse gamma) distribution is a conveniently conjugate prior for normally distributed data.
+                Specifically, the set up is the following:
+                $$\begin{aligned}
+                \mu | \sigma ^2 &\sim N(\mu_0, \sigma^2/\kappa_0) \\
+                \sigma^2 &\sim \text{Inv-}\chi^2(\nu_0, \sigma_0^2)\\
+                y_i &\sim N(\mu, \sigma^2), i =1,...,n \text{(i.i.d)}
+                \end{aligned} $$
+                We can use the previous result about an inverse-\(\chi^2\) mixture of normals with common mean to conclude that \(\mu | \sigma \sim t_{\nu_0}(\mu_0, \sigma_0^2/\kappa_0)\).
+                </p><p>Next, we can note
+                that since the bunch of algebra that goes into the conjugate analysis gives us
+                 \(\mu| y, \sigma^2 \) is normal and \(\sigma^2 |y \) is inverse-\(\chi^2\), that 
+                when we marginalize over \(\sigma^2 \) we have that \(\mu | y \) is t-distributed.
+                That is:
+                </p>
+                $$\begin{aligned}
+                &\mu | y, \sigma^2 \sim N(\mu_n, \sigma^2/\kappa_n) \\
+                &\sigma^2 | y \sim \text{Inv-}\chi^2(\nu_n, \sigma_n^2)\\
+                & \implies \mu \sim t_{\nu_n}(\mu_n, \sigma_n^2/\kappa_n)
+                \end{aligned} $$
+                <p>
+                And, we can find one more t-distribution if we note that the posterior predictive distribution for one more data point given \(\sigma^2\) is also normal,
+                so when we marginalize we again get a t distribution.
+                $$\begin{aligned}
+                &\tilde{y} | y, \sigma^2 \sim N(\mu_n, \sigma^2 (\kappa_n + 1)/\kappa_n \\
+                &\sigma^2 | y \sim \text{Inv-}\chi^2(\nu_n, \sigma_n^2)\\
+                &\implies \tilde{y} | y \sim t_{\nu_n}(\mu_n, \sigma_n^2(\kappa_n + 1)/\kappa_n)
+                \end{aligned} $$
+            </p>
+            <p class="showExplanation"><em>Show parameter definitions</em></p>
+            <p class="explanation">
+                $$\begin{aligned}
+                \nu_n \sigma_n^2 &= \nu_0\sigma_0^2 + \sum(\bar{y}-y_i)^2 + \frac{\kappa_0 n}{\kappa_0 + n}(\bar{y} - \mu_0)^2 \\
+                \kappa_n &= \kappa_0 + n \\
+                \nu_n &= \nu_0 + n \\
+                \mu_n &= \frac{\kappa_0\mu_0 + n \bar{y}}{\kappa_0 + n} 
+                \end{aligned} $$
+                See, e.g. BDA ch. 3 for derivations of these values.
+            </p>
+            <p></p>
+    
+            <p><b>Cauchy distributions:</b> A t-distribution with \(\nu =1\) is a Cauchy distribution. </p>
+            </div>
+
+            <button class="accordion">How about those t-tests?</button>
+            <div class="panel">
+            <p>A t test is any statistical test where the test statistic is (at least approximately) t-distributed.</p>
+            <p>Let's say we have a bunch of observations \(x_1,...,x_n\) from a normal 
+            distribution whose standard deviation we don't know, and that we think the mean of that distribution might be some particular value \(\mu_0\) but we're not sure.
+            One way to proceed might be to calculate <em>something</em> from the observations (this something is the "test statistic") that we can compare to some 
+            known distribution for that test statistic in order to say something about how likely or not it would be to see the kind of
+            data we observed if the mean <em>were</em> \(\mu_0\). </p>
+            <p>It turns out that if \(x_1,...,x_n\) are from a normal distribution with mean \(\mu_0\) and fixed but unknown standard deviation \(\sigma^2\),
+            then \(\bar{x} - \mu_0\) (and so also \(\frac{\sqrt{n}(\bar{x} - \mu_0)}{\sigma^2}\) ) is normally distributed, \( \frac{\sum_{i=1}^n(\bar{x} - x_i)}{\sigma^2} \sim \chi^2_{n-1}\),
+            and those two quantities are independent, therefore (referring back to our first way to find t-distributions in the wild, above), 
+            \( \frac{(\bar{x} - \mu_0)\sqrt{n}\sqrt{n-1}}{\sqrt{\sum_{i=1}^n(\bar{x} - x_i)^2}}  \sim t_{n-1}\).
+            </p>
+            <p>In this case if, for instance, \(n\) is 10 and our test statistic \( \frac{(\bar{x} - \mu_0)\sqrt{n}\sqrt{n-1}}{\sqrt{\sum_{i=1}^n(\bar{x} - x_i)^2}}  \sim t_{n-1}\) turns out to be, say, 4,
+                we might say that the data is pretty suprising in some way, since values as extreme as 4
+                arise only rarely as a draw from a \(t_9\) distribution (see plot below).
+            </p>
+            <p>Indeed, if we were in a null hypothesis signifigance testing setup, we might conclude that
+                it was probably not true that the mean of the distribution that the \(x_i\) were drawn from
+                actually was \(\mu_0\) - we might "reject" that hypothesis that the mean was \(\mu_0\).
+                (Big note: Do I love this framework? Not really. Bayesian statistics is more my home base,
+                so I'd tend think of that mean that we're so curious about as a random variable and go from there.
+                But it's worth understanding how t-tests often show up in practice.)
+            </p>
+            <p>Note: what do we mean by "as extreme as 4" above? Are we talking about values 4 and above (that is, far from the mean in one direction)? Or values above 4 and below -4
+                (that is far from the mean in either direction). Which notion you choose here depends on your context, and
+                leads to the "one-tailed" or "two-tailed" t-tests respectively.
+            </p>
+            <p>Here's a set of plots illustrating how we get from normally distributed data to our particular
+                t-distributed test statistic in the example above.
+            </p>
+            <button id="resample">Show a new set of samples</button>
+
+            <div id="normal_samples"></div>
+            <div id="sample_mean"></div>
+            <div id="scaled_sample_var"></div>
+            <div id="test_statistic"></div>
+
+            <p>Ok, but what if your data is not normally distributed? 
+                We leaned on the \(\bar{x}\) being normally distributed, 
+                the  \(\frac{\sum_{i=1}^n(\bar{x} - x_i)}{\sigma^2}\) being appropriately \(\chi^2\) distributed, and their independence.
+                The central limit theorem might give you some hope that \(\bar{x}\) be approximately normally distributed
+                even if the i.i.d \(x_i\) are not. You might still be nervous about the denominator losing its \(\chi^2\) distribution
+                and not having independence if we leave the special case of normal \(x_i\). That's very much a reasonable nervousness to have,
+                although it turns out that even when we deviate some amount from meeting those conditions,
+                the test statistic we gave above <em>can</em> stick pretty close to t-distributed (if you want, explore <a href="https://colab.research.google.com/drive/1Qh7L28YCzbRmeZWmTqPfJR9lc0R5Fd7i#scrollTo=olAI0myTwt_T">here</a>).
+            </p>
+
+            <p>There are multiple situations where t distributions arise in our test statistic, and therefore other kinds 
+                of t-tests.  Above, we gave an example of a t-test for testing whether the mean of 
+                the population that the data came from was equal to a particular value \(\mu_0\), which is what is called a <em>one-sample t-test</em>. 
+            </p>
+            <p>A minor variation on that scheme is what's called a <em>paired t-test</em>, when we start with some pairs of values
+                \( (y_{11}, y_{12}),...(y_{n1}, y_{n2})\) and perform a one-sample t-test on the \(n\) <em>differences</em>
+                \(x_1 = y_{12} - y_{11},...,x_n = y_{n2} - y_{n1}\). The pair \((y_{i1}, y_{i2})\) might be something like 
+                measurements from the ith subject before and after some intervention, and typically we'd be testing
+                \(\mu_0 = 0\), which corresponds to the idea of the differences being zero on average.
+
+            </p>
+            <p>In another variation, we have samples from two different populations: \(x_1,...,x_{n_1}\) and \(y_1,...,y_{n_2}\), and want to 
+                test whether the population means are equal to each other. If the \(x_i\) and \(y_i\) are each i.i.d. normal random variables,
+                from two normal distributions with equal (but unknown) variances, then:
+                $$\frac{(\bar{x} - \bar{y})(\sqrt{n_1 + n_2 - 2})}{\sqrt{\sum_{i=1}^{n_1} (\bar{x} - x_i)^2 + \sum_{i=1}^{n_2} (\bar{y} - y_i)^2} \sqrt{1/n_1 + 1/ n_2}} \sim t_{n_1 + n_2 - 1 }. $$
+                So, we can calculate the test statistic on the left hand side above, and compare it to a \(t_{n_1 + n_2 -2}\) distribution to get an idea of 
+                how extreme a test statistic that would be in the case where the \(x_i\) and \(y_i\) 
+                really do come from populations with the same mean. (Note: ANOVA adapts a two-sample t-test to more than two groups.)
+            </p>
+            <p>
+                Again, the core procedure in these variations
+                on the t-test is we calculate a quantity (the test statistic) from data where the test statistic 
+                would be t-distributed if some assumptions and hypotheses held. Interesting! 
+            </p>
+    
+            </div>
+
+            <button class="accordion">Aren't you going to tell me a fun story about the "Student" part?</button>
+            <div class="panel">
+                <p>And Guinness beer? Ah, others tell it better than I do.</p>
+            </div>
+
+            <button class="accordion">Conclusion and References</button>
+            <div class="panel">
+            <p>Thanks for reading and good luck with your t-distribution endeavors! I write these posts for fun and with the hope that they'll help someone - if you read this far, hopefully the post helps you.
+            </p>
+            <p>And lastly, I guess I'll end with the caveat that I included information about t-tests because
+                they're around, not because I'm aiming at a ringing endorsement the current state 
+                and practice of null hypothesis significant testing in science. Whether you need to use them 
+                or are trying to get away from them, you may want to understand them.
+            </p>
+                <ul>
+                    <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
+                </ul>
+                
+                <p> 
+               </p>
+            </div> <!--closes blog section-->  
+             
+        </div>  <!--closes blog post-->      
+    </main>
+
+   <footer>
+        <div></div>
+   </footer>
+   <script src="https://d3js.org/d3.v6.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="js/tdistributions.js"></script>
+   <script src="js/tdistributions2.js"></script>
+   <script src="js/blogpost.js"></script>
+   </body>
+</html>

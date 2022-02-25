@@ -36,7 +36,7 @@ $(document).ready(function(){
                  .attr("x", 0)             
                  .attr("y", 20 + (margin.top ))
             .attr("width", 200)
-            .attr("height", 40);
+            .attr("height", 45);
 
             const span = foreignObject.append("xhtml:span")
                 .attr("id", "node-text")
@@ -60,7 +60,7 @@ $(document).ready(function(){
 
         // normal distribution and sample mean distribution 
         normal_pdf2_data = [], sample_mean_pdf_data= [];
-        for (x=-4; x <= 4; x+=0.1) {
+        for (x=-4; x <= 4; x+=0.05) {
             normal_pdf2_data.push({"x":x, "y": jStat.normal.pdf( x, mu_0, sigma)})
             sample_mean_pdf_data.push({"x": x, "y": jStat.normal.pdf(x, mu_0, sigma/Math.sqrt(n))})
         }

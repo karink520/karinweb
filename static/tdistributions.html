@@ -41,22 +41,19 @@
     </header>
     <main>
         <div class=blogpost>
-            <h3 class="blogdate">January 27, 2022 </h3>
+            <h3 class="blogdate">Twosday, February 22, 2022 </h3>
             <span class="blogtopic" >Getting to know t-distributions</span>
             <p>
-                This is another post in the spirit of: "get to know your friendly exponential-family distributions."
+                This is another post in the spirit of: "get to know your friendly neighborhood distributions."
                 Today, we consider the t-distribution, also known as the Student's t-distribution.
             </p>
             <p>Can I interest you in a blog post on that?</p>
             <p> 
                 Maybe you've seen t-distributions around but haven't gotten to know them? Maybe you've seen or used t-tests but don't have 
-                a great idea of what's so t-distributed about them?
+                a great idea of what's so t-distributed about them? Well, stick around if you like.
                 <!-- Maybe you don't do t-tests, but you often play with probability distributions
                 and you figure that even if you never do a t-test (and/or suspect you might strongly dislike t-tests),
                 you should probably know what the fuss is about? -->
-            </p>
-            <p> 
-                Well, here we go. 
             </p>
             <button class="accordion">Show me some t-distributions</button>
             <div class="panel">
@@ -64,7 +61,7 @@
             is given by:</p>
             <p>\(p(x) = \frac{\Gamma((\nu + 1)/2)}{\sqrt{\nu \pi}\Gamma(\nu/2)}(1 + \frac{1}{\nu}x^2)^{-(\nu+1)/2}\)</p>
             <p> with parameter \(\nu\) called the <em>degree(s) of freedom</em>. (Note: \(\nu\) here looks a lot like \(v\) but is its own Greek letter "nu".)</p>
-            <p>The more general t-distribution with additional location and scale parameters \(\mu,\sigma\) is:</p>
+            <p>The more general t-distribution with additional location and scale parameters \(\mu\) and \(\sigma\) is:</p>
             <p>\(p(x) = \frac{\Gamma((\nu + 1)/2)}{\sqrt{\nu \pi \sigma^2}\Gamma(\nu/2)}(1 + \frac{1}{\nu}(x-\mu)^2/\sigma^2)^{-(\nu+1)/2}\).
             </p>
             <p>I'm writing both these pdfs so that you have them for reference, but you can move back and forth between them by noting that: </p>
@@ -92,9 +89,9 @@
             the t-distribution will <em>still</em> have heavier tails. That is, if we go far enough from the mean, the value of the pdf of the t-distribution will 
             be larger than that of the normal. Why? Remember that the standard normal distribution has density proportional to  \(e^{-x^2}\), so as \(x\) gets large 
             the density approaches zero in an exponential manner. That means it will approach zero for large \(x\) faster
-            than the t-distribution density, which looks roughly like \(x\) to a negative power. In fact 
+            than the t-distribution density, which looks roughly like \(x^{-(\nu + 1)}\). In fact 
             there are technical definitions for <em><a href="https://en.wikipedia.org/wiki/Heavy-tailed_distribution">heavy-tailed</a></em>; these definitions (confusingly) vary a bit depending on the community, but
-            one definition is having tails that are not exponentially bounded. Thus, the t-distribution is heavy-tailed in this technical sense.
+            one definition is having tails that are not exponentially bounded. The t-distribution is heavy-tailed in this technical sense.
             </p>
             </div>
 
@@ -155,7 +152,7 @@
                 \end{aligned} $$      
                 We can recognize this last line as being proportional to the pdf for a t-distribution \(t_{\nu_n}(x_0, \sigma_0^2/\kappa_0)\)
             </p>
-            <p>Where might this come up? The normal scaled inverse-\(\chi^2\) (or, an alternate parametrization the normal inverse gamma) distribution is a conveniently conjugate prior for normally distributed data.
+            <p>Where might this come up? The normal scaled inverse-\(\chi^2\) (or, an alternate parametrization of the normal inverse gamma) distribution is a conveniently conjugate prior for normally distributed data.
                 Specifically, the set up is the following:
                 $$\begin{aligned}
                 \mu | \sigma ^2 &\sim N(\mu_0, \sigma^2/\kappa_0) \\
@@ -164,8 +161,8 @@
                 \end{aligned} $$
                 We can use the previous result about an inverse-\(\chi^2\) mixture of normals with common mean to conclude that \(\mu | \sigma \sim t_{\nu_0}(\mu_0, \sigma_0^2/\kappa_0)\).
                 </p><p>Next, we can note
-                that since the bunch of algebra that goes into the conjugate analysis gives us
-                 \(\mu| y, \sigma^2 \) is normal and \(\sigma^2 |y \) is inverse-\(\chi^2\), that 
+                that since the bunch of algebra that goes into the conjugate analysis gives us that
+                 \(\mu| y, \sigma^2 \) is normal and \(\sigma^2 |y \) is inverse-\(\chi^2\), then 
                 when we marginalize over \(\sigma^2 \) we have that \(\mu | y \) is t-distributed.
                 That is:
                 </p>
@@ -176,7 +173,7 @@
                 \end{aligned} $$
                 <p>
                 And, we can find one more t-distribution if we note that the posterior predictive distribution for one more data point given \(\sigma^2\) is also normal,
-                so when we marginalize we again get a t distribution.
+                so when we marginalize we again get a t-distribution.
                 $$\begin{aligned}
                 &\tilde{y} | y, \sigma^2 \sim N(\mu_n, \sigma^2 (\kappa_n + 1)/\kappa_n \\
                 &\sigma^2 | y \sim \text{Inv-}\chi^2(\nu_n, \sigma_n^2)\\
@@ -195,7 +192,7 @@
             </p>
             <p></p>
     
-            <p><b>Cauchy distributions:</b> A t-distribution with \(\nu =1\) is a Cauchy distribution. </p>
+            <p><b>Cauchy distributions:</b> A t-distribution with \(\nu =1\) is a Cauchy distribution. That's it. That's the fact.</p>
             </div>
 
             <button class="accordion">How about those t-tests?</button>
@@ -208,21 +205,21 @@
             data we observed if the mean <em>were</em> \(\mu_0\). </p>
             <p>It turns out that if \(x_1,...,x_n\) are from a normal distribution with mean \(\mu_0\) and fixed but unknown standard deviation \(\sigma^2\),
             then \(\bar{x} - \mu_0\) (and so also \(\frac{\sqrt{n}(\bar{x} - \mu_0)}{\sigma^2}\) ) is normally distributed, \( \frac{\sum_{i=1}^n(\bar{x} - x_i)}{\sigma^2} \sim \chi^2_{n-1}\),
-            and those two quantities are independent, therefore (referring back to our first way to find t-distributions in the wild, above), 
+            and those two quantities are independent. Therefore (referring back to our first place to find t-distributions in the wild, above), 
             \( \frac{(\bar{x} - \mu_0)\sqrt{n}\sqrt{n-1}}{\sqrt{\sum_{i=1}^n(\bar{x} - x_i)^2}}  \sim t_{n-1}\).
             </p>
             <p>In this case if, for instance, \(n\) is 10 and our test statistic \( \frac{(\bar{x} - \mu_0)\sqrt{n}\sqrt{n-1}}{\sqrt{\sum_{i=1}^n(\bar{x} - x_i)^2}}  \sim t_{n-1}\) turns out to be, say, 4,
                 we might say that the data is pretty suprising in some way, since values as extreme as 4
                 arise only rarely as a draw from a \(t_9\) distribution (see plot below).
             </p>
-            <p>Indeed, if we were in a null hypothesis signifigance testing setup, we might conclude that
+            <p>Indeed, if we were in a null hypothesis significance testing setup, we might conclude that
                 it was probably not true that the mean of the distribution that the \(x_i\) were drawn from
                 actually was \(\mu_0\) - we might "reject" that hypothesis that the mean was \(\mu_0\).
                 (Big note: Do I love this framework? Not really. Bayesian statistics is more my home base,
                 so I'd tend think of that mean that we're so curious about as a random variable and go from there.
                 But it's worth understanding how t-tests often show up in practice.)
             </p>
-            <p>Note: what do we mean by "as extreme as 4" above? Are we talking about values 4 and above (that is, far from the mean in one direction)? Or values above 4 and below -4
+            <p>Medium-sized note: what do we mean by "as extreme as 4" above? Are we talking about values 4 and above (that is, far from the mean in one direction)? Or values above 4 and below -4
                 (that is far from the mean in either direction). Which notion you choose here depends on your context, and
                 leads to the "one-tailed" or "two-tailed" t-tests respectively.
             </p>
@@ -236,17 +233,17 @@
             <div id="scaled_sample_var"></div>
             <div id="test_statistic"></div>
 
-            <p>Ok, but what if your data is not normally distributed? 
+            <p><b>Robustness?</b> Ok, but what if your data is not normally distributed? 
                 We leaned on the \(\bar{x}\) being normally distributed, 
                 the  \(\frac{\sum_{i=1}^n(\bar{x} - x_i)}{\sigma^2}\) being appropriately \(\chi^2\) distributed, and their independence.
                 The central limit theorem might give you some hope that \(\bar{x}\) be approximately normally distributed
                 even if the i.i.d \(x_i\) are not. You might still be nervous about the denominator losing its \(\chi^2\) distribution
                 and not having independence if we leave the special case of normal \(x_i\). That's very much a reasonable nervousness to have,
                 although it turns out that even when we deviate some amount from meeting those conditions,
-                the test statistic we gave above <em>can</em> stick pretty close to t-distributed (if you want, explore <a href="https://colab.research.google.com/drive/1Qh7L28YCzbRmeZWmTqPfJR9lc0R5Fd7i#scrollTo=olAI0myTwt_T">here</a>).
+                the test statistic we gave above <em>can</em> stick pretty close to t-distributed (if you want a little exploration is <a href="https://colab.research.google.com/drive/1Qh7L28YCzbRmeZWmTqPfJR9lc0R5Fd7i#scrollTo=olAI0myTwt_T">here</a>).
             </p>
 
-            <p>There are multiple situations where t distributions arise in our test statistic, and therefore other kinds 
+            <p><b>Different kinds of t-tests</b>There are multiple situations where t-distributions arise as a test statistic, and therefore there are other kinds 
                 of t-tests.  Above, we gave an example of a t-test for testing whether the mean of 
                 the population that the data came from was equal to a particular value \(\mu_0\), which is what is called a <em>one-sample t-test</em>. 
             </p>
@@ -275,17 +272,17 @@
 
             <button class="accordion">Aren't you going to tell me a fun story about the "Student" part?</button>
             <div class="panel">
-                <p>And Guinness beer? Ah, others tell it better than I do.</p>
+                <p>And Guinness beer? Ah, others tell it better than I do!</p>
             </div>
 
             <button class="accordion">Conclusion and References</button>
             <div class="panel">
-            <p>Thanks for reading and good luck with your t-distribution endeavors! I write these posts for fun and with the hope that they'll help someone - if you read this far, hopefully the post helps you.
-            </p>
-            <p>And lastly, I guess I'll end with the caveat that I included information about t-tests because
-                they're around, not because I'm aiming at a ringing endorsement the current state 
+            <p>I guess I'll end with the caveat that I included information about t-tests because
+                they're around, not because I'm aiming at a ringing endorsement of the current state 
                 and practice of null hypothesis significant testing in science. Whether you need to use them 
                 or are trying to get away from them, you may want to understand them.
+            </p>
+            <p>Thanks for reading and good luck with your t-distribution endeavors! I write these posts for fun and with the hope that they'll help someone - if you read this far, hopefully the post helps you.
             </p>
                 <ul>
                     <li class="reflist">Gelman, A., Carlin, J.B., Stern, H.S., Dunson, D.B., Vehtari, A. and Rubin, D.B., 2013. Bayesian data analysis. Chapman and Hall/CRC.</li>
